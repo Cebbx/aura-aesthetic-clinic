@@ -18,26 +18,51 @@ console.log('===================================================================
 console.log(' [1/3] Starting Vite Web Server with Real-Time Database Sync...');
 
 // 1. Start Vite
+console.log(' [1/3] Starting Vite Web Server with Real-Time Database Sync...');
 const vite = spawn('cmd.exe', ['/c', 'npm.cmd', 'run', 'dev', '--', '--host', '0.0.0.0', '--port', '5173'], {
   cwd: projectRoot,
   stdio: ['ignore', 'pipe', 'pipe']
 });
 
+let tunnel = null;
+let tunnelStarted = false;
+let detectedPort = 5173;
+
+function startCloudflareTunnel(port) {
+  if (tunnelStarted) return;
+  tunnelStarted = true;
+  detectedPort = port;
+  console.log(` [2/3] Connecting Cloudflare Tunnel to http://localhost:${port}...`);
+
+  tunnel = spawn(cloudflaredBin, ['tunnel', '--url', `http://localhost:${port}`], {
+    cwd: projectRoot,
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+
+  tunnel.stdout.on('data', onTunnelOutput);
+  tunnel.stderr.on('data', onTunnelOutput);
+}
+
+// Listen to Vite output to detect exact port
 vite.stdout.on('data', (data) => {
-  // Silent or monitor
+  const text = data.toString();
+  const portMatch = text.match(/localhost:(\d+)/);
+  if (portMatch && !tunnelStarted) {
+    const port = parseInt(portMatch[1], 10);
+    startCloudflareTunnel(port);
+  }
 });
 
 vite.stderr.on('data', (data) => {
   // console.error(data.toString());
 });
 
-console.log(' [2/3] Connecting Cloudflare Tunnel via Herd...');
-
-// 2. Start Cloudflare Tunnel
-const tunnel = spawn(cloudflaredBin, ['tunnel', '--url', 'http://localhost:5173'], {
-  cwd: projectRoot,
-  stdio: ['ignore', 'pipe', 'pipe']
-});
+// Fallback: If Vite doesn't output port in 2.5s, start tunnel on 5173
+setTimeout(() => {
+  if (!tunnelStarted) {
+    startCloudflareTunnel(5173);
+  }
+}, 2500);
 
 let tunnelUrlFound = false;
 const urlRegex = /https:\/\/[a-zA-Z0-9-]+\.trycloudflare\.com/;
@@ -86,14 +111,11 @@ function onTunnelOutput(chunk) {
   }
 }
 
-tunnel.stdout.on('data', onTunnelOutput);
-tunnel.stderr.on('data', onTunnelOutput);
-
 // Cleanup on exit
 function cleanExit() {
   console.log('\nStopping Aura Aesthetic Clinic services...');
-  try { vite.kill(); } catch (e) {}
-  try { tunnel.kill(); } catch (e) {}
+  try { if (vite) vite.kill(); } catch (e) {}
+  try { if (tunnel) tunnel.kill(); } catch (e) {}
   process.exit();
 }
 
