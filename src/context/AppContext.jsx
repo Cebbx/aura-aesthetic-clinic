@@ -120,6 +120,7 @@ export const AppProvider = ({ children }) => {
     } catch (e) {
       console.error(e);
     }
+    syncToServer({ clinicProfile: updated });
     return { success: true, message: 'Clinic profile successfully updated!' };
   };
 
@@ -278,6 +279,126 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem('aura_treatment_reviews', JSON.stringify(treatmentReviews));
   }, [treatmentReviews]);
 
+  // Server-Client Real-Time Database Synchronization Engine
+  const [lastServerSyncTime, setLastServerSyncTime] = useState(0);
+
+  // Initial load from Server Database
+  useEffect(() => {
+    const fetchInitialDb = async () => {
+      try {
+        const res = await fetch('/api/sync');
+        if (res.ok) {
+          const json = await res.json();
+          if (json?.success && json.data) {
+            const db = json.data;
+            if (db.appointments && db.appointments.length > 0) {
+              setAppointments(db.appointments);
+            } else if (appointments.length > 0) {
+              // Seed server if server is empty
+              fetch('/api/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  appointments,
+                  services,
+                  vouchers,
+                  clients,
+                  treatmentReviews,
+                  clinicProfile
+                })
+              }).catch(() => {});
+            }
+
+            if (db.services && db.services.length > 0) setServices(db.services);
+            if (db.vouchers && db.vouchers.length > 0) setVouchers(db.vouchers);
+            if (db.clients && db.clients.length > 0) setClients(db.clients);
+            if (db.treatmentReviews && Object.keys(db.treatmentReviews).length > 0) setTreatmentReviews(db.treatmentReviews);
+            if (db.clinicProfile && db.clinicProfile.clinicName) setClinicProfile(db.clinicProfile);
+            setLastServerSyncTime(db.lastUpdated || Date.now());
+          }
+        }
+      } catch (e) {
+        // Fallback to localStorage
+      }
+    };
+
+    fetchInitialDb();
+  }, []);
+
+  // Real-time synchronization loop (polls every 3 seconds for new phone bookings or changes)
+  useEffect(() => {
+    const syncInterval = setInterval(async () => {
+      try {
+        const res = await fetch('/api/sync');
+        if (!res.ok) return;
+        const json = await res.json();
+        if (json?.success && json.data && json.data.lastUpdated > lastServerSyncTime) {
+          const db = json.data;
+          setLastServerSyncTime(db.lastUpdated);
+
+          if (db.appointments && Array.isArray(db.appointments)) {
+            setAppointments(prev => {
+              const newApts = db.appointments.filter(a => !prev.some(p => p.id === a.id));
+              if (newApts.length > 0) {
+                newApts.forEach(apt => {
+                  setNotifications(nPrev => [
+                    {
+                      id: `NOTIF-PHONE-${apt.id}-${Date.now()}`,
+                      title: `📱 New Mobile Booking: ${apt.clientName}`,
+                      desc: `${apt.serviceName} • ${apt.date} at ${apt.time} [${apt.id}]`,
+                      appointmentId: apt.id,
+                      time: 'Just now',
+                      read: false
+                    },
+                    ...nPrev
+                  ]);
+                });
+              }
+              return db.appointments;
+            });
+          }
+
+          if (db.services) setServices(db.services);
+          if (db.vouchers) setVouchers(db.vouchers);
+          if (db.clients) setClients(db.clients);
+          if (db.treatmentReviews) setTreatmentReviews(db.treatmentReviews);
+          if (db.clinicProfile) setClinicProfile(db.clinicProfile);
+        }
+      } catch (e) {
+        // Ignore network hiccups
+      }
+    }, 3000);
+
+    return () => clearInterval(syncInterval);
+  }, [lastServerSyncTime]);
+
+  // Sync to server whenever state changes
+  const syncToServer = (overrideData) => {
+    try {
+      const payload = {
+        appointments,
+        services,
+        vouchers,
+        clients,
+        treatmentReviews,
+        clinicProfile,
+        ...overrideData
+      };
+      fetch('/api/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(res => res.json())
+        .then(json => {
+          if (json?.data?.lastUpdated) {
+            setLastServerSyncTime(json.data.lastUpdated);
+          }
+        })
+        .catch(() => {});
+    } catch (e) {}
+  };
+
   const getServiceReviewStats = (serviceId) => {
     const revs = treatmentReviews[serviceId] || [];
     if (revs.length === 0) {
@@ -325,6 +446,7 @@ export const AppProvider = ({ children }) => {
         )
       );
     }
+    setTimeout(() => syncToServer(), 50);
     return { success: true };
   };
 
@@ -381,6 +503,7 @@ export const AppProvider = ({ children }) => {
     };
 
     setServices(prev => [newService, ...prev]);
+    setTimeout(() => syncToServer(), 50);
     return newService;
   };
 
@@ -398,6 +521,7 @@ export const AppProvider = ({ children }) => {
         return s;
       })
     );
+    setTimeout(() => syncToServer(), 50);
   };
 
   const toggleServiceStatus = (serviceId) => {
@@ -408,10 +532,12 @@ export const AppProvider = ({ children }) => {
           : s
       )
     );
+    setTimeout(() => syncToServer(), 50);
   };
 
   const deleteService = (serviceId) => {
     setServices(prev => prev.filter(s => s.id !== serviceId));
+    setTimeout(() => syncToServer(), 50);
   };
 
   // Check voucher validity
@@ -492,6 +618,7 @@ export const AppProvider = ({ children }) => {
           : c
       )
     );
+    setTimeout(() => syncToServer(), 50);
     return { success: true, message: 'Client account has been blocked.' };
   };
 
@@ -509,6 +636,7 @@ export const AppProvider = ({ children }) => {
           : c
       )
     );
+    setTimeout(() => syncToServer(), 50);
     return { success: true, message: 'Client account unblocked and restored to Active status.' };
   };
 
@@ -564,6 +692,13 @@ export const AppProvider = ({ children }) => {
     };
 
     setAppointments(prev => [newRecord, ...prev]);
+
+    // Send immediate sync to server so phone bookings land in laptop database
+    fetch('/api/book', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newRecord)
+    }).catch(() => {});
 
     // Create real-time Admin Notification
     const newNotification = {
@@ -633,9 +768,12 @@ export const AppProvider = ({ children }) => {
 
   // Update appointment status (with optional cancellation reason or notes)
   const updateAppointmentStatus = (id, newStatus, meta = {}) => {
-    setAppointments(prev =>
-      prev.map(apt => (apt.id === id ? { ...apt, status: newStatus, ...meta } : apt))
-    );
+    let updatedList;
+    setAppointments(prev => {
+      updatedList = prev.map(apt => (apt.id === id ? { ...apt, status: newStatus, ...meta } : apt));
+      return updatedList;
+    });
+    if (updatedList) syncToServer({ appointments: updatedList });
   };
 
   // Client cancellation with automated notification to clinic owner
@@ -643,8 +781,9 @@ export const AppProvider = ({ children }) => {
     const fullReason = remarks.trim() ? `${reason}: ${remarks.trim()}` : reason;
     const targetApt = appointments.find(a => a.id === id);
 
-    setAppointments(prev =>
-      prev.map(apt =>
+    let updatedList;
+    setAppointments(prev => {
+      updatedList = prev.map(apt =>
         apt.id === id
           ? {
               ...apt,
@@ -654,8 +793,10 @@ export const AppProvider = ({ children }) => {
               cancelledBy: 'Client'
             }
           : apt
-      )
-    );
+      );
+      return updatedList;
+    });
+    if (updatedList) syncToServer({ appointments: updatedList });
 
     // Add alert notification for Clinic Admin
     const newNotif = {
