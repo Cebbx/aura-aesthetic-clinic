@@ -145,7 +145,7 @@ const EditAppointmentModal = ({ open, onClose, appointment, onNotifyClient }) =>
                   <span>Notify Client of Changes?</span>
                 </span>
                 <p className="text-[11px] text-amber-800 leading-relaxed">
-                  Para siguradong alam ng customer ang binagong schedule, serbisyo, o presyo, nais mo bang magpadala ng update notice via SMS o Gmail?
+                  To ensure the client is aware of the updated schedule, services, or total fee, would you like to dispatch an update notification via SMS or Gmail?
                 </p>
               </div>
             </div>

@@ -106,7 +106,7 @@ const Step1SelectService = ({
               </span>
             </div>
             <p className="text-[11px] text-gray-500">
-              Maaari kang pumili ng 1 o higit pang treatments sa isang appointment session (e.g. Facial + Whitening + Laser).
+              You can select 1 or more treatments in a single appointment session (e.g. Facial + Whitening + Laser).
             </p>
           </div>
         </div>
