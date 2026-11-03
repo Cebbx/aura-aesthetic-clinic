@@ -622,19 +622,43 @@ export const AppProvider = ({ children }) => {
   });
 
   const [clients, setClients] = useState(() => {
+    const defaultSampleNotes = [
+      {
+        id: 'cn-101',
+        date: '2026-11-02 14:30',
+        specialistName: 'Dr. Aura Diaz Cano',
+        specialistRole: 'Clinic Director',
+        procedureName: 'Aura Signature Hair Mesotherapy',
+        sessionNumber: 'Session 3 of 5',
+        machineSettings: '0.8mm micro-infusion depth, peptide complex serum',
+        skinObservations: 'Significant follicle reactivation observed along crown area. Minimal scalp erythema, patient reported zero discomfort.',
+        prescribedCare: 'Avoid washing hair for 24 hours. Continue Minoxidil 5% daily topical regimen.',
+        nextSessionDate: '2026-11-16'
+      }
+    ];
+
     const saved = localStorage.getItem('aura_clients');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
         return parsed.map(c => ({
           ...c,
-          status: c.status || 'active'
+          status: c.status || 'active',
+          clinicalNotes: c.clinicalNotes && c.clinicalNotes.length > 0 
+            ? c.clinicalNotes 
+            : (c.id === 'CL-001' ? defaultSampleNotes : [])
         }));
       } catch (e) {
-        return INITIAL_CLIENTS;
+        return INITIAL_CLIENTS.map(c => ({
+          ...c,
+          clinicalNotes: c.id === 'CL-001' ? defaultSampleNotes : []
+        }));
       }
     }
-    return INITIAL_CLIENTS;
+    return INITIAL_CLIENTS.map(c => ({
+      ...c,
+      clinicalNotes: c.id === 'CL-001' ? defaultSampleNotes : []
+    }));
   });
 
   // Services catalog with local storage persistence
@@ -1086,6 +1110,38 @@ export const AppProvider = ({ children }) => {
     return { success: true, message: 'Client account unblocked and restored to Active status.' };
   };
 
+  // Add Doctor / Nurse Clinical Treatment Note to Patient EMR
+  const addClinicalNote = (clientId, noteData) => {
+    const newNote = {
+      id: `cn-${Date.now()}`,
+      date: dayjs().format('YYYY-MM-DD HH:mm'),
+      specialistName: noteData.specialistName || currentStaffUser?.name || ownerProfile?.name || 'Dr. Aura Diaz Cano',
+      specialistRole: noteData.specialistRole || currentStaffUser?.roleTitle || 'Clinic Director',
+      procedureName: noteData.procedureName || 'General Aesthetic Consultation',
+      sessionNumber: noteData.sessionNumber || 'Session 1',
+      machineSettings: noteData.machineSettings || 'Standard Protocol',
+      skinObservations: noteData.skinObservations || '',
+      prescribedCare: noteData.prescribedCare || '',
+      nextSessionDate: noteData.nextSessionDate || ''
+    };
+
+    setClients(prev =>
+      prev.map(c => {
+        if (c.id === clientId) {
+          const notes = c.clinicalNotes || [];
+          return {
+            ...c,
+            clinicalNotes: [newNote, ...notes]
+          };
+        }
+        return c;
+      })
+    );
+
+    setTimeout(() => syncToServer(), 50);
+    return { success: true, note: newNote };
+  };
+
   // Add new appointment from Client booking or Admin
   const addAppointment = (bookingData) => {
     // Safety guard against blocked client accounts
@@ -1492,6 +1548,7 @@ export const AppProvider = ({ children }) => {
         clients,
         blockClient,
         unblockClient,
+        addClinicalNote,
         isClientBlocked,
         isAdminAuthenticated,
         authRole,

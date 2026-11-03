@@ -214,7 +214,7 @@ const StaffSecurityTab = () => {
       render: (_, record) => (
         <div>
           <span className="font-semibold text-aura-900 text-xs">{record.roleTitle}</span>
-          <div className="text-[10px] text-gray-400">Co-Admin Access</div>
+          <div className="text-[10px] text-gray-400">Clinical Duty Access</div>
         </div>
       )
     },
@@ -264,7 +264,7 @@ const StaffSecurityTab = () => {
           />
           <Popconfirm
             title={`Delete ${record.name}?`}
-            description="This will remove their co-admin access."
+            description="This will remove their clinical staff access."
             onConfirm={() => {
               deleteStaffAccount(record.id);
               message.success(`Staff removed.`);
@@ -296,7 +296,7 @@ const StaffSecurityTab = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white tracking-tight">
-                  Staff & Co-Admin Security Hub
+                  Clinical Staff & Security Hub
                 </h2>
                 <Tag color="gold" className="!rounded-full font-bold text-[10px]">
                   Owner Master Control
@@ -314,7 +314,7 @@ const StaffSecurityTab = () => {
             onClick={() => setAddModalOpen(true)}
             className="!bg-amber-400 hover:!bg-amber-500 !text-amber-950 !border-none !rounded-xl font-bold !h-10 shadow-md sm:self-center shrink-0"
           >
-            + Add Staff Member
+            + Add Specialist / Staff
           </Button>
         </div>
 
@@ -333,7 +333,7 @@ const StaffSecurityTab = () => {
             <strong className="text-sm text-white font-bold block mt-0.5">
               {staffAccounts.length} Registered ({staffAccounts.filter(s => s.active).length} Active)
             </strong>
-            <span className="text-[10px] text-emerald-300">Co-admin access role</span>
+            <span className="text-[10px] text-emerald-300">Authorized clinical role</span>
           </div>
 
           <div className="p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 text-xs">
@@ -428,13 +428,13 @@ const StaffSecurityTab = () => {
         )}
       </div>
 
-      {/* SECTION 2: STAFF & CO-ADMIN DIRECTORY */}
+      {/* SECTION 2: CLINICAL SPECIALISTS & STAFF DIRECTORY */}
       <Card
         className="!rounded-3xl border-aura-200 shadow-sm"
         title={
           <div className="flex items-center gap-2 font-serif-luxury text-base text-aura-dark">
             <TeamOutlined className="text-aura-700" />
-            <span>Authorized Clinic Staff & Co-Admins</span>
+            <span>Authorized Clinic Specialists & Duty Staff</span>
           </div>
         }
         extra={
@@ -627,7 +627,7 @@ const StaffSecurityTab = () => {
           <div className="p-3 rounded-2xl bg-aura-50/60 border border-aura-200 text-xs text-gray-600 space-y-1">
             <strong>Owner Authority Notice:</strong>
             <p>
-              As Clinic Director, your Gmail and Master PIN have full override capabilities. Co-admins cannot view confidential revenue, delete records, or access this security tab.
+              As Clinic Director, your Gmail and Master PIN have full override capabilities. Duty staff cannot view confidential revenue, delete records, or access this security tab.
             </p>
           </div>
 
@@ -675,7 +675,7 @@ const StaffSecurityTab = () => {
         title={
           <div className="font-serif-luxury text-base font-bold text-aura-dark flex items-center gap-2">
             <UserAddOutlined className="text-aura-700" />
-            <span>Add New Co-Admin Staff Account</span>
+            <span>Register New Clinic Specialist / Staff</span>
           </div>
         }
         footer={null}

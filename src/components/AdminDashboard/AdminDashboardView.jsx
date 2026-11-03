@@ -135,7 +135,7 @@ const AdminDashboardView = () => {
     {
       key: 'clients',
       icon: <TeamOutlined />,
-      label: 'Clients'
+      label: 'Patients & EMR'
     },
     ...(authRole !== 'staff' ? [{
       key: 'staff',
@@ -169,19 +169,19 @@ const AdminDashboardView = () => {
 
   return (
     <div className="min-h-screen bg-aura-50/40">
-      {/* Staff Mode Co-Admin Header Banner */}
+      {/* Staff Mode Duty Header Banner */}
       {authRole === 'staff' && (
         <div className="bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white px-4 py-2 text-xs flex items-center justify-between shadow-xs">
           <div className="flex items-center gap-2">
             <span className="font-bold flex items-center gap-1">
-              <span>👥 Co-Admin Duty:</span>
-              <span className="underline">{currentStaffUser?.name || 'Staff Member'}</span>
+              <span>🩺 Specialist On Duty:</span>
+              <span className="underline">{currentStaffUser?.name || 'Duty Specialist'}</span>
             </span>
-            <span className="text-amber-200 hidden sm:inline">({currentStaffUser?.roleTitle || 'Duty Staff'})</span>
+            <span className="text-amber-200 hidden sm:inline">({currentStaffUser?.roleTitle || 'Clinical Staff'})</span>
             <Tag color="gold" className="!mr-0 text-[10px] font-bold">OTP Authorized</Tag>
           </div>
           <span className="text-[11px] text-amber-200">
-            Clinic Director Dr. Aura Approved
+            Director Dr. Aura Approved Session
           </span>
         </div>
       )}
