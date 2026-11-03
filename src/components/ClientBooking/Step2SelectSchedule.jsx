@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DatePicker, Button, Tag, Alert, Tooltip } from 'antd';
+import { DatePicker, Button, Tag, Alert, Tooltip, message } from 'antd';
 import {
   CalendarOutlined,
   ClockCircleOutlined,
@@ -199,7 +199,7 @@ const Step2SelectSchedule = ({
           </div>
 
           {/* Time Slot Sections */}
-          <div className="bg-white p-4 sm:p-5 rounded-2xl border border-aura-200 shadow-xs space-y-4">
+          <div id="time-slots-container" className="bg-white p-4 sm:p-5 rounded-2xl border border-aura-200 shadow-xs space-y-4 scroll-mt-6">
             {/* Morning */}
             <div>
               <div className="flex items-center gap-1 text-[11px] font-semibold text-aura-700 uppercase tracking-wider mb-2">
@@ -269,11 +269,22 @@ const Step2SelectSchedule = ({
         <Button
           type="primary"
           size="large"
-          disabled={!selectedDate || !selectedTime}
-          onClick={onNext}
-          className="!bg-aura-700 hover:!bg-aura-800 disabled:!bg-gray-200 !border-none !text-white !font-bold !rounded-xl !h-11 px-6 sm:px-8 shadow-md shadow-aura-700/20 text-xs sm:text-sm flex-1 sm:flex-none"
+          onClick={() => {
+            if (!selectedTime) {
+              message.warning('Please select an available appointment time slot above to proceed.');
+              const timeSection = document.getElementById('time-slots-container');
+              if (timeSection) timeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              return;
+            }
+            onNext();
+          }}
+          className={`!border-none !text-white !font-bold !rounded-xl !h-11 px-6 sm:px-8 shadow-md text-xs sm:text-sm flex-1 sm:flex-none cursor-pointer transition-all ${
+            selectedTime
+              ? '!bg-aura-700 hover:!bg-aura-800 shadow-aura-700/20'
+              : '!bg-aura-500 hover:!bg-aura-600'
+          }`}
         >
-          Proceed to Client Info →
+          {selectedTime ? 'Proceed to Client Info →' : 'Select a Time Slot to Continue →'}
         </Button>
       </div>
 

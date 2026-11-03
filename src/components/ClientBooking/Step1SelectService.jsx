@@ -79,8 +79,16 @@ const Step1SelectService = ({
           {CATEGORIES.map(category => (
             <button
               key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 shrink-0 ${
+              onClick={() => {
+                if (selectedCategory === category && category !== 'All Services') {
+                  setSelectedCategory('All Services');
+                } else {
+                  setSelectedCategory(category);
+                }
+                const el = document.getElementById('services-grid-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className={`px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 shrink-0 cursor-pointer ${
                 selectedCategory === category
                   ? 'bg-aura-700 text-white shadow-sm shadow-aura-700/30'
                   : 'bg-white text-gray-600 hover:text-aura-700 hover:bg-aura-50 border border-aura-200/80'
@@ -140,22 +148,55 @@ const Step1SelectService = ({
             </div>
           </div>
 
-          <div className="flex sm:flex-col items-center sm:items-end justify-between w-full md:w-auto gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-white/10">
+          <div className="flex flex-col sm:flex-row md:flex-col items-start sm:items-center md:items-end justify-between w-full md:w-auto gap-2.5 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-white/10">
             <div className="text-left md:text-right">
-              <div className="text-[10px] text-amber-300 uppercase tracking-wider font-semibold">15 Exclusive Deals</div>
+              <div className="text-[10px] text-amber-300 uppercase tracking-wider font-semibold">
+                {selectedCategory.includes('Book & Buy') ? '15 Book & Buy Deals Active' : '15 Exclusive Deals Available'}
+              </div>
               <div className="font-serif-luxury text-lg sm:text-2xl font-bold text-amber-300">₱299 – ₱1,499</div>
             </div>
 
-            <Button
-              type="primary"
-              onClick={() => {
-                setSelectedCategory('🔥 Book & Buy Privilege (Up to 66% OFF)');
-                setSearchQuery('');
-              }}
-              className="!bg-gradient-to-r !from-amber-400 !via-amber-500 !to-amber-600 hover:!from-amber-500 hover:!to-amber-700 !text-black !font-bold !border-none !rounded-xl !h-9 sm:!h-10 !px-4 shadow-md text-xs transition-transform active:scale-95"
-            >
-              {selectedCategory.includes('Book & Buy') ? '✓ Viewing Book & Buy' : '🔥 View 15 Book & Buy Deals →'}
-            </Button>
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+              {selectedCategory.includes('Book & Buy') ? (
+                <>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      const el = document.getElementById('services-grid-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="!bg-gradient-to-r !from-amber-400 !via-amber-500 !to-amber-600 hover:!from-amber-500 hover:!to-amber-700 !text-black !font-bold !border-none !rounded-xl !h-9 sm:!h-10 !px-3.5 shadow-md text-xs cursor-pointer flex-1 sm:flex-initial transition-all active:scale-95"
+                  >
+                    ✓ 15 Deals (View Below ↓)
+                  </Button>
+
+                  <Button
+                    onClick={() => {
+                      setSelectedCategory('All Services');
+                      setSearchQuery('');
+                      const el = document.getElementById('services-grid-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="!bg-white/10 hover:!bg-white/20 !border-white/30 !text-white !font-semibold !rounded-xl !h-9 sm:!h-10 !px-3 text-xs cursor-pointer transition-all active:scale-95"
+                  >
+                    ↺ Show All Services
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    setSelectedCategory('🔥 Book & Buy Privilege (Up to 66% OFF)');
+                    setSearchQuery('');
+                    const el = document.getElementById('services-grid-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="!bg-gradient-to-r !from-amber-400 !via-amber-500 !to-amber-600 hover:!from-amber-500 hover:!to-amber-700 !text-black !font-bold !border-none !rounded-xl !h-9 sm:!h-10 !px-4 shadow-md text-xs transition-all active:scale-95 cursor-pointer w-full sm:w-auto"
+                >
+                  🔥 View 15 Book & Buy Deals →
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -191,7 +232,7 @@ const Step1SelectService = ({
       </div>
 
       {/* Services Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+      <div id="services-grid-section" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 scroll-mt-6">
         {filteredServices.map(service => {
           const isSelected = currentSelectedList.some(s => s.id === service.id);
 

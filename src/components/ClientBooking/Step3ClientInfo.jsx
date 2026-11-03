@@ -517,7 +517,20 @@ const Step3ClientInfo = ({
                       </div>
                     </div>
                   </div>
-                  <Tag color="green" className="!mr-0">Applied</Tag>
+                  <div className="flex items-center gap-2">
+                    <Tag color="green" className="!mr-0">Applied</Tag>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAppliedVoucher(null);
+                        setVoucherCodeInput('');
+                        message.info('Voucher removed.');
+                      }}
+                      className="text-xs text-rose-600 hover:text-rose-800 font-semibold px-2 py-0.5 rounded-lg hover:bg-rose-100 transition-colors cursor-pointer"
+                    >
+                      Remove ✕
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
