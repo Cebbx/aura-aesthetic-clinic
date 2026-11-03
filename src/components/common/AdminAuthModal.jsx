@@ -244,7 +244,7 @@ const AdminAuthModal = ({ open, onClose }) => {
                 </label>
                 <Input.Password
                   prefix={<KeyOutlined className="text-amber-600" />}
-                  placeholder="Enter Owner PIN (default: 1234)..."
+                  placeholder="Enter Master Security PIN..."
                   maxLength={10}
                   value={ownerPin}
                   onChange={(e) => {

@@ -12,6 +12,20 @@ import {
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 
+const getAftercareInstructions = (appointment) => {
+  const cat = (appointment?.serviceCategory || appointment?.serviceName || '').toLowerCase();
+  if (cat.includes('hair') || cat.includes('rebond') || cat.includes('keratin') || cat.includes('scalp')) {
+    return 'Avoid washing, wetting, or clipping hair tightly for 48–72 hours post-treatment. Use sulfate-free care products.';
+  }
+  if (cat.includes('facial') || cat.includes('peel') || cat.includes('needling') || cat.includes('glow')) {
+    return 'Avoid direct sun exposure, steam rooms, and active exfoliants (retinol/AHA) for 48 hours. Apply SPF 50+ daily.';
+  }
+  if (cat.includes('ingrown') || cat.includes('nail') || cat.includes('foot') || cat.includes('manicure')) {
+    return 'Keep treated nail folds clean and dry for 24 hours. Avoid tight closed-toe footwear and apply antiseptic oil.';
+  }
+  return 'Maintain optimal hydration (8–10 glasses of water) before and after your session for maximum clinical results.';
+};
+
 const ReceiptModal = ({ open, onClose, appointment }) => {
   const { clinicProfile } = useApp();
   if (!appointment) return null;
@@ -202,6 +216,17 @@ const ReceiptModal = ({ open, onClose, appointment }) => {
               </div>
             )}
           </div>
+        </div>
+
+        {/* Post-Treatment Clinical Care Advisory */}
+        <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-[11px] text-amber-950 space-y-1">
+          <div className="font-bold flex items-center gap-1 text-amber-900">
+            <CheckCircleFilled className="text-amber-600" />
+            <span>Specialist Post-Treatment Care Advisory:</span>
+          </div>
+          <p className="text-gray-700 leading-relaxed">
+            {getAftercareInstructions(appointment)}
+          </p>
         </div>
 
         {/* QR Verification & Reminders */}

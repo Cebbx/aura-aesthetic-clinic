@@ -59,6 +59,8 @@ const Step3ClientInfo = ({
   const [googleModalVisible, setGoogleModalVisible] = useState(false);
   const [blockedModalData, setBlockedModalData] = useState(null);
   const [changeServicesModalOpen, setChangeServicesModalOpen] = useState(false);
+  const [healthDisclosureTag, setHealthDisclosureTag] = useState('No Known Allergies');
+  const [medicalConsentChecked, setMedicalConsentChecked] = useState(true);
 
   const handleSaveServices = (newServices) => {
     if (onUpdateServices) {
@@ -177,11 +179,18 @@ const Step3ClientInfo = ({
     setSubmitting(true);
 
     setTimeout(() => {
+      const combinedNotes = [
+        values.notes ? values.notes.trim() : '',
+        `[Health Disclosure: ${healthDisclosureTag}]`
+      ].filter(Boolean).join(' • ');
+
       const bookingData = {
         clientName: values.fullName.trim(),
         phone: values.phone.trim(),
         email: values.email ? values.email.trim() : (googleUser?.email || ''),
-        notes: values.notes ? values.notes.trim() : '',
+        notes: combinedNotes,
+        medicalDisclosure: healthDisclosureTag,
+        medicalConsentSigned: true,
         services: currentList,
         serviceId: currentList[0]?.id || 'srv-custom',
         serviceName: currentList.map(s => s.name).join(' & '),
@@ -533,6 +542,56 @@ const Step3ClientInfo = ({
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Pre-Procedure Medical Disclosure & Informed Consent */}
+            <div className="pt-3 border-t border-aura-100 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-gray-700 flex items-center gap-1">
+                  <SafetyCertificateOutlined className="text-emerald-600" />
+                  <span>Pre-Procedure Health Disclosure</span>
+                </label>
+                <span className="text-[10px] text-emerald-700 font-semibold">
+                  ✓ Confidential EMR
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  'No Known Allergies',
+                  'Sensitive Skin / Scalp',
+                  'Recent Chemical / Laser (Last 14d)',
+                  'Expectant / Nursing Mother'
+                ].map(tag => (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={() => setHealthDisclosureTag(tag)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all cursor-pointer ${
+                      healthDisclosureTag === tag
+                        ? 'bg-aura-800 text-white border-aura-800 shadow-2xs'
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-aura-300'
+                    }`}
+                  >
+                    {healthDisclosureTag === tag ? `✓ ${tag}` : tag}
+                  </button>
+                ))}
+              </div>
+
+              <label
+                onClick={() => setMedicalConsentChecked(!medicalConsentChecked)}
+                className="flex items-start gap-2 p-2.5 rounded-xl bg-aura-50/70 border border-aura-200/80 text-[11px] text-gray-600 cursor-pointer select-none"
+              >
+                <input
+                  type="checkbox"
+                  checked={medicalConsentChecked}
+                  onChange={(e) => setMedicalConsentChecked(e.target.checked)}
+                  className="mt-0.5 accent-aura-700"
+                />
+                <span>
+                  I confirm that the above health disclosure is accurate and consent to my scheduled aesthetic procedure at <strong>Aura Diaz Cano Aesthetic Center</strong>.
+                </span>
+              </label>
             </div>
 
             {/* Submit Button */}

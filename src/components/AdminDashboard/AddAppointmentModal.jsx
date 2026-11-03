@@ -86,7 +86,7 @@ const AddAppointmentModal = ({ open, onClose }) => {
                   const is11PH = /^09\d{9}$/.test(digits);
                   const is12PH = /^639\d{9}$/.test(digits);
                   if (!is11PH && !is12PH) {
-                    return Promise.reject(new Error('Dapat valid PH number (hal. 09171234567)'));
+                    return Promise.reject(new Error('Please enter a valid PH mobile number (e.g. 09171234567)'));
                   }
                   return Promise.resolve();
                 }
