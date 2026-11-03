@@ -66,6 +66,9 @@ export const AppProvider = ({ children }) => {
   const openAboutModal = () => setAboutModalOpen(true);
   const closeAboutModal = () => setAboutModalOpen(false);
 
+  // Active Booking Flow state (Hides global footer during schedule & form steps for a clean app feel)
+  const [isBookingActive, setIsBookingActive] = useState(false);
+
   // Clinic Director & Brand Profile
   const [clinicProfile, setClinicProfile] = useState(() => {
     try {
@@ -929,6 +932,8 @@ export const AppProvider = ({ children }) => {
         logoutAdmin,
         adminPin,
         changeAdminPin,
+        isBookingActive,
+        setIsBookingActive,
         aboutModalOpen,
         openAboutModal,
         closeAboutModal,

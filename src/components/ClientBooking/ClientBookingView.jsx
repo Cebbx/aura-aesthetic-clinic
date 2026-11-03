@@ -19,8 +19,18 @@ import Step3ClientInfo from './Step3ClientInfo';
 import BookingSuccess from './BookingSuccess';
 
 const ClientBookingView = () => {
-  const { openAboutModal } = useApp();
+  const { openAboutModal, setIsBookingActive } = useApp();
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Sync booking active state to hide global footer during active booking steps
+  useEffect(() => {
+    if (setIsBookingActive) {
+      setIsBookingActive(currentStep > 0);
+    }
+    return () => {
+      if (setIsBookingActive) setIsBookingActive(false);
+    };
+  }, [currentStep, setIsBookingActive]);
 
   // Booking draft state
   const [selectedService, setSelectedService] = useState(null);
