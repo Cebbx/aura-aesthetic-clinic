@@ -35,10 +35,11 @@ const AddChangeServicesModal = ({
   }, [open, selectedServices]);
 
   const handleToggle = (service) => {
+    if (!service || !service.id) return;
     setTempSelected(prev => {
-      const exists = prev.some(s => s.id === service.id);
+      const exists = prev.some(s => s && s.id === service.id);
       if (exists) {
-        return prev.filter(s => s.id !== service.id);
+        return prev.filter(s => s && s.id !== service.id);
       } else {
         return [...prev, service];
       }
@@ -55,16 +56,18 @@ const AddChangeServicesModal = ({
     onClose();
   };
 
-  const activeServices = services.filter(s => s.active !== false);
+  const activeServices = (services || []).filter(s => s && s.active !== false);
 
   const filteredServices = activeServices.filter(s => {
     const matchesCat = selectedCategory === 'All Services' || s.category === selectedCategory;
-    const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          s.category.toLowerCase().includes(searchQuery.toLowerCase());
+    const nameStr = (s.name || '').toLowerCase();
+    const catStr = (s.category || '').toLowerCase();
+    const search = searchQuery.toLowerCase();
+    const matchesSearch = nameStr.includes(search) || catStr.includes(search);
     return matchesCat && matchesSearch;
   });
 
-  const totalTempPrice = tempSelected.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
+  const totalTempPrice = tempSelected.reduce((sum, s) => sum + (Number(s?.price) || 0), 0);
 
   return (
     <Modal
