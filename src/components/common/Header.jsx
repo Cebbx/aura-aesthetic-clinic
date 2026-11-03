@@ -428,7 +428,14 @@ const Header = () => {
       <BrandQuickMenuModal
         open={brandMenuVisible}
         onClose={() => setBrandMenuVisible(false)}
-        onOpenVouchers={() => setVouchersModalVisible(true)}
+        onOpenVouchers={() => {
+          if (currentView === 'admin') {
+            window.dispatchEvent(new CustomEvent('aura:navigate-admin-tab', { detail: 'vouchers' }));
+            message.info('Opened Vouchers & Promos Manager');
+          } else {
+            setVouchersModalVisible(true);
+          }
+        }}
         onOpenTrack={() => setTrackModalVisible(true)}
         onOpenAbout={openAboutModal}
         onOpenInstall={() => setInstallModalVisible(true)}

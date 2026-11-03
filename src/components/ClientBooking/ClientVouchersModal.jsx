@@ -13,7 +13,7 @@ import dayjs from 'dayjs';
 import { useApp } from '../../context/AppContext';
 
 const ClientVouchersModal = ({ open, onClose, onSelectVoucher }) => {
-  const { vouchers, services } = useApp();
+  const { vouchers, services, currentView } = useApp();
   const [copiedCode, setCopiedCode] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
@@ -87,11 +87,18 @@ const ClientVouchersModal = ({ open, onClose, onSelectVoucher }) => {
             <GiftOutlined className="text-lg" />
           </div>
           <div>
-            <div className="font-serif-luxury text-lg font-bold text-aura-dark leading-tight">
-              Special Offers & Promo Vouchers
+            <div className="font-serif-luxury text-lg font-bold text-aura-dark leading-tight flex items-center gap-2">
+              <span>Special Offers & Promo Vouchers</span>
+              {currentView === 'admin' && (
+                <span className="text-[10px] font-sans font-bold bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-full">
+                  Admin Preview
+                </span>
+              )}
             </div>
             <div className="text-[11px] text-gray-500 font-normal">
-              Claim limited promo codes for your aesthetic treatment
+              {currentView === 'admin'
+                ? 'Active public promo vouchers available for client booking'
+                : 'Claim limited promo codes for your aesthetic treatment'}
             </div>
           </div>
         </div>
@@ -223,15 +230,26 @@ const ClientVouchersModal = ({ open, onClose, onSelectVoucher }) => {
                       </div>
                     </div>
 
-                    {/* Right: Claim Button */}
+                    {/* Right: Action Button */}
                     <div className="sm:self-center shrink-0">
-                      <Button
-                        type="primary"
-                        onClick={() => handleClaim(v)}
-                        className="!bg-aura-800 hover:!bg-aura-900 !border-none !rounded-xl !text-white font-semibold text-xs px-4 !h-9 shadow-xs w-full sm:w-auto"
-                      >
-                        Claim & Apply
-                      </Button>
+                      {currentView === 'admin' ? (
+                        <Button
+                          type="default"
+                          icon={<CopyOutlined />}
+                          onClick={(e) => handleCopyOnly(v.code, e)}
+                          className="!rounded-xl !border-aura-300 hover:!border-aura-600 !text-aura-900 font-semibold text-xs px-3 !h-9 shadow-xs w-full sm:w-auto"
+                        >
+                          Copy Code
+                        </Button>
+                      ) : (
+                        <Button
+                          type="primary"
+                          onClick={() => handleClaim(v)}
+                          className="!bg-aura-800 hover:!bg-aura-900 !border-none !rounded-xl !text-white font-semibold text-xs px-4 !h-9 shadow-xs w-full sm:w-auto"
+                        >
+                          Claim & Apply
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -240,8 +258,28 @@ const ClientVouchersModal = ({ open, onClose, onSelectVoucher }) => {
           </div>
         )}
 
-        <div className="pt-2 text-center text-[11px] text-gray-400 border-t border-gray-100 flex items-center justify-center gap-1">
-          <span>Discounts are automatically deducted from your total bill at Step 3.</span>
+        <div className="pt-2 text-center text-[11px] text-gray-400 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-1.5">
+          {currentView === 'admin' ? (
+            <>
+              <span className="text-gray-500 text-left">
+                💡 <em>Admin Note: Clients claim and apply these promo codes during online booking.</em>
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  window.dispatchEvent(new CustomEvent('aura:navigate-admin-tab', { detail: 'vouchers' }));
+                }}
+                className="text-aura-700 hover:text-aura-900 font-bold hover:underline cursor-pointer shrink-0"
+              >
+                Go to Voucher Manager & Editor →
+              </button>
+            </>
+          ) : (
+            <span className="w-full text-center">
+              Discounts are automatically deducted from your total bill at Step 3.
+            </span>
+          )}
         </div>
       </div>
     </Modal>

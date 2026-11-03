@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Menu, Button, Drawer, Tag } from 'antd';
 import {
   DashboardOutlined,
@@ -38,6 +38,17 @@ const AdminDashboardView = () => {
     setSelectedKey(tabKey);
     setMobileDrawerOpen(false);
   };
+
+  useEffect(() => {
+    const handleNavigate = (e) => {
+      if (e.detail) {
+        setSelectedKey(e.detail);
+        setMobileDrawerOpen(false);
+      }
+    };
+    window.addEventListener('aura:navigate-admin-tab', handleNavigate);
+    return () => window.removeEventListener('aura:navigate-admin-tab', handleNavigate);
+  }, []);
 
   // If not authenticated, render locked protection screen
   if (!isAdminAuthenticated) {
