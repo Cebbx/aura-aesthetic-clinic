@@ -90,58 +90,60 @@ const ClientBookingView = () => {
 
   return (
     <div className="min-h-screen bg-aura-50/50 pb-28 sm:pb-20">
-      {/* Clinic Hero / Header Banner */}
-      <section className="bg-gradient-to-b from-white via-aura-50/60 to-aura-50/20 border-b border-aura-200/80 pt-6 sm:pt-10 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4">
-          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 rounded-full bg-aura-100 border border-aura-200 text-aura-800 text-[11px] sm:text-xs font-semibold shadow-xs">
-            <StarOutlined className="text-aura-600" />
-            <span>Aura Aesthetic & Wellness</span>
-            <div className="w-1 h-1 rounded-full bg-aura-500"></div>
-            <span className="flex items-center gap-0.5 text-amber-500">
-              <StarFilled className="text-[10px]" /> 4.9 (1.2k+ Reviews)
-            </span>
-          </div>
-
-          <h1 className="font-serif-luxury text-2xl sm:text-4xl md:text-5xl font-bold text-aura-dark tracking-tight leading-snug">
-            Embrace Your Natural Radiance
-          </h1>
-
-          <p className="text-xs sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
-            Medical-grade facials, body contouring, nail detox, and laser aesthetics. Book in three effortless steps.
-          </p>
-
-          {/* Clinic Trust Badges */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 pt-1 text-[11px] sm:text-xs text-gray-600">
-            <span className="flex items-center gap-1">
-              <SafetyCertificateOutlined className="text-emerald-600" />
-              <span>Certified Aestheticians</span>
-            </span>
-            <span className="flex items-center gap-1">
+      {/* Clinic Hero / Header Banner - Only displayed on Step 0 (Services catalog). Hidden on Schedule and Client Info steps for a clean, distraction-free app experience */}
+      {currentStep === 0 && !completedBooking && (
+        <section className="bg-gradient-to-b from-white via-aura-50/60 to-aura-50/20 border-b border-aura-200/80 pt-6 sm:pt-10 pb-6 sm:pb-8 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto text-center space-y-3 sm:space-y-4">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 rounded-full bg-aura-100 border border-aura-200 text-aura-800 text-[11px] sm:text-xs font-semibold shadow-xs">
               <StarOutlined className="text-aura-600" />
-              <span>100% Sterile Kits</span>
-            </span>
-            <span className="flex items-center gap-1">
-              <HeartOutlined className="text-rose-500" />
-              <span>Zero Pre-payment</span>
-            </span>
-          </div>
+              <span>Aura Aesthetic & Wellness</span>
+              <div className="w-1 h-1 rounded-full bg-aura-500"></div>
+              <span className="flex items-center gap-0.5 text-amber-500">
+                <StarFilled className="text-[10px]" /> 4.9 (1.2k+ Reviews)
+              </span>
+            </div>
 
-          {/* About Clinic & Services Explorer Pill Button */}
-          <div className="pt-1">
-            <button
-              onClick={openAboutModal}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white hover:bg-aura-50 border border-aura-300 text-aura-800 text-xs font-semibold shadow-xs hover:shadow-sm transition-all group cursor-pointer"
-            >
-              <InfoCircleOutlined className="text-aura-600" />
-              <span>Explore Doctor Credentials, Full Menu & Support</span>
-              <RightOutlined className="text-[10px] text-aura-500 group-hover:translate-x-0.5 transition-transform" />
-            </button>
+            <h1 className="font-serif-luxury text-2xl sm:text-4xl md:text-5xl font-bold text-aura-dark tracking-tight leading-snug">
+              Embrace Your Natural Radiance
+            </h1>
+
+            <p className="text-xs sm:text-base text-gray-600 max-w-xl mx-auto leading-relaxed">
+              Medical-grade facials, body contouring, nail detox, and laser aesthetics. Book in three effortless steps.
+            </p>
+
+            {/* Clinic Trust Badges */}
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 pt-1 text-[11px] sm:text-xs text-gray-600">
+              <span className="flex items-center gap-1">
+                <SafetyCertificateOutlined className="text-emerald-600" />
+                <span>Certified Aestheticians</span>
+              </span>
+              <span className="flex items-center gap-1">
+                <StarOutlined className="text-aura-600" />
+                <span>100% Sterile Kits</span>
+              </span>
+              <span className="flex items-center gap-1">
+                <HeartOutlined className="text-rose-500" />
+                <span>Zero Pre-payment</span>
+              </span>
+            </div>
+
+            {/* About Clinic & Services Explorer Pill Button */}
+            <div className="pt-1">
+              <button
+                onClick={openAboutModal}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white hover:bg-aura-50 border border-aura-300 text-aura-800 text-xs font-semibold shadow-xs hover:shadow-sm transition-all group cursor-pointer"
+              >
+                <InfoCircleOutlined className="text-aura-600" />
+                <span>Explore Doctor Credentials, Full Menu & Support</span>
+                <RightOutlined className="text-[10px] text-aura-500 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Main Container */}
-      <main className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 -mt-2 sm:-mt-4">
+      <main className={`max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 ${currentStep === 0 ? '-mt-2 sm:-mt-4' : 'pt-3 sm:pt-6'}`}>
         {/* If Completed, show Success screen directly */}
         {completedBooking ? (
           <div className="bg-white rounded-2xl sm:rounded-3xl border border-aura-200 p-4 sm:p-10 shadow-lg shadow-aura-200/50">
