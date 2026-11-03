@@ -281,7 +281,7 @@ const OverviewTab = ({ onNavigateTab }) => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h3 className="font-serif-luxury text-base sm:text-lg font-bold text-aura-dark">
-                Live Bookings & Schedule
+                Appointment Schedule
               </h3>
               <p className="text-xs text-gray-500">
                 Dynamically calculated queue of all customer booking submissions
@@ -458,7 +458,7 @@ const OverviewTab = ({ onNavigateTab }) => {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-serif-luxury text-base font-bold text-aura-dark">
-                  Revenue & Sales Breakdown
+                  Revenue Breakdown
                 </h3>
                 <p className="text-xs text-gray-500">Live transaction pipeline</p>
               </div>
