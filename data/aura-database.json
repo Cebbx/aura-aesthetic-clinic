@@ -1,6 +1,50 @@
 {
-  "lastUpdated": 1793697193756,
+  "lastUpdated": 1793697666713,
   "appointments": [
+    {
+      "id": "AURA-202611-9",
+      "monthlySequence": 9,
+      "createdAt": "2026-11-03 17:21",
+      "status": "Pending",
+      "discountApplied": 500,
+      "finalAmount": 1399,
+      "clientName": "edward",
+      "phone": "09657777777",
+      "email": "",
+      "notes": "",
+      "services": [
+        {
+          "id": "srv-1",
+          "name": "Signature Glass Skin Korean Facial",
+          "category": "Facial",
+          "price": 1899,
+          "originalPrice": 2500,
+          "duration": "60 mins",
+          "description": "Deep pore cleansing, ultrasonic extraction, oxygen infusion, and stem-cell ampoule mask for luminous, poreless skin.",
+          "tags": [
+            "Best Seller",
+            "Promo: ₱600 OFF"
+          ],
+          "promoBadge": "Save ₱601",
+          "popular": true,
+          "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80",
+          "includes": [
+            "Double Cleansing",
+            "Diamond Peel Exfoliation",
+            "Oxygen Dome Infusion",
+            "Cryo Calming Therapy"
+          ]
+        }
+      ],
+      "serviceId": "srv-1",
+      "serviceName": "Signature Glass Skin Korean Facial",
+      "serviceCategory": "Facial",
+      "date": "2026-11-03",
+      "time": "04:45 PM",
+      "totalPrice": 1899,
+      "voucherUsed": "AURA-GLOW-882",
+      "bookedVia": "Guest Booking (Option A)"
+    },
     {
       "id": "AURA-202611-8",
       "monthlySequence": 8,
@@ -618,11 +662,12 @@
       "minSpend": 1500,
       "purchaseDate": "2026-10-25",
       "expiryDate": "2026-12-31",
-      "status": "Unredeemed",
-      "redeemedDate": null,
+      "status": "Redeemed",
+      "redeemedDate": "2026-11-03",
       "voucherType": "public",
       "maxUses": 5,
-      "usedCount": 0
+      "usedCount": 0,
+      "usedInAppointment": "AURA-202611-9"
     },
     {
       "code": "SLIM-LUXE-401",
