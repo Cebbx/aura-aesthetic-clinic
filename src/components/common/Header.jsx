@@ -21,6 +21,8 @@ import ReceiptModal from '../ClientBooking/ReceiptModal';
 import TrackBookingModal from '../ClientBooking/TrackBookingModal';
 import SmsNotificationModal from '../AdminDashboard/SmsNotificationModal';
 import InstallAppModal from './InstallAppModal';
+import BrandQuickMenuModal from './BrandQuickMenuModal';
+import ClientVouchersModal from '../ClientBooking/ClientVouchersModal';
 
 const Header = () => {
   const {
@@ -42,6 +44,8 @@ const Header = () => {
   const [authModalVisible, setAuthModalVisible] = useState(false);
   const [trackModalVisible, setTrackModalVisible] = useState(false);
   const [installModalVisible, setInstallModalVisible] = useState(false);
+  const [brandMenuVisible, setBrandMenuVisible] = useState(false);
+  const [vouchersModalVisible, setVouchersModalVisible] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [selectedAptDetails, setSelectedAptDetails] = useState(null);
   const [reminderModalApt, setReminderModalApt] = useState(null);
@@ -200,12 +204,13 @@ const Header = () => {
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-aura-200/80 shadow-xs">
         <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-20 gap-1 sm:gap-3">
-            {/* Logo and Clinic Branding */}
+            {/* Logo and Clinic Branding with Interactive Theme & Quick Hub */}
             <div 
-              className="flex items-center gap-1.5 sm:gap-3 cursor-pointer select-none shrink-0"
-              onClick={() => setCurrentView('client')}
+              className="flex items-center gap-1.5 sm:gap-3 cursor-pointer select-none shrink-0 group"
+              onClick={() => setBrandMenuVisible(true)}
+              title="Click to customize Theme or open Clinic Quick Hub"
             >
-              <div className="w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-2xl bg-gradient-to-tr from-aura-700 via-aura-500 to-aura-300 flex items-center justify-center text-white shadow-xs overflow-hidden">
+              <div className="relative w-7 h-7 sm:w-11 sm:h-11 rounded-lg sm:rounded-2xl bg-gradient-to-tr from-aura-700 via-aura-500 to-aura-300 flex items-center justify-center text-white shadow-xs overflow-hidden group-hover:scale-105 transition-transform duration-300">
                 {clinicProfile?.logoUrl ? (
                   <img src={clinicProfile.logoUrl} alt="Logo" className="w-full h-full object-cover" />
                 ) : (
@@ -213,12 +218,19 @@ const Header = () => {
                     {clinicProfile?.clinicName ? clinicProfile.clinicName.trim().charAt(0).toUpperCase() : 'A'}
                   </span>
                 )}
+                {/* Subtle sparkle indicator badge */}
+                <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-amber-400 rounded-tl-md flex items-center justify-center text-[6px] text-black">
+                  ✨
+                </div>
               </div>
               <div>
-                <div className="flex items-center gap-1 sm:gap-2">
-                  <span className="font-serif-luxury text-xs sm:text-2xl font-bold tracking-tight text-aura-dark whitespace-nowrap">
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <span className="font-serif-luxury text-xs sm:text-2xl font-bold tracking-tight text-aura-dark whitespace-nowrap group-hover:text-aura-700 transition-colors">
                     <span className="sm:hidden">Aura</span>
                     <span className="hidden sm:inline">{clinicProfile?.clinicName || 'Aura Aesthetic Clinic'}</span>
+                  </span>
+                  <span className="text-[10px] text-aura-400 group-hover:text-aura-700 transition-colors">
+                    ▾
                   </span>
                 </div>
                 <p className="text-[10px] sm:text-xs text-aura-700/80 tracking-wide hidden md:block">
@@ -422,6 +434,27 @@ const Header = () => {
       <InstallAppModal
         open={installModalVisible}
         onClose={() => setInstallModalVisible(false)}
+      />
+
+      {/* Brand Interactive Logo Menu & Aesthetic Theme Switcher */}
+      <BrandQuickMenuModal
+        open={brandMenuVisible}
+        onClose={() => setBrandMenuVisible(false)}
+        onOpenVouchers={() => setVouchersModalVisible(true)}
+        onOpenTrack={() => setTrackModalVisible(true)}
+        onOpenAbout={openAboutModal}
+        onOpenInstall={() => setInstallModalVisible(true)}
+        onOpenAdminAuth={() => setAuthModalVisible(true)}
+      />
+
+      {/* Vouchers Modal Triggered from Brand Hub */}
+      <ClientVouchersModal
+        open={vouchersModalVisible}
+        onClose={() => setVouchersModalVisible(false)}
+        onSelectVoucher={(code) => {
+          message.success(`Voucher ${code} selected!`);
+          setCurrentView('client');
+        }}
       />
     </>
   );

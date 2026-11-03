@@ -66,6 +66,37 @@ export const AppProvider = ({ children }) => {
   const openAboutModal = () => setAboutModalOpen(true);
   const closeAboutModal = () => setAboutModalOpen(false);
 
+  // Dynamic Aesthetic Theme ('rose' | 'dark' | 'champagne' | 'diamond')
+  const [themeMode, setThemeMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_theme_mode') || 'rose';
+      if (typeof document !== 'undefined') {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+      return saved;
+    } catch {
+      return 'rose';
+    }
+  });
+
+  const changeThemeMode = (mode) => {
+    setThemeMode(mode);
+    try {
+      localStorage.setItem('aura_theme_mode', mode);
+      if (typeof document !== 'undefined') {
+        document.documentElement.setAttribute('data-theme', mode);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', themeMode);
+    }
+  }, [themeMode]);
+
   // Active Booking Flow state (Hides global footer during schedule & form steps for a clean app feel)
   const [isBookingActive, setIsBookingActive] = useState(false);
 
@@ -1104,6 +1135,8 @@ export const AppProvider = ({ children }) => {
         aboutModalOpen,
         openAboutModal,
         closeAboutModal,
+        themeMode,
+        changeThemeMode,
         treatmentReviews,
         getServiceReviewStats,
         addTreatmentReview,

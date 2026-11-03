@@ -34,3 +34,88 @@
   background: #b76e79;
   border-radius: 9999px;
 }
+
+/* ====================================================================
+   AURA DYNAMIC AESTHETIC THEMES
+   ==================================================================== */
+
+/* Smooth transitions for theme switches */
+body, header, footer, .theme-root, .bg-white, .aura-glass {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* 🌙 MIDNIGHT NOIR (LUXURY OBSIDIAN DARK MODE) */
+[data-theme='dark'] body,
+[data-theme='dark'] .theme-root {
+  background-color: #120e11 !important;
+  color: #f7eff2 !important;
+}
+
+[data-theme='dark'] header {
+  background-color: rgba(22, 17, 21, 0.96) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme='dark'] footer {
+  background-color: #181316 !important;
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme='dark'] .bg-white {
+  background-color: #1e171c !important;
+  color: #fbf5f7 !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme='dark'] .bg-aura-50,
+[data-theme='dark'] .bg-aura-50\/80,
+[data-theme='dark'] .bg-aura-50\/60,
+[data-theme='dark'] .bg-aura-100\/70,
+[data-theme='dark'] .bg-aura-100 {
+  background-color: #291f26 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme='dark'] .text-aura-dark,
+[data-theme='dark'] .text-gray-900,
+[data-theme='dark'] .text-gray-800,
+[data-theme='dark'] .text-gray-700 {
+  color: #fcf5f8 !important;
+}
+
+[data-theme='dark'] .text-gray-600,
+[data-theme='dark'] .text-gray-500 {
+  color: #c4b0b9 !important;
+}
+
+[data-theme='dark'] .border-aura-200,
+[data-theme='dark'] .border-aura-200\/80,
+[data-theme='dark'] .border-aura-200\/90,
+[data-theme='dark'] .border-aura-300 {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* 👑 ROYAL CHAMPAGNE GOLD (VIP EDITION) */
+[data-theme='champagne'] body,
+[data-theme='champagne'] .theme-root {
+  background-color: #faf6ee !important;
+  color: #2e2417 !important;
+}
+
+[data-theme='champagne'] header {
+  background-color: rgba(255, 253, 248, 0.96) !important;
+  border-bottom-color: rgba(184, 134, 11, 0.2) !important;
+}
+
+/* 💎 PURE DIAMOND (MINIMALIST PLATINUM) */
+[data-theme='diamond'] body,
+[data-theme='diamond'] .theme-root {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+[data-theme='diamond'] header {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border-bottom-color: rgba(15, 118, 110, 0.15) !important;
+}
+
