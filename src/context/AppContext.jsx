@@ -97,6 +97,46 @@ export const AppProvider = ({ children }) => {
     }
   }, [themeMode]);
 
+  // Detect if app is running as an installed Standalone Mobile App (PWA)
+  const [isStandalone, setIsStandalone] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return (
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true ||
+      Boolean(localStorage.getItem('aura_app_installed') === 'true')
+    );
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const mediaQuery = window.matchMedia('(display-mode: standalone)');
+    const handleChange = (e) => {
+      setIsStandalone(e.matches || window.navigator.standalone === true);
+    };
+    
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleChange);
+    }
+
+    const handleAppInstalled = () => {
+      setIsStandalone(true);
+      try {
+        localStorage.setItem('aura_app_installed', 'true');
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    window.addEventListener('appinstalled', handleAppInstalled);
+
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handleChange);
+      }
+      window.removeEventListener('appinstalled', handleAppInstalled);
+    };
+  }, []);
+
   // Active Booking Flow state (Hides global footer during schedule & form steps for a clean app feel)
   const [isBookingActive, setIsBookingActive] = useState(false);
 
@@ -1137,6 +1177,7 @@ export const AppProvider = ({ children }) => {
         closeAboutModal,
         themeMode,
         changeThemeMode,
+        isStandalone,
         treatmentReviews,
         getServiceReviewStats,
         addTreatmentReview,

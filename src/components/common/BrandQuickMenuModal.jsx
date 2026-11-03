@@ -73,7 +73,7 @@ const BrandQuickMenuModal = ({
   onOpenInstall,
   onOpenAdminAuth
 }) => {
-  const { clinicProfile, themeMode, changeThemeMode, isAdminAuthenticated } = useApp();
+  const { clinicProfile, themeMode, changeThemeMode, isAdminAuthenticated, isStandalone } = useApp();
 
   const handleSelectTheme = (key) => {
     if (changeThemeMode) {
@@ -239,29 +239,48 @@ const BrandQuickMenuModal = ({
                 <RightOutlined className="text-[10px] text-gray-400 group-hover:text-aura-700 group-hover:translate-x-0.5 transition-transform" />
               </button>
 
-              {/* Install App */}
-              <button
-                onClick={() => {
-                  onClose();
-                  if (onOpenInstall) onOpenInstall();
-                }}
-                className="w-full p-2.5 rounded-xl bg-gray-50 hover:bg-aura-50/80 border border-gray-200/80 hover:border-aura-300 text-left transition-colors flex items-center justify-between group cursor-pointer"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs">
-                    📲
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-gray-800 group-hover:text-aura-800">
-                      Install as Mobile App (iOS & Android)
+              {/* Install App / Standalone Status */}
+              {isStandalone ? (
+                <div className="w-full p-2.5 rounded-xl bg-emerald-50/80 border border-emerald-200/90 text-left flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs">
+                      ✅
                     </div>
-                    <div className="text-[10px] text-gray-500">
-                      Add icon to phone home screen with 1 tap
+                    <div>
+                      <div className="text-xs font-bold text-emerald-950">
+                        Aura Mobile App Installed
+                      </div>
+                      <div className="text-[10px] text-emerald-700 font-medium">
+                        Running in standalone native mode
+                      </div>
                     </div>
                   </div>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1"></span>
                 </div>
-                <RightOutlined className="text-[10px] text-gray-400 group-hover:text-aura-700 group-hover:translate-x-0.5 transition-transform" />
-              </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    onClose();
+                    if (onOpenInstall) onOpenInstall();
+                  }}
+                  className="w-full p-2.5 rounded-xl bg-gray-50 hover:bg-aura-50/80 border border-gray-200/80 hover:border-aura-300 text-left transition-colors flex items-center justify-between group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs">
+                      📲
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-gray-800 group-hover:text-aura-800">
+                        Install as Mobile App (iOS & Android)
+                      </div>
+                      <div className="text-[10px] text-gray-500">
+                        Add icon to phone home screen with 1 tap
+                      </div>
+                    </div>
+                  </div>
+                  <RightOutlined className="text-[10px] text-gray-400 group-hover:text-aura-700 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              )}
 
               {/* About Clinic */}
               <button

@@ -39,7 +39,8 @@ const Header = () => {
     markAllNotificationsRead,
     updateAppointmentStatus,
     clinicProfile,
-    openAboutModal
+    openAboutModal,
+    isStandalone
   } = useApp();
 
   const [qrModalVisible, setQrModalVisible] = useState(false);
@@ -69,12 +70,12 @@ const Header = () => {
   }, [isAdminAuthenticated, setCurrentView]);
 
   const mobileAdminMenuItems = [
-    {
+    ...(!isStandalone ? [{
       key: 'install',
       icon: <MobileOutlined className="text-aura-600" />,
       label: 'Install Mobile App',
       onClick: () => setInstallModalVisible(true)
-    },
+    }] : []),
     {
       key: 'qr',
       icon: <QrcodeOutlined className="text-aura-600" />,
@@ -308,17 +309,19 @@ const Header = () => {
                 </div>
               )}
 
-              {/* Install App Button (iPhone & Android) */}
-              <Tooltip title="Install Aura Clinic as a native app on iOS or Android">
-                <Button
-                  icon={<MobileOutlined className="text-aura-700 text-xs sm:text-sm" />}
-                  onClick={() => setInstallModalVisible(true)}
-                  className="!border-aura-300 hover:!border-aura-500 !bg-gradient-to-r !from-aura-50 !to-white hover:!bg-white !px-2 sm:!px-3 !h-7 sm:!h-9 !text-aura-900 text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 shrink-0 shadow-2xs"
-                >
-                  <span className="hidden sm:inline">Install App</span>
-                  <span className="sm:hidden">App</span>
-                </Button>
-              </Tooltip>
+              {/* Install App Button (iPhone & Android) - Automatically hidden if running inside installed app */}
+              {!isStandalone && (
+                <Tooltip title="Install Aura Clinic as a native app on iOS or Android">
+                  <Button
+                    icon={<MobileOutlined className="text-aura-700 text-xs sm:text-sm" />}
+                    onClick={() => setInstallModalVisible(true)}
+                    className="!border-aura-300 hover:!border-aura-500 !bg-gradient-to-r !from-aura-50 !to-white hover:!bg-white !px-2 sm:!px-3 !h-7 sm:!h-9 !text-aura-900 text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 shrink-0 shadow-2xs"
+                  >
+                    <span className="hidden sm:inline">Install App</span>
+                    <span className="sm:hidden">App</span>
+                  </Button>
+                </Tooltip>
+              )}
 
               {/* Clinic Staff Only: Notification Bell & Admin Controls */}
               {isAdminAuthenticated && currentView === 'admin' && (
