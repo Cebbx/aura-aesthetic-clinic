@@ -14,7 +14,8 @@ import {
   InfoCircleOutlined,
   MobileOutlined,
   CrownOutlined,
-  ArrowLeftOutlined
+  ArrowLeftOutlined,
+  TeamOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 import QRCodeModal from './QRCodeModal';
@@ -40,7 +41,9 @@ const Header = () => {
     updateAppointmentStatus,
     clinicProfile,
     openAboutModal,
-    isStandalone
+    isStandalone,
+    authRole,
+    currentStaffUser
   } = useApp();
 
   const [qrModalVisible, setQrModalVisible] = useState(false);
@@ -254,8 +257,17 @@ const Header = () => {
             {currentView === 'admin' && (
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-aura-100/90 border border-aura-200 text-aura-900 text-xs font-bold shadow-2xs">
-                  <CrownOutlined className="text-amber-600" />
-                  <span>Admin Portal</span>
+                  {authRole === 'staff' ? (
+                    <>
+                      <TeamOutlined className="text-aura-700" />
+                      <span>Co-Admin: {currentStaffUser?.name ? currentStaffUser.name.split(' ')[0] : 'Staff'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <CrownOutlined className="text-amber-600" />
+                      <span>Director: Dr. Aura</span>
+                    </>
+                  )}
                 </div>
 
                 <Button

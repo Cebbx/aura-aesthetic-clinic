@@ -20,6 +20,306 @@ export const AppProvider = ({ children }) => {
     return sessionStorage.getItem('aura_admin_auth') === 'true';
   });
 
+  // Admin Security Role: 'owner' (Dr. Aura) | 'staff' (Co-Admin) | null
+  const [authRole, setAuthRole] = useState(() => {
+    try {
+      return sessionStorage.getItem('aura_auth_role') || (sessionStorage.getItem('aura_admin_auth') === 'true' ? 'owner' : null);
+    } catch {
+      return null;
+    }
+  });
+
+  // Active Staff Member details if logged in under Co-Admin
+  const [currentStaffUser, setCurrentStaffUser] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('aura_current_staff');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Clinic Director / Owner Master Profile
+  const [ownerProfile, setOwnerProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_owner_profile');
+      return saved ? JSON.parse(saved) : {
+        name: 'Dr. Aura Diaz Cano',
+        email: 'aura.director@gmail.com',
+        title: 'Clinic Director & Founder',
+        phone: '0917-882-9912'
+      };
+    } catch {
+      return {
+        name: 'Dr. Aura Diaz Cano',
+        email: 'aura.director@gmail.com',
+        title: 'Clinic Director & Founder',
+        phone: '0917-882-9912'
+      };
+    }
+  });
+
+  const updateOwnerProfile = (newProfile) => {
+    setOwnerProfile(prev => {
+      const updated = { ...prev, ...newProfile };
+      try {
+        localStorage.setItem('aura_owner_profile', JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
+  };
+
+  // Staff & Co-Admin Accounts List
+  const [staffAccounts, setStaffAccounts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_staff_accounts');
+      if (saved) return JSON.parse(saved);
+      return [
+        {
+          id: 'staff-1',
+          name: 'Maria Clarisse Santos',
+          email: 'reception.maria@auraclinic.com',
+          phone: '0917-123-4567',
+          roleTitle: 'Front Desk Receptionist',
+          active: true,
+          createdAt: '2026-01-15'
+        },
+        {
+          id: 'staff-2',
+          name: 'Sarah Mae Dizon',
+          email: 'sarah.nurse@auraclinic.com',
+          phone: '0918-234-5678',
+          roleTitle: 'Senior Aesthetic Nurse',
+          active: true,
+          createdAt: '2026-02-01'
+        }
+      ];
+    } catch {
+      return [];
+    }
+  });
+
+  const addStaffAccount = (staffData) => {
+    const newStaff = {
+      id: `staff-${Date.now()}`,
+      active: true,
+      createdAt: new Date().toISOString().split('T')[0],
+      ...staffData
+    };
+    setStaffAccounts(prev => {
+      const updated = [newStaff, ...prev];
+      try {
+        localStorage.setItem('aura_staff_accounts', JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
+    return newStaff;
+  };
+
+  const updateStaffAccount = (id, updates) => {
+    setStaffAccounts(prev => {
+      const updated = prev.map(s => s.id === id ? { ...s, ...updates } : s);
+      try {
+        localStorage.setItem('aura_staff_accounts', JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
+  };
+
+  const deleteStaffAccount = (id) => {
+    setStaffAccounts(prev => {
+      const updated = prev.filter(s => s.id !== id);
+      try {
+        localStorage.setItem('aura_staff_accounts', JSON.stringify(updated));
+      } catch (e) {
+        console.error(e);
+      }
+      return updated;
+    });
+  };
+
+  // Real-time Staff OTP Login Requests
+  const [otpRequests, setOtpRequests] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_otp_requests');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Sync OTP requests and staff accounts across browser tabs/windows
+  useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === 'aura_otp_requests' && e.newValue) {
+        try {
+          setOtpRequests(JSON.parse(e.newValue));
+        } catch {}
+      }
+      if (e.key === 'aura_staff_accounts' && e.newValue) {
+        try {
+          setStaffAccounts(JSON.parse(e.newValue));
+        } catch {}
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  const saveOtpRequests = (newList) => {
+    setOtpRequests(newList);
+    try {
+      localStorage.setItem('aura_otp_requests', JSON.stringify(newList));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Staff requests OTP for login
+  const requestStaffOtp = (emailOrPhone) => {
+    const clean = emailOrPhone.trim().toLowerCase();
+    const staff = staffAccounts.find(s => 
+      s.email.toLowerCase() === clean || 
+      s.phone?.replace(/\D/g, '') === clean.replace(/\D/g, '') ||
+      s.name.toLowerCase().includes(clean)
+    );
+
+    if (!staff) {
+      return { 
+        success: false, 
+        message: 'Staff account not found. Please contact Clinic Director Dr. Aura to register your email.' 
+      };
+    }
+
+    if (!staff.active) {
+      return {
+        success: false,
+        message: 'This staff account has been deactivated by Dr. Aura.'
+      };
+    }
+
+    // Generate 6-digit random OTP code
+    const otpCode = String(Math.floor(100000 + Math.random() * 900000));
+    const newReq = {
+      id: `otp-${Date.now()}`,
+      staffId: staff.id,
+      staffName: staff.name,
+      staffEmail: staff.email,
+      roleTitle: staff.roleTitle,
+      otpCode,
+      status: 'pending',
+      requestedAt: Date.now(),
+      expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes
+    };
+
+    const updated = [newReq, ...otpRequests.filter(r => r.staffId !== staff.id || r.status === 'used')];
+    saveOtpRequests(updated);
+
+    // Notify Dr. Aura across app
+    window.dispatchEvent(new CustomEvent('aura:new-otp-request', { detail: newReq }));
+
+    return {
+      success: true,
+      staff,
+      otpCode, // Available for instant preview/demo
+      message: `OTP Code dispatched! Please obtain your 6-digit access code from Clinic Director Dr. Aura.`
+    };
+  };
+
+  // Verify staff OTP
+  const verifyStaffOtp = (emailOrId, inputOtp) => {
+    const cleanOtp = (inputOtp || '').trim().replace(/\D/g, '');
+    const now = Date.now();
+
+    const targetReq = otpRequests.find(r => 
+      (r.staffEmail.toLowerCase() === emailOrId.toLowerCase() || r.staffId === emailOrId) &&
+      r.status === 'pending' &&
+      r.expiresAt > now &&
+      r.otpCode === cleanOtp
+    );
+
+    if (!targetReq) {
+      return {
+        success: false,
+        message: 'Invalid or expired OTP code. Please ask Dr. Aura for an updated access code.'
+      };
+    }
+
+    // Mark as used
+    const updated = otpRequests.map(r => r.id === targetReq.id ? { ...r, status: 'used' } : r);
+    saveOtpRequests(updated);
+
+    const staffObj = staffAccounts.find(s => s.id === targetReq.staffId) || {
+      id: targetReq.staffId,
+      name: targetReq.staffName,
+      email: targetReq.staffEmail,
+      roleTitle: targetReq.roleTitle
+    };
+
+    setIsAdminAuthenticated(true);
+    setAuthRole('staff');
+    setCurrentStaffUser(staffObj);
+    sessionStorage.setItem('aura_admin_auth', 'true');
+    sessionStorage.setItem('aura_auth_role', 'staff');
+    sessionStorage.setItem('aura_current_staff', JSON.stringify(staffObj));
+    setCurrentView('admin');
+
+    return { success: true, staff: staffObj };
+  };
+
+  // Dr. Aura generates a shift pass for staff
+  const generateShiftPass = (staffId) => {
+    const staff = staffAccounts.find(s => s.id === staffId);
+    if (!staff) return null;
+
+    const otpCode = String(Math.floor(100000 + Math.random() * 900000));
+    const newReq = {
+      id: `otp-${Date.now()}`,
+      staffId: staff.id,
+      staffName: staff.name,
+      staffEmail: staff.email,
+      roleTitle: staff.roleTitle,
+      otpCode,
+      status: 'pending',
+      requestedAt: Date.now(),
+      expiresAt: Date.now() + 12 * 60 * 60 * 1000 // 12-hour shift pass
+    };
+
+    const updated = [newReq, ...otpRequests.filter(r => r.staffId !== staff.id || r.status === 'used')];
+    saveOtpRequests(updated);
+    return newReq;
+  };
+
+  // Owner login (via Gmail or Master PIN)
+  const loginOwner = (identifier, pinOrPassword) => {
+    const isPinMatch = pinOrPassword === adminPin || pinOrPassword === '1234' || pinOrPassword === 'aura2026';
+    const isEmailMatch = !identifier || 
+      identifier.toLowerCase().includes('aura') || 
+      identifier.toLowerCase() === (ownerProfile.email || '').toLowerCase();
+
+    if (isPinMatch || (isEmailMatch && (pinOrPassword === '1234' || pinOrPassword === adminPin))) {
+      setIsAdminAuthenticated(true);
+      setAuthRole('owner');
+      setCurrentStaffUser(null);
+      sessionStorage.setItem('aura_admin_auth', 'true');
+      sessionStorage.setItem('aura_auth_role', 'owner');
+      sessionStorage.removeItem('aura_current_staff');
+      setCurrentView('admin');
+      return { success: true, role: 'owner' };
+    }
+
+    return {
+      success: false,
+      message: 'Invalid Owner credentials. Please enter your authorized Owner Gmail or Master PIN.'
+    };
+  };
+
   // Admin Security Authentication (Customizable PIN with fallback to 1234)
   const [adminPin, setAdminPin] = useState(() => {
     try {
@@ -46,18 +346,16 @@ export const AppProvider = ({ children }) => {
   };
 
   const loginAdmin = (pin) => {
-    if (pin === adminPin || pin === 'aura2026' || pin === '1234') {
-      setIsAdminAuthenticated(true);
-      sessionStorage.setItem('aura_admin_auth', 'true');
-      setCurrentView('admin');
-      return { success: true };
-    }
-    return { success: false, message: 'Incorrect PIN. Please enter your authorized Clinic Security PIN.' };
+    return loginOwner(ownerProfile.email, pin);
   };
 
   const logoutAdmin = () => {
     setIsAdminAuthenticated(false);
+    setAuthRole(null);
+    setCurrentStaffUser(null);
     sessionStorage.removeItem('aura_admin_auth');
+    sessionStorage.removeItem('aura_auth_role');
+    sessionStorage.removeItem('aura_current_staff');
     setCurrentView('client');
   };
 
@@ -1166,6 +1464,19 @@ export const AppProvider = ({ children }) => {
         unblockClient,
         isClientBlocked,
         isAdminAuthenticated,
+        authRole,
+        currentStaffUser,
+        ownerProfile,
+        updateOwnerProfile,
+        staffAccounts,
+        addStaffAccount,
+        updateStaffAccount,
+        deleteStaffAccount,
+        otpRequests,
+        requestStaffOtp,
+        verifyStaffOtp,
+        generateShiftPass,
+        loginOwner,
         loginAdmin,
         logoutAdmin,
         adminPin,

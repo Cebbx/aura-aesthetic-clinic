@@ -12,7 +12,9 @@ import {
   MenuUnfoldOutlined,
   LockOutlined,
   UnlockOutlined,
-  SettingOutlined
+  SettingOutlined,
+  SafetyCertificateOutlined,
+  CrownOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 import OverviewTab from './OverviewTab';
@@ -21,12 +23,21 @@ import VoucherTrackerTab from './VoucherTrackerTab';
 import ClientDatabaseTab from './ClientDatabaseTab';
 import ServicesTab from './ServicesTab';
 import SettingsTab from './SettingsTab';
+import StaffSecurityTab from './StaffSecurityTab';
 import AdminAuthModal from '../common/AdminAuthModal';
 
 const { Sider, Content } = Layout;
 
 const AdminDashboardView = () => {
-  const { stats, setCurrentView, isAdminAuthenticated, logoutAdmin } = useApp();
+  const {
+    stats,
+    setCurrentView,
+    isAdminAuthenticated,
+    logoutAdmin,
+    authRole,
+    currentStaffUser,
+    otpRequests
+  } = useApp();
   const [selectedKey, setSelectedKey] = useState('overview');
   const [tabParams, setTabParams] = useState({});
   const [collapsed, setCollapsed] = useState(false);
@@ -93,6 +104,9 @@ const AdminDashboardView = () => {
   }
 
   // Navigation Items
+  const now = Date.now();
+  const pendingOtpCount = (otpRequests || []).filter(r => r.status === 'pending' && r.expiresAt > now).length;
+
   const navItems = [
     {
       key: 'overview',
@@ -123,6 +137,13 @@ const AdminDashboardView = () => {
       icon: <TeamOutlined />,
       label: 'Clients'
     },
+    ...(authRole !== 'staff' ? [{
+      key: 'staff',
+      icon: <SafetyCertificateOutlined className="text-amber-600" />,
+      label: 'Staff & Security',
+      badge: pendingOtpCount > 0 ? pendingOtpCount : null,
+      badgeColor: 'bg-amber-400 text-amber-950 font-bold animate-pulse'
+    }] : []),
     {
       key: 'settings',
       icon: <SettingOutlined />,
@@ -148,6 +169,23 @@ const AdminDashboardView = () => {
 
   return (
     <div className="min-h-screen bg-aura-50/40">
+      {/* Staff Mode Co-Admin Header Banner */}
+      {authRole === 'staff' && (
+        <div className="bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-white px-4 py-2 text-xs flex items-center justify-between shadow-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-bold flex items-center gap-1">
+              <span>👥 Co-Admin Duty:</span>
+              <span className="underline">{currentStaffUser?.name || 'Staff Member'}</span>
+            </span>
+            <span className="text-amber-200 hidden sm:inline">({currentStaffUser?.roleTitle || 'Duty Staff'})</span>
+            <Tag color="gold" className="!mr-0 text-[10px] font-bold">OTP Authorized</Tag>
+          </div>
+          <span className="text-[11px] text-amber-200">
+            Clinic Director Dr. Aura Approved
+          </span>
+        </div>
+      )}
+
       {/* Mobile Top Navigation Bar (Shown on Mobile screens < lg) */}
       <div className="lg:hidden bg-white border-b border-aura-200/80 sticky top-16 z-30 px-3 py-2.5 shadow-xs">
         <div className="flex items-center justify-between gap-2">
@@ -339,6 +377,10 @@ const AdminDashboardView = () => {
 
           {selectedKey === 'clients' && (
             <ClientDatabaseTab />
+          )}
+
+          {selectedKey === 'staff' && (
+            <StaffSecurityTab />
           )}
 
           {selectedKey === 'settings' && (

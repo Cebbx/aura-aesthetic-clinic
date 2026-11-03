@@ -1,6 +1,52 @@
 {
-  "lastUpdated": 1793704140243,
+  "lastUpdated": 1793707963693,
   "appointments": [
+    {
+      "id": "AURA-202611-10",
+      "monthlySequence": 10,
+      "createdAt": "2026-11-03 20:12",
+      "status": "Pending",
+      "discountApplied": 0,
+      "finalAmount": 799,
+      "clientName": "Edwra Cbagt",
+      "phone": "09657777777",
+      "email": "",
+      "notes": "",
+      "services": [
+        {
+          "id": "srv-bnb-1",
+          "name": "Traditional Hair Rebonding (Book & Buy)",
+          "category": "Hair Care & Scalp",
+          "price": 799,
+          "originalPrice": 2000,
+          "duration": "2.5 hrs",
+          "description": "Classic sleek, pin-straight hair rebonding using Japanese thermal silk softening cream. Locks in mirror shine and long-lasting straightness. Avail anytime during peak season.",
+          "tags": [
+            "🔥 Book & Buy Privilege",
+            "Lock Peak Season",
+            "60% OFF"
+          ],
+          "promoBadge": "Save ₱1,201 (60% OFF)",
+          "popular": true,
+          "bookAndBuy": true,
+          "image": "https://images.unsplash.com/photo-1560750588-73207b1ef5b8?auto=format&fit=crop&w=600&q=80",
+          "includes": [
+            "Pre-Wash Clarifying Purge",
+            "Japanese Thermal Softening Complex",
+            "Keratin Silk Infusion Glaze",
+            "Post-Straightening Blowout"
+          ]
+        }
+      ],
+      "serviceId": "srv-bnb-1",
+      "serviceName": "Traditional Hair Rebonding (Book & Buy)",
+      "serviceCategory": "Hair Care & Scalp",
+      "date": "2026-11-03",
+      "time": "09:30 AM",
+      "totalPrice": 799,
+      "voucherUsed": null,
+      "bookedVia": "Guest Booking (Option A)"
+    },
     {
       "id": "AURA-202611-9",
       "monthlySequence": 9,

@@ -16,7 +16,8 @@ import {
   BellOutlined,
   DeleteOutlined,
   ReloadOutlined,
-  DownloadOutlined
+  DownloadOutlined,
+  LockOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useApp } from '../../context/AppContext';
@@ -34,7 +35,8 @@ const OverviewTab = ({ onNavigateTab }) => {
     vouchers,
     updateAppointmentStatus,
     startFreshSlate,
-    resetDemoData
+    resetDemoData,
+    authRole
   } = useApp();
 
   const [showAddApt, setShowAddApt] = useState(false);
@@ -226,16 +228,29 @@ const OverviewTab = ({ onNavigateTab }) => {
               <RightOutlined className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <div className="mt-2">
-              <Statistic
-                value={stats.totalRevenue}
-                prefix="₱"
-                precision={0}
-                valueStyle={{ color: '#27272a', fontWeight: 'bold', fontFamily: 'Playfair Display, Georgia, serif' }}
-              />
+              {authRole === 'staff' ? (
+                <div className="text-xl font-bold font-mono text-gray-400 py-1 flex items-center gap-1.5">
+                  <LockOutlined className="text-xs text-amber-600" />
+                  <span>₱ •••••••</span>
+                </div>
+              ) : (
+                <Statistic
+                  value={stats.totalRevenue}
+                  prefix="₱"
+                  precision={0}
+                  valueStyle={{ color: '#27272a', fontWeight: 'bold', fontFamily: 'Playfair Display, Georgia, serif' }}
+                />
+              )}
             </div>
             <div className="mt-2 text-[11px] text-emerald-600 font-semibold flex items-center gap-0.5">
-              <ArrowUpOutlined />
-              <span>Real total from confirmed slots</span>
+              {authRole === 'staff' ? (
+                <span className="text-amber-700 font-medium">🔒 Owner Confidential</span>
+              ) : (
+                <>
+                  <ArrowUpOutlined />
+                  <span>Real total from confirmed slots</span>
+                </>
+              )}
             </div>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 text-xl group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all">
@@ -476,7 +491,7 @@ const OverviewTab = ({ onNavigateTab }) => {
                   </span>
                 </div>
                 <div className="font-serif-luxury font-bold text-lg text-emerald-900">
-                  ₱{stats.totalRevenue.toLocaleString()}
+                  {authRole === 'staff' ? '₱ ••••••' : `₱${stats.totalRevenue.toLocaleString()}`}
                 </div>
               </div>
 
