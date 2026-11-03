@@ -102,7 +102,7 @@ const PhotoViewerModal = ({
                 }}
                 className="!bg-aura-700 hover:!bg-aura-800 !rounded-xl text-xs font-semibold !h-9 px-5 shadow-sm"
               >
-                Select & Book This Treatment
+                Book This Treatment
               </Button>
             )}
           </div>
