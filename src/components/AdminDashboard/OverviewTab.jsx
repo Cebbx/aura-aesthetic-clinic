@@ -276,7 +276,7 @@ const OverviewTab = ({ onNavigateTab }) => {
         >
           <div>
             <div className="flex items-center gap-1 text-xs text-gray-400 font-semibold uppercase tracking-wider group-hover:text-purple-700 transition-colors">
-              <span>Client Database</span>
+              <span>Patients & EMR</span>
               <RightOutlined className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <div className="mt-2">

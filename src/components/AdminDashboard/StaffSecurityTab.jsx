@@ -462,18 +462,18 @@ const StaffSecurityTab = () => {
       <Card
         className="!rounded-3xl border-aura-200 shadow-sm overflow-hidden"
         title={
-          <div className="flex items-center justify-between w-full">
+          <div className="flex flex-wrap items-center justify-between gap-2 w-full">
             <div className="flex items-center gap-2 font-serif-luxury text-base text-aura-dark">
-              <MailOutlined className="text-rose-600" />
+              <MailOutlined className="text-rose-600 shrink-0" />
               <span>Direct Gmail Inbox Delivery System</span>
             </div>
             {webhookUrl ? (
-              <Tag color="success" className="!rounded-full font-bold text-[10px] flex items-center gap-1">
+              <Tag color="success" className="!rounded-full font-bold text-[10px] !m-0 flex items-center gap-1 shrink-0">
                 <CheckCircleFilled />
                 <span>Live Inbox Webhook Active</span>
               </Tag>
             ) : (
-              <Tag color="processing" className="!rounded-full font-bold text-[10px]">
+              <Tag color="processing" className="!rounded-full font-bold text-[10px] !m-0 shrink-0">
                 In-App Live Sync Active
               </Tag>
             )}

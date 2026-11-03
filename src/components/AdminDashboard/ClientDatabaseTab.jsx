@@ -567,18 +567,18 @@ const ClientDatabaseTab = () => {
             </Button>
           ]}
           title={
-            <div className="font-serif-luxury text-xl font-bold text-aura-dark flex items-center justify-between pr-6">
+            <div className="font-serif-luxury text-base sm:text-xl font-bold text-aura-dark flex flex-wrap items-center justify-between gap-2 pr-8">
               <div className="flex items-center gap-2">
-                <MedicineBoxOutlined className="text-aura-700" />
+                <MedicineBoxOutlined className="text-aura-700 shrink-0" />
                 <span>Patient Medical Chart: {selectedClient.name}</span>
               </div>
               {selectedClient.status === 'blocked' ? (
-                <Tag color="error" className="!rounded-md text-xs font-semibold flex items-center gap-1">
+                <Tag color="error" className="!rounded-md text-xs font-semibold !m-0 flex items-center gap-1 shrink-0">
                   <StopOutlined />
                   <span>RESTRICTED</span>
                 </Tag>
               ) : (
-                <Tag color="success" className="!rounded-md text-xs font-semibold flex items-center gap-1">
+                <Tag color="success" className="!rounded-md text-xs font-semibold !m-0 flex items-center gap-1 shrink-0">
                   <CheckCircleOutlined />
                   <span>ACTIVE PATIENT</span>
                 </Tag>

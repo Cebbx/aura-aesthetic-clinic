@@ -18,12 +18,12 @@ const TRANSFORMATION_CASES = [
     subtitle: '3 Sessions • Korean BB Glow + Diamond Peel & Oxygen Dome',
     patientInfo: 'Female, 27 • Combination / Acne-Prone Skin',
     image: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=900&q=85',
-    beforeLabel: 'BEFORE • Session 0 (Congested Pores & Dull Tone)',
-    afterLabel: 'AFTER • Session 3 (Luminous Poreless Glass Skin)',
+    beforeLabel: 'BEFORE • Session 0',
+    afterLabel: 'AFTER • Session 3',
     beforeFilter: 'sepia(38%) contrast(92%) brightness(84%) saturate(72%) blur(0.6px)',
     afterFilter: 'contrast(106%) brightness(108%) saturate(112%)',
     beforeOverlayBadge: 'Enlarged Pores & Redness',
-    afterOverlayBadge: 'Refined & Radiant Complexion',
+    afterOverlayBadge: 'Refined Glass Skin',
     metrics: [
       { label: 'Pore Tightening', value: '+94%' },
       { label: 'Skin Luminosity', value: '+89%' },
@@ -40,12 +40,12 @@ const TRANSFORMATION_CASES = [
     subtitle: '1 Session • Sub-Zero (-16°C) Cuticle Seal + Keratin Bond Glaze',
     patientInfo: 'Female, 31 • Bleached & Heat-Damaged Frizzy Hair',
     image: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=900&q=85',
-    beforeLabel: 'BEFORE • Dry, Porous & Frizzy Strands',
-    afterLabel: 'AFTER • Mirror-Shine Sealed Cuticles',
+    beforeLabel: 'BEFORE • Untreated',
+    afterLabel: 'AFTER • 1 Session',
     beforeFilter: 'grayscale(45%) sepia(25%) contrast(88%) brightness(82%) blur(0.5px)',
     afterFilter: 'contrast(108%) brightness(106%) saturate(118%)',
     beforeOverlayBadge: 'High Frizz & Open Cuticles',
-    afterOverlayBadge: '3x Mirror Gloss & Silk Bounce',
+    afterOverlayBadge: '3x Mirror Gloss & Silk',
     metrics: [
       { label: 'Frizz Elimination', value: '96%' },
       { label: 'Strand Elasticity', value: '+84%' },
@@ -62,8 +62,8 @@ const TRANSFORMATION_CASES = [
     subtitle: '4 Sessions • 650nm Bio-Stimulation LLLT + Copper-Peptide Serum',
     patientInfo: 'Female, 35 • Post-Partum Crown Thinning & Sebum Buildup',
     image: 'https://images.unsplash.com/photo-1560750588-73207b1ef5b8?auto=format&fit=crop&w=900&q=85',
-    beforeLabel: 'BEFORE • Week 0 (Dormant Follicles & Thinning)',
-    afterLabel: 'AFTER • Week 8 (Reactivated Crown Density)',
+    beforeLabel: 'BEFORE • Week 0',
+    afterLabel: 'AFTER • Week 8',
     beforeFilter: 'sepia(35%) contrast(85%) brightness(80%) saturate(65%)',
     afterFilter: 'contrast(106%) brightness(105%) saturate(110%)',
     beforeOverlayBadge: 'Sebum Plugs & Hairfall',
@@ -84,8 +84,8 @@ const TRANSFORMATION_CASES = [
     subtitle: '1 Session • Aseptic Micro-Blade Elevation + Ozone Sterilization',
     patientInfo: 'Male, 29 • Chronic Lateral Nail Fold Inflammation',
     image: '/clinic-photos/specialist-nail-treatment.png',
-    beforeLabel: 'BEFORE • Impacted Nail Border & Discomfort',
-    afterLabel: 'AFTER • Cleared Nail Fold & Sterile Dressing',
+    beforeLabel: 'BEFORE • Untreated',
+    afterLabel: 'AFTER • 1 Session',
     beforeFilter: 'sepia(42%) saturate(140%) brightness(82%) contrast(92%)',
     afterFilter: 'contrast(105%) brightness(105%) saturate(105%)',
     beforeOverlayBadge: 'Impacted Nail & Swelling',
@@ -161,7 +161,7 @@ const BeforeAfterModal = ({ open, onClose }) => {
     >
       <div className="p-2 sm:p-4 space-y-5">
         {/* Header */}
-        <div className="text-center space-y-1.5 border-b border-aura-100 pb-4">
+        <div className="text-center space-y-1.5 border-b border-aura-100 pb-4 px-6">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-aura-100 text-aura-800 text-[11px] font-bold">
             <SwapOutlined />
             <span>INTERACTIVE CLINICAL RESULTS GALLERY</span>
@@ -222,12 +222,12 @@ const BeforeAfterModal = ({ open, onClose }) => {
             <div className="absolute inset-0 bg-gradient-to-tr from-rose-500/10 via-transparent to-amber-200/15 pointer-events-none" />
 
             {/* AFTER TOP-RIGHT BADGE */}
-            <div className="absolute top-3 right-3 z-10 pointer-events-none flex flex-col items-end gap-1">
-              <span className="px-2.5 py-1 rounded-full bg-emerald-600/95 text-white text-[10px] sm:text-xs font-bold shadow-md backdrop-blur-xs flex items-center gap-1">
-                <CheckCircleFilled />
-                <span>{activeCase.afterLabel}</span>
+            <div className="absolute top-3 right-3 z-10 pointer-events-none flex flex-col items-end gap-1 max-w-[44%] text-right">
+              <span className="px-2.5 py-1 rounded-full bg-emerald-600/95 text-white text-[10px] sm:text-xs font-bold shadow-md backdrop-blur-xs flex items-center gap-1 leading-tight">
+                <CheckCircleFilled className="shrink-0" />
+                <span className="truncate">{activeCase.afterLabel}</span>
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-white/90 text-emerald-900 text-[10px] font-semibold shadow-xs">
+              <span className="px-2 py-0.5 rounded-md bg-white/90 text-emerald-900 text-[10px] font-semibold shadow-xs leading-tight truncate max-w-full">
                 ✨ {activeCase.afterOverlayBadge}
               </span>
             </div>
@@ -248,11 +248,11 @@ const BeforeAfterModal = ({ open, onClose }) => {
               <div className="absolute inset-0 bg-amber-950/25 mix-blend-multiply" />
 
               {/* BEFORE TOP-LEFT BADGE */}
-              <div className="absolute top-3 left-3 z-10 flex flex-col items-start gap-1">
-                <span className="px-2.5 py-1 rounded-full bg-gray-900/90 text-gray-100 text-[10px] sm:text-xs font-bold shadow-md backdrop-blur-xs">
+              <div className="absolute top-3 left-3 z-10 flex flex-col items-start gap-1 max-w-[44%]">
+                <span className="px-2.5 py-1 rounded-full bg-gray-900/90 text-gray-100 text-[10px] sm:text-xs font-bold shadow-md backdrop-blur-xs leading-tight truncate max-w-full">
                   {activeCase.beforeLabel}
                 </span>
-                <span className="px-2 py-0.5 rounded-md bg-black/70 text-amber-200 text-[10px] font-medium">
+                <span className="px-2 py-0.5 rounded-md bg-black/70 text-amber-200 text-[10px] font-medium leading-tight truncate max-w-full">
                   ⚠️ {activeCase.beforeOverlayBadge}
                 </span>
               </div>

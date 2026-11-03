@@ -5,6 +5,40 @@
   font-weight: 600 !important;
 }
 
+/* Prevent overlapping text in Ant Design Card & Modal headers across all screen sizes */
+.ant-card-head {
+  padding: 12px 16px !important;
+  min-height: auto !important;
+}
+
+.ant-card-head-wrapper {
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.ant-card-head-title {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  line-height: 1.35 !important;
+  padding: 4px 0 !important;
+}
+
+.ant-card-extra {
+  padding: 4px 0 !important;
+  margin-inline-start: auto !important;
+}
+
+.ant-modal-header {
+  padding-right: 36px !important;
+}
+
+.ant-modal-title {
+  white-space: normal !important;
+  line-height: 1.35 !important;
+  word-break: break-word !important;
+}
+
 .aura-antd-table .ant-table {
   border-radius: 16px !important;
 }

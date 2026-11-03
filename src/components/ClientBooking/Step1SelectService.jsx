@@ -341,14 +341,14 @@ const Step1SelectService = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
                 {/* Popular or Promo Badge */}
-                <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
+                <div className="absolute top-2.5 left-2.5 right-24 flex flex-wrap items-start gap-1 pointer-events-none">
                   {service.bookAndBuy ? (
                     <>
-                      <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-500 to-rose-600 text-white text-[10px] sm:text-[11px] font-black px-2 sm:px-2.5 py-0.5 rounded-full shadow-sm">
+                      <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-500 to-rose-600 text-white text-[10px] sm:text-[11px] font-black px-2 sm:px-2.5 py-0.5 rounded-full shadow-sm leading-tight">
                         👑 Book & Buy Slot
                       </span>
                       {service.originalPrice && service.originalPrice > service.price && (
-                        <span className="inline-flex items-center gap-1 bg-aura-950/90 text-amber-200 border border-amber-400/30 text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs">
+                        <span className="inline-flex items-center gap-1 bg-aura-950/90 text-amber-200 border border-amber-400/30 text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs leading-tight">
                           🔥 Save ₱{(service.originalPrice - service.price).toLocaleString()} ({Math.round(((service.originalPrice - service.price) / service.originalPrice) * 100)}% OFF)
                         </span>
                       )}
@@ -356,12 +356,12 @@ const Step1SelectService = ({
                   ) : (
                     <>
                       {service.popular && (
-                        <span className="inline-flex items-center gap-1 bg-amber-500/95 text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs">
+                        <span className="inline-flex items-center gap-1 bg-amber-500/95 text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs leading-tight">
                           <StarFilled /> Top Treatment
                         </span>
                       )}
                       {service.promoBadge && (
-                        <span className="inline-flex items-center gap-1 bg-aura-700/90 text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs">
+                        <span className="inline-flex items-center gap-1 bg-aura-700/90 text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs leading-tight">
                           <StarOutlined /> {service.promoBadge}
                         </span>
                       )}
@@ -398,8 +398,8 @@ const Step1SelectService = ({
               {/* Card Content */}
               <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className="text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold text-aura-600">
+                  <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1">
+                    <span className="text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold text-aura-600 truncate">
                       {service.category}
                     </span>
 
@@ -413,7 +413,7 @@ const Step1SelectService = ({
                             e.stopPropagation();
                             setReviewsModalService(service);
                           }}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200 text-[10px] sm:text-[11px] font-bold text-amber-800 transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 hover:bg-amber-100 border border-amber-200 text-[10px] sm:text-[11px] font-bold text-amber-800 transition-colors cursor-pointer shrink-0"
                         >
                           <StarFilled className="text-amber-500 text-[10px]" />
                           <span>{stats.averageRating.toFixed(1)}</span>

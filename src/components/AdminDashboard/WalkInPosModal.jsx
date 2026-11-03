@@ -232,14 +232,14 @@ const WalkInPosModal = ({ open, onClose, onCheckoutComplete }) => {
       width="96%"
       style={{ maxWidth: 680 }}
       title={
-        <div className="flex items-center justify-between pr-6">
-          <div className="flex items-center gap-2 font-serif-luxury text-lg sm:text-xl font-bold text-aura-dark">
-            <span className="w-8 h-8 rounded-xl bg-amber-400 text-amber-950 flex items-center justify-center text-sm shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2 pr-8">
+          <div className="flex items-center gap-2 font-serif-luxury text-base sm:text-xl font-bold text-aura-dark">
+            <span className="w-8 h-8 rounded-xl bg-amber-400 text-amber-950 flex items-center justify-center text-sm shadow-xs shrink-0">
               <ThunderboltOutlined />
             </span>
             <span>Walk-in Fast POS & Official Receipt Checkout</span>
           </div>
-          <Tag color="gold" className="!rounded-full font-bold text-[10px] hidden sm:inline">
+          <Tag color="gold" className="!rounded-full font-bold text-[10px] !m-0 hidden sm:inline shrink-0">
             Instant Counter Terminal
           </Tag>
         </div>

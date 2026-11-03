@@ -260,7 +260,7 @@ const Header = () => {
                   {authRole === 'staff' ? (
                     <>
                       <TeamOutlined className="text-aura-700" />
-                      <span>Co-Admin: {currentStaffUser?.name ? currentStaffUser.name.split(' ')[0] : 'Staff'}</span>
+                      <span>Specialist: {currentStaffUser?.name ? currentStaffUser.name.split(' ')[0] : 'Staff'}</span>
                     </>
                   ) : (
                     <>
