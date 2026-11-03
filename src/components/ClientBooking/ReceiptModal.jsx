@@ -178,11 +178,29 @@ const ReceiptModal = ({ open, onClose, appointment }) => {
             )}
           </div>
 
-          <div className="bg-aura-50 p-3.5 border-t border-aura-200 flex justify-between items-baseline">
-            <span className="font-bold text-sm text-gray-800">Amount Due at Clinic</span>
-            <span className="font-serif-luxury text-xl font-bold text-aura-700">
-              ₱{appointment.finalAmount?.toLocaleString()}
-            </span>
+          <div className="bg-aura-50 p-3.5 border-t border-aura-200 space-y-1.5">
+            <div className="flex justify-between items-baseline">
+              <span className="font-bold text-sm text-gray-800">
+                {appointment.status === 'Completed' ? 'Total Amount Paid' : 'Amount Due at Clinic'}
+              </span>
+              <span className="font-serif-luxury text-xl font-bold text-aura-700">
+                ₱{appointment.finalAmount?.toLocaleString()}
+              </span>
+            </div>
+            {(appointment.paymentMethod || appointment.status === 'Completed') && (
+              <div className="flex items-center justify-between text-[11px] text-gray-600 pt-1 border-t border-aura-200/60">
+                <span>
+                  Payment Mode: <strong>{appointment.paymentMethod || 'Clinic Counter'}</strong>
+                </span>
+                {appointment.changeDue > 0 ? (
+                  <span className="text-emerald-700 font-semibold">
+                    Tendered: ₱{appointment.cashTendered?.toLocaleString()} • Change: ₱{appointment.changeDue?.toLocaleString()}
+                  </span>
+                ) : (
+                  <span className="text-emerald-700 font-bold">✓ PAID IN FULL</span>
+                )}
+              </div>
+            )}
           </div>
         </div>
 

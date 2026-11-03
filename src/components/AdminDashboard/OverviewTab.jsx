@@ -17,11 +17,13 @@ import {
   DeleteOutlined,
   ReloadOutlined,
   DownloadOutlined,
-  LockOutlined
+  LockOutlined,
+  ThunderboltOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useApp } from '../../context/AppContext';
 import AddAppointmentModal from './AddAppointmentModal';
+import WalkInPosModal from './WalkInPosModal';
 import CreateVoucherModal from './CreateVoucherModal';
 import QRCodeModal from '../common/QRCodeModal';
 import ReceiptModal from '../ClientBooking/ReceiptModal';
@@ -40,6 +42,7 @@ const OverviewTab = ({ onNavigateTab }) => {
   } = useApp();
 
   const [showAddApt, setShowAddApt] = useState(false);
+  const [showWalkInPos, setShowWalkInPos] = useState(false);
   const [showCreateVoucher, setShowCreateVoucher] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
   const [selectedReceiptApt, setSelectedReceiptApt] = useState(null);
@@ -106,6 +109,14 @@ const OverviewTab = ({ onNavigateTab }) => {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <Button
+            icon={<ThunderboltOutlined />}
+            onClick={() => setShowWalkInPos(true)}
+            className="!bg-amber-400 hover:!bg-amber-500 !text-amber-950 !border-none !rounded-xl !font-bold !h-10 text-xs shadow-sm"
+          >
+            Fast POS Checkout
+          </Button>
+
           <Button
             icon={<PlusOutlined />}
             onClick={() => setShowAddApt(true)}
@@ -571,6 +582,11 @@ const OverviewTab = ({ onNavigateTab }) => {
       <AddAppointmentModal
         open={showAddApt}
         onClose={() => setShowAddApt(false)}
+      />
+      <WalkInPosModal
+        open={showWalkInPos}
+        onClose={() => setShowWalkInPos(false)}
+        onCheckoutComplete={(newApt) => setSelectedReceiptApt(newApt)}
       />
       <CreateVoucherModal
         open={showCreateVoucher}

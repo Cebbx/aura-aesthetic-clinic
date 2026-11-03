@@ -18,6 +18,7 @@ import Step2SelectSchedule from './Step2SelectSchedule';
 import Step3ClientInfo from './Step3ClientInfo';
 import BookingSuccess from './BookingSuccess';
 import ClientVouchersModal from './ClientVouchersModal';
+import BeforeAfterModal from './BeforeAfterModal';
 
 const ClientBookingView = () => {
   const { openAboutModal } = useApp();
@@ -29,6 +30,7 @@ const ClientBookingView = () => {
   const [selectedTime, setSelectedTime] = useState(null);
   const [completedBooking, setCompletedBooking] = useState(null);
   const [showVouchersModal, setShowVouchersModal] = useState(false);
+  const [showBeforeAfterModal, setShowBeforeAfterModal] = useState(false);
   const [prefilledVoucherCode, setPrefilledVoucherCode] = useState('');
 
   // Fallback single selected service for backwards compatibility
@@ -130,8 +132,8 @@ const ClientBookingView = () => {
               </span>
             </div>
 
-            {/* Special Offers & Promo Vouchers Explorer Pill Button */}
-            <div className="pt-1.5 flex items-center justify-center">
+            {/* Special Offers & Before/After Explorer Pill Buttons */}
+            <div className="pt-1.5 flex flex-wrap items-center justify-center gap-2.5">
               <button
                 type="button"
                 onClick={() => setShowVouchersModal(true)}
@@ -140,7 +142,19 @@ const ClientBookingView = () => {
                 <span className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-br from-aura-700 to-aura-800 text-white text-[10px] shadow-xs">
                   🎁
                 </span>
-                <span>Active Promo Vouchers & Special Offers (Up to ₱600 OFF)</span>
+                <span>Active Promo Vouchers (Up to ₱600 OFF)</span>
+                <RightOutlined className="text-[10px] text-aura-600 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowBeforeAfterModal(true)}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white hover:bg-aura-50 border border-aura-300 text-aura-900 text-xs font-semibold shadow-xs hover:shadow-sm transition-all group cursor-pointer"
+              >
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] shadow-xs">
+                  ✨
+                </span>
+                <span>Before & After Clinical Results</span>
                 <RightOutlined className="text-[10px] text-aura-600 group-hover:translate-x-0.5 transition-transform" />
               </button>
             </div>
@@ -259,6 +273,12 @@ const ClientBookingView = () => {
         onSelectVoucher={(code) => {
           setPrefilledVoucherCode(code);
         }}
+      />
+
+      {/* Interactive Before & After Clinical Transformations Modal */}
+      <BeforeAfterModal
+        open={showBeforeAfterModal}
+        onClose={() => setShowBeforeAfterModal(false)}
       />
     </div>
   );

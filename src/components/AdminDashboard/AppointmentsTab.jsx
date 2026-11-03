@@ -12,11 +12,13 @@ import {
   UserOutlined,
   MessageOutlined,
   BellOutlined,
-  EditOutlined
+  EditOutlined,
+  ThunderboltOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useApp } from '../../context/AppContext';
 import AddAppointmentModal from './AddAppointmentModal';
+import WalkInPosModal from './WalkInPosModal';
 import EditAppointmentModal from './EditAppointmentModal';
 import ReceiptModal from '../ClientBooking/ReceiptModal';
 import CancelAppointmentModal from './CancelAppointmentModal';
@@ -30,6 +32,7 @@ const AppointmentsTab = ({ initialFilters }) => {
   const [statusFilter, setStatusFilter] = useState(initialFilters?.statusFilter || 'ALL');
   const [dateFilter, setDateFilter] = useState(initialFilters?.dateFilter || 'ALL');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showWalkInPos, setShowWalkInPos] = useState(false);
   const [selectedReceiptApt, setSelectedReceiptApt] = useState(null);
   const [cancelModalApt, setCancelModalApt] = useState(null);
   const [smsModalApt, setSmsModalApt] = useState(null);
@@ -334,15 +337,24 @@ const AppointmentsTab = ({ initialFilters }) => {
           </Select>
         </div>
 
-        {/* Add Walk-in Button */}
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => setShowAddModal(true)}
-          className="!bg-aura-700 hover:!bg-aura-800 !border-none !rounded-xl !text-white font-semibold text-xs !h-9 shadow-xs w-full sm:w-auto"
-        >
-          Add Walk-in Booking
-        </Button>
+        {/* POS & Walk-in Action Buttons */}
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <Button
+            icon={<ThunderboltOutlined />}
+            onClick={() => setShowWalkInPos(true)}
+            className="!bg-amber-400 hover:!bg-amber-500 !text-amber-950 !border-none !rounded-xl !font-bold text-xs !h-9 shadow-xs flex-1 sm:flex-initial"
+          >
+            Fast POS Checkout
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setShowAddModal(true)}
+            className="!bg-aura-700 hover:!bg-aura-800 !border-none !rounded-xl !text-white font-semibold text-xs !h-9 shadow-xs flex-1 sm:flex-initial"
+          >
+            Add Walk-in Booking
+          </Button>
+        </div>
       </div>
 
       {/* Appointments Antd Table */}
@@ -361,6 +373,12 @@ const AppointmentsTab = ({ initialFilters }) => {
       <AddAppointmentModal
         open={showAddModal}
         onClose={() => setShowAddModal(false)}
+      />
+
+      <WalkInPosModal
+        open={showWalkInPos}
+        onClose={() => setShowWalkInPos(false)}
+        onCheckoutComplete={(newApt) => setSelectedReceiptApt(newApt)}
       />
 
       <EditAppointmentModal
