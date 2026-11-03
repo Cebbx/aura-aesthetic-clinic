@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Tooltip, message, Popover, Badge, Dropdown } from 'antd';
 import {
   QrcodeOutlined,
@@ -12,7 +12,9 @@ import {
   SearchOutlined,
   EllipsisOutlined,
   InfoCircleOutlined,
-  MobileOutlined
+  MobileOutlined,
+  CrownOutlined,
+  ArrowLeftOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 import QRCodeModal from './QRCodeModal';
@@ -57,6 +59,14 @@ const Header = () => {
       setAuthModalVisible(true);
     }
   };
+
+  useEffect(() => {
+    const handleOpenAdminAuth = () => {
+      handleAdminClick();
+    };
+    window.addEventListener('aura:open-admin-auth', handleOpenAdminAuth);
+    return () => window.removeEventListener('aura:open-admin-auth', handleOpenAdminAuth);
+  }, [isAdminAuthenticated, setCurrentView]);
 
   const mobileAdminMenuItems = [
     {
@@ -239,46 +249,44 @@ const Header = () => {
               </div>
             </div>
 
-            {/* View Switcher: Client Booking vs Admin Dashboard */}
-            <div className="flex items-center gap-0.5 sm:gap-1 bg-aura-100/70 p-0.5 sm:p-1 rounded-lg sm:rounded-2xl border border-aura-200/60 shrink-0">
-              <button
-                onClick={() => setCurrentView('client')}
-                className={`flex items-center gap-1 px-1.5 sm:px-3.5 py-0.5 sm:py-1.5 rounded-md sm:rounded-xl text-[10px] sm:text-sm font-semibold transition-all duration-300 ${
-                  currentView === 'client'
-                    ? 'bg-white text-aura-700 shadow-xs scale-100'
-                    : 'text-gray-600 hover:text-aura-700'
-                }`}
-              >
-                <CalendarOutlined className="text-aura-500 text-[10px] sm:text-sm" />
-                <span>Booking</span>
-              </button>
+            {/* Context Actions / Staff Indicator */}
+            {currentView === 'admin' ? (
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-aura-100/90 border border-aura-200 text-aura-900 text-xs font-bold shadow-2xs">
+                  <CrownOutlined className="text-amber-600" />
+                  <span>Admin Portal</span>
+                </div>
 
-              <button
-                onClick={handleAdminClick}
-                className={`flex items-center gap-1 px-1.5 sm:px-3.5 py-0.5 sm:py-1.5 rounded-md sm:rounded-xl text-[10px] sm:text-sm font-semibold transition-all duration-300 ${
-                  currentView === 'admin'
-                    ? 'bg-aura-700 text-white shadow-xs scale-100'
-                    : 'text-gray-600 hover:text-aura-700'
-                }`}
-              >
-                {isAdminAuthenticated ? (
-                  <UnlockOutlined className="text-emerald-500 text-[10px] sm:text-sm" />
-                ) : (
-                  <LockOutlined className="text-amber-600 text-[10px] sm:text-sm" />
-                )}
-                <span>Admin</span>
-                {!isAdminAuthenticated && (
-                  <span className="text-[7px] sm:text-[9px] bg-amber-100 text-amber-800 px-1 py-0.2 rounded font-semibold border border-amber-200 hidden sm:inline">
-                    PIN
-                  </span>
-                )}
-                {stats.pendingCount > 0 && isAdminAuthenticated && (
-                  <span className="text-[7px] sm:text-[10px] bg-amber-400 text-amber-950 px-1 py-0.2 rounded-full font-bold">
-                    {stats.pendingCount}
-                  </span>
-                )}
-              </button>
-            </div>
+                <Button
+                  icon={<ArrowLeftOutlined />}
+                  onClick={() => setCurrentView('client')}
+                  className="!border-aura-300 hover:!border-aura-500 !bg-white hover:!bg-aura-50 !h-7 sm:!h-9 !px-2.5 sm:!px-3.5 text-xs font-semibold text-aura-900 !rounded-xl flex items-center gap-1 shadow-2xs"
+                >
+                  <span className="hidden sm:inline">Return to Client Booking</span>
+                  <span className="sm:hidden">Client View</span>
+                </Button>
+              </div>
+            ) : (
+              /* When in Client view: If staff is already logged in, show quiet return badge; If normal client, NOTHING is shown */
+              isAdminAuthenticated && (
+                <div className="hidden sm:flex items-center gap-1.5 shrink-0">
+                  <Button
+                    size="small"
+                    icon={<CrownOutlined className="text-amber-600" />}
+                    onClick={() => setCurrentView('admin')}
+                    className="!border-amber-300 !bg-amber-50/90 hover:!bg-amber-100 !text-amber-950 text-xs font-semibold !rounded-xl !h-8 flex items-center gap-1 shadow-2xs"
+                  >
+                    <span>Staff Portal Active</span>
+                    {stats.pendingCount > 0 && (
+                      <span className="bg-amber-500 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold ml-0.5">
+                        {stats.pendingCount}
+                      </span>
+                    )}
+                    <span className="text-[10px] text-amber-700 font-normal">→</span>
+                  </Button>
+                </div>
+              )
+            )}
 
             {/* Action Tools: Track for Clients; Notifications & Admin Controls for Authenticated Clinic Staff */}
             <div className="flex items-center gap-1 sm:gap-2 shrink-0 pr-0.5 sm:pr-1">
@@ -444,7 +452,7 @@ const Header = () => {
         onOpenTrack={() => setTrackModalVisible(true)}
         onOpenAbout={openAboutModal}
         onOpenInstall={() => setInstallModalVisible(true)}
-        onOpenAdminAuth={() => setAuthModalVisible(true)}
+        onOpenAdminAuth={handleAdminClick}
       />
 
       {/* Vouchers Modal Triggered from Brand Hub */}

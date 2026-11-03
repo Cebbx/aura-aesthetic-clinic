@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConfigProvider, theme } from 'antd';
-import { SafetyCertificateOutlined } from '@ant-design/icons';
+import { SafetyCertificateOutlined, LockOutlined } from '@ant-design/icons';
 import { AppProvider, useApp } from './context/AppContext';
 import Header from './components/common/Header';
 import ClientBookingView from './components/ClientBooking/ClientBookingView';
@@ -17,7 +17,8 @@ const MainContent = () => {
     aboutModalOpen,
     closeAboutModal,
     openAboutModal,
-    themeMode
+    themeMode,
+    isAdminAuthenticated
   } = useApp();
 
   return (
@@ -44,13 +45,34 @@ const MainContent = () => {
 
       {/* Minimal Clean Clinic Footer */}
       <footer className="bg-white border-t border-aura-200/70 py-4 text-center text-xs text-gray-400 transition-colors">
-        <div className="max-w-xl mx-auto px-4 flex flex-col items-center justify-center gap-1 text-[11px]">
+        <div className="max-w-xl mx-auto px-4 flex flex-col items-center justify-center gap-1.5 text-[11px]">
           <span className="text-gray-500 font-medium">
             © {new Date().getFullYear()} {clinicProfile?.clinicName || 'Aura Aesthetic Clinic'}. All rights reserved.
           </span>
           <span className="text-[10px] text-aura-700/80 font-medium tracking-wide">
             {clinicProfile?.appointmentAdvisory || 'Strictly by Scheduled Appointment'}
           </span>
+
+          {/* Discrete Staff Access (Hidden from main client navigation) */}
+          {currentView === 'client' && (
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  if (isAdminAuthenticated) {
+                    setCurrentView('admin');
+                  } else {
+                    window.dispatchEvent(new CustomEvent('aura:open-admin-auth'));
+                  }
+                }}
+                className="text-[10px] text-gray-400 hover:text-aura-700 transition-colors inline-flex items-center gap-1 cursor-pointer"
+                title="Clinic Staff & Management Portal Login"
+              >
+                <LockOutlined className="text-[9px]" />
+                <span>Clinic Staff Portal</span>
+              </button>
+            </div>
+          )}
         </div>
       </footer>
 
