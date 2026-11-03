@@ -543,37 +543,60 @@ export const AppProvider = ({ children }) => {
     setTimeout(() => syncToServer(), 50);
   };
 
-  // Check voucher validity
-  const validateVoucher = (code, servicePrice = 0) => {
+  // Check voucher validity (including minimum spend, expiration, and category/treatment eligibility)
+  const validateVoucher = (code, servicePrice = 0, bookedServices = []) => {
     if (!code) return { valid: false, message: 'Please enter a voucher code' };
     const cleanCode = code.trim().toUpperCase();
     const found = vouchers.find(v => v.code.toUpperCase() === cleanCode);
 
     if (!found) {
-      return { valid: false, message: 'Invalid voucher code.' };
+      return { valid: false, message: 'Invalid voucher code. Please check code spelling.' };
     }
 
     if (found.status === 'Redeemed') {
-      return { valid: false, message: `Voucher was already redeemed on ${found.redeemedDate || 'prior date'}.` };
+      return { valid: false, message: `Voucher ${found.code} was already redeemed on ${found.redeemedDate || 'a prior date'}.` };
     }
 
     const today = dayjs().format('YYYY-MM-DD');
     if (found.expiryDate && found.expiryDate < today) {
-      return { valid: false, message: 'Voucher has expired.' };
+      return { valid: false, message: `Voucher has expired (valid until ${found.expiryDate}).` };
     }
 
     if (found.minSpend && servicePrice < found.minSpend) {
       return {
         valid: false,
-        message: `Requires a minimum spend of ₱${found.minSpend.toLocaleString()} (Service is ₱${servicePrice.toLocaleString()})`
+        message: `Requires a minimum spend of ₱${found.minSpend.toLocaleString()} (Current total: ₱${servicePrice.toLocaleString()})`
       };
+    }
+
+    // Check category / specific treatment restriction if configured
+    if (found.serviceCategory && found.serviceCategory !== 'All Services' && bookedServices && bookedServices.length > 0) {
+      if (found.serviceCategory.startsWith('Treatment: ')) {
+        const requiredTreatmentName = found.serviceCategory.replace('Treatment: ', '').trim().toLowerCase();
+        const matchesTreatment = bookedServices.some(s => (s.name || '').toLowerCase() === requiredTreatmentName);
+        if (!matchesTreatment) {
+          return {
+            valid: false,
+            message: `This voucher is exclusively valid for "${found.serviceCategory.replace('Treatment: ', '')}".`
+          };
+        }
+      } else {
+        const requiredCat = found.serviceCategory.toLowerCase();
+        const matchesCategory = bookedServices.some(s => (s.category || '').toLowerCase() === requiredCat);
+        if (!matchesCategory) {
+          return {
+            valid: false,
+            message: `This voucher is only valid for ${found.serviceCategory} treatments.`
+          };
+        }
+      }
     }
 
     return {
       valid: true,
       voucher: found,
-      discount: found.discountAmount,
-      message: `Success! ₱${found.discountAmount} discount applied.`
+      discount: Number(found.discountAmount) || 0,
+      message: `Success! ₱${Number(found.discountAmount).toLocaleString()} discount applied.`
     };
   };
 

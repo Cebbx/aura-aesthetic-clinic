@@ -1,6 +1,160 @@
 {
-  "lastUpdated": 1793678060798,
+  "lastUpdated": 1793686995871,
   "appointments": [
+    {
+      "id": "AURA-202611-8",
+      "monthlySequence": 8,
+      "createdAt": "2026-11-03 14:12",
+      "status": "Confirmed",
+      "discountApplied": 0,
+      "finalAmount": 2098,
+      "clientName": "vvvvv",
+      "phone": "09657777777",
+      "email": "",
+      "notes": "",
+      "services": [
+        {
+          "id": "srv-nail-1",
+          "name": "Precision Gel Manicure & Hand Restoration Spa",
+          "category": "Ingrown Removal",
+          "price": 899,
+          "originalPrice": 1200,
+          "duration": "45 mins",
+          "description": "Expert cuticle cleaning, nail shaping, hand exfoliation, and premium long-lasting gel polish at our luxury treatment station.",
+          "tags": [
+            "Top Treatment",
+            "Sterile Kit Guaranteed"
+          ],
+          "promoBadge": "Special ₱899",
+          "popular": true,
+          "image": "/clinic-photos/specialist-nail-treatment.png",
+          "includes": [
+            "Aromatic Hand Soak",
+            "Precision Cuticle Shaping",
+            "Deep Hand Hydration Massage",
+            "Medical-Grade LED Gel Curing"
+          ]
+        },
+        {
+          "id": "srv-nail-2",
+          "name": "Luxury Velvet Foot Spa & Pedicure Lounge Therapy",
+          "category": "Ingrown Removal",
+          "price": 1199,
+          "originalPrice": 1600,
+          "duration": "60 mins",
+          "description": "Ultra-relaxing foot care treatment in our plush pink velvet lounge chairs. Includes callous smoothing, therapeutic sea salt scrub, and nail care.",
+          "tags": [
+            "Relaxation Lounge",
+            "Deep Cleansing"
+          ],
+          "promoBadge": "Save ₱401",
+          "popular": true,
+          "image": "/clinic-photos/foot-spa-lounge.png",
+          "includes": [
+            "Warm Sea Salt Whirlpool Soak",
+            "Callous & Heel Smoothing",
+            "Peppermint Foot Scrub",
+            "Tension-Relief Foot & Calf Massage"
+          ]
+        }
+      ],
+      "serviceId": "srv-nail-1",
+      "serviceName": "Precision Gel Manicure & Hand Restoration Spa & Luxury Velvet Foot Spa & Pedicure Lounge Therapy",
+      "serviceCategory": "Ingrown Removal",
+      "date": "2026-11-03",
+      "time": "05:45 PM",
+      "totalPrice": 2098,
+      "voucherUsed": null,
+      "bookedVia": "Guest Booking (Option A)"
+    },
+    {
+      "id": "AURA-202611-7",
+      "monthlySequence": 7,
+      "createdAt": "2026-11-03 14:04",
+      "status": "Pending",
+      "discountApplied": 0,
+      "finalAmount": 3797,
+      "clientName": "Edward Cabbat",
+      "phone": "09657777777",
+      "email": "",
+      "notes": "Make my skin furn",
+      "services": [
+        {
+          "id": "srv-nail-1",
+          "name": "Precision Gel Manicure & Hand Restoration Spa",
+          "category": "Ingrown Removal",
+          "price": 899,
+          "originalPrice": 1200,
+          "duration": "45 mins",
+          "description": "Expert cuticle cleaning, nail shaping, hand exfoliation, and premium long-lasting gel polish at our luxury treatment station.",
+          "tags": [
+            "Top Treatment",
+            "Sterile Kit Guaranteed"
+          ],
+          "promoBadge": "Special ₱899",
+          "popular": true,
+          "image": "/clinic-photos/specialist-nail-treatment.png",
+          "includes": [
+            "Aromatic Hand Soak",
+            "Precision Cuticle Shaping",
+            "Deep Hand Hydration Massage",
+            "Medical-Grade LED Gel Curing"
+          ]
+        },
+        {
+          "id": "srv-nail-2",
+          "name": "Luxury Velvet Foot Spa & Pedicure Lounge Therapy",
+          "category": "Ingrown Removal",
+          "price": 1199,
+          "originalPrice": 1600,
+          "duration": "60 mins",
+          "description": "Ultra-relaxing foot care treatment in our plush pink velvet lounge chairs. Includes callous smoothing, therapeutic sea salt scrub, and nail care.",
+          "tags": [
+            "Relaxation Lounge",
+            "Deep Cleansing"
+          ],
+          "promoBadge": "Save ₱401",
+          "popular": true,
+          "image": "/clinic-photos/foot-spa-lounge.png",
+          "includes": [
+            "Warm Sea Salt Whirlpool Soak",
+            "Callous & Heel Smoothing",
+            "Peppermint Foot Scrub",
+            "Tension-Relief Foot & Calf Massage"
+          ]
+        },
+        {
+          "id": "srv-hair-1",
+          "name": "Advanced Scalp Micro-Analysis & Deep Follicle Detox",
+          "category": "Hair Care & Scalp",
+          "price": 1699,
+          "originalPrice": 2400,
+          "duration": "50 mins",
+          "description": "High-definition trichoscopy scalp scanning by Specialist Aura Diaz Cano, ultrasonic sebum purge, scalp oxygen scaling, and peptide stimulation.",
+          "tags": [
+            "Founder Signature",
+            "HairCare Specialist Choice"
+          ],
+          "promoBadge": "Save ₱701",
+          "popular": true,
+          "image": "https://images.unsplash.com/photo-1560750588-73207b1ef5b8?auto=format&fit=crop&w=600&q=80",
+          "includes": [
+            "HD Trichoscope 200x Scalp Scan",
+            "Exfoliating Herbal Scalp Scrub",
+            "High-Frequency Follicle Wand",
+            "Nano-Oxygen Peptides Infusion"
+          ]
+        }
+      ],
+      "serviceId": "srv-nail-1",
+      "serviceName": "Precision Gel Manicure & Hand Restoration Spa & Luxury Velvet Foot Spa & Pedicure Lounge Therapy & Advanced Scalp Micro-Analysis & Deep Follicle Detox",
+      "serviceCategory": "Ingrown Removal",
+      "date": "2026-11-03",
+      "time": "06:30 PM",
+      "totalPrice": 3797,
+      "voucherUsed": null,
+      "bookedVia": "Guest Booking (Option A)"
+    },
     {
       "id": "AURA-202611-6",
       "monthlySequence": 6,
@@ -58,7 +212,7 @@
       "totalPrice": 2499,
       "discountApplied": 600,
       "finalAmount": 1899,
-      "status": "Confirmed",
+      "status": "Completed",
       "voucherUsed": "SLIM-LUXE-401",
       "notes": "Focus on abdominal and love handles contouring.",
       "createdAt": "2026-11-02 11:30"

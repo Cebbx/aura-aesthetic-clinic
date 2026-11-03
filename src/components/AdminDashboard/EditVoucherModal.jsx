@@ -15,7 +15,9 @@ const { Option } = Select;
 
 const EditVoucherModal = ({ open, onClose, voucher }) => {
   const [form] = Form.useForm();
-  const { updateVoucher } = useApp();
+  const { updateVoucher, services } = useApp();
+
+  const categories = Array.from(new Set((services || []).map(s => s.category).filter(Boolean)));
 
   useEffect(() => {
     if (voucher && open) {
@@ -105,15 +107,34 @@ const EditVoucherModal = ({ open, onClose, voucher }) => {
 
         <Form.Item
           name="serviceCategory"
-          label={<span className="text-xs font-semibold">Eligible Treatment Category</span>}
+          label={<span className="text-xs font-semibold">Eligible Procedure or Category *</span>}
+          rules={[{ required: true, message: 'Please select eligible category or treatment' }]}
         >
-          <Select className="w-full !rounded-xl">
-            <Option value="All Services">All Aesthetic Services</Option>
-            <Option value="Facial">Facial & Aqua Peels Only</Option>
-            <Option value="Slimming">Slimming & Contouring Only</Option>
-            <Option value="Whitening">Whitening & Drip Only</Option>
-            <Option value="Ingrown Removal">Ingrown Removal & Nail Care</Option>
-            <Option value="Anti-Aging">Anti-Aging & HIFU Only</Option>
+          <Select
+            showSearch
+            placeholder="Select all services, a category, or a specific treatment"
+            className="w-full !rounded-xl"
+            optionFilterProp="children"
+          >
+            <Select.OptGroup label="GENERAL CLINIC ACCESS">
+              <Option value="All Services">✨ All Aesthetic Services (Entire Clinic Menu)</Option>
+            </Select.OptGroup>
+
+            <Select.OptGroup label="BY TREATMENT CATEGORY">
+              {categories.map(cat => (
+                <Option key={cat} value={cat}>
+                  📂 {cat} (All treatments in this category)
+                </Option>
+              ))}
+            </Select.OptGroup>
+
+            <Select.OptGroup label="BY SPECIFIC TREATMENT / PROCEDURE">
+              {(services || []).map(srv => (
+                <Option key={srv.id} value={`Treatment: ${srv.name}`}>
+                  💆‍♀️ {srv.name} (₱{Number(srv.price).toLocaleString()} • {srv.category})
+                </Option>
+              ))}
+            </Select.OptGroup>
           </Select>
         </Form.Item>
 

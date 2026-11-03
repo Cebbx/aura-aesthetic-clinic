@@ -116,7 +116,22 @@ export function clinicDatabasePlugin() {
                 appointments.unshift(newApt);
               }
 
-              const saved = writeDb({ ...current, appointments });
+              // If a voucher was used in this booking, mark it as Redeemed in DB immediately
+              let vouchers = current.vouchers || [];
+              if (newApt.voucherUsed) {
+                vouchers = vouchers.map(v =>
+                  v.code?.toUpperCase() === newApt.voucherUsed.toUpperCase()
+                    ? {
+                        ...v,
+                        status: 'Redeemed',
+                        redeemedDate: new Date().toISOString().split('T')[0],
+                        usedInAppointment: newApt.id
+                      }
+                    : v
+                );
+              }
+
+              const saved = writeDb({ ...current, appointments, vouchers });
               res.setHeader('Content-Type', 'application/json');
               res.end(JSON.stringify({ success: true, appointment: newApt, data: saved }));
             } catch (err) {

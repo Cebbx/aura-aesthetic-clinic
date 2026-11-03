@@ -61,15 +61,15 @@ const Step3ClientInfo = ({
     if (onUpdateServices) {
       onUpdateServices(newServices);
     }
-    // Re-check voucher against new total
+    // Re-check voucher against new total and new treatments
     if (appliedVoucher) {
       const newPrice = newServices.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
-      const result = validateVoucher(appliedVoucher.voucher.code, newPrice);
+      const result = validateVoucher(appliedVoucher.voucher.code, newPrice, newServices);
       if (result.valid) {
         setAppliedVoucher(result);
       } else {
         setAppliedVoucher(null);
-        setVoucherError('Voucher removed: requirements changed.');
+        setVoucherError(result.message || 'Voucher removed: requirements changed.');
       }
     }
     message.success('Appointment treatments updated!');
@@ -131,7 +131,7 @@ const Step3ClientInfo = ({
       return;
     }
 
-    const result = validateVoucher(voucherCodeInput, servicePrice);
+    const result = validateVoucher(voucherCodeInput, servicePrice, currentList);
     if (result.valid) {
       setAppliedVoucher(result);
       message.success(result.message);
@@ -222,7 +222,21 @@ const Step3ClientInfo = ({
     }
   };
 
-  const sampleVouchers = vouchers.filter(v => v.status === 'Unredeemed').slice(0, 2);
+  const sampleVouchers = (vouchers || [])
+    .filter(v => {
+      if (v.status === 'Redeemed') return false;
+      const today = dayjs().format('YYYY-MM-DD');
+      if (v.expiryDate && v.expiryDate < today) return false;
+
+      // Only show vouchers valid for current treatments or all services
+      if (!v.serviceCategory || v.serviceCategory === 'All Services') return true;
+      if (v.serviceCategory.startsWith('Treatment: ')) {
+        const reqName = v.serviceCategory.replace('Treatment: ', '').trim().toLowerCase();
+        return currentList.some(s => (s.name || '').toLowerCase() === reqName);
+      }
+      return currentList.some(s => (s.category || '').toLowerCase() === v.serviceCategory.toLowerCase());
+    })
+    .slice(0, 3);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

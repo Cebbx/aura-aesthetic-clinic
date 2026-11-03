@@ -81,11 +81,27 @@ const VoucherTrackerTab = ({ initialFilters }) => {
       title: 'Applicable Treatment',
       dataIndex: 'serviceCategory',
       key: 'serviceCategory',
-      render: (cat) => (
-        <span className="text-xs font-medium text-aura-700 bg-aura-100/50 px-2 py-0.5 rounded border border-aura-200">
-          {cat}
-        </span>
-      )
+      render: (cat) => {
+        if (!cat || cat === 'All Services') {
+          return (
+            <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+              ✨ All Services
+            </span>
+          );
+        }
+        if (cat.startsWith('Treatment: ')) {
+          return (
+            <span className="text-xs font-semibold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 inline-block max-w-[200px] truncate" title={cat}>
+              💆‍♀️ {cat.replace('Treatment: ', '')}
+            </span>
+          );
+        }
+        return (
+          <span className="text-xs font-medium text-aura-700 bg-aura-100/50 px-2 py-0.5 rounded border border-aura-200">
+            📂 {cat}
+          </span>
+        );
+      }
     },
     {
       title: 'Discount & Min Spend',
