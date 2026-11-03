@@ -250,7 +250,7 @@ const Header = () => {
             </div>
 
             {/* Context Actions / Staff Indicator */}
-            {currentView === 'admin' ? (
+            {currentView === 'admin' && (
               <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-aura-100/90 border border-aura-200 text-aura-900 text-xs font-bold shadow-2xs">
                   <CrownOutlined className="text-amber-600" />
@@ -266,26 +266,6 @@ const Header = () => {
                   <span className="sm:hidden">Client View</span>
                 </Button>
               </div>
-            ) : (
-              /* When in Client view: If staff is already logged in, show quiet return badge; If normal client, NOTHING is shown */
-              isAdminAuthenticated && (
-                <div className="hidden sm:flex items-center gap-1.5 shrink-0">
-                  <Button
-                    size="small"
-                    icon={<CrownOutlined className="text-amber-600" />}
-                    onClick={() => setCurrentView('admin')}
-                    className="!border-amber-300 !bg-amber-50/90 hover:!bg-amber-100 !text-amber-950 text-xs font-semibold !rounded-xl !h-8 flex items-center gap-1 shadow-2xs"
-                  >
-                    <span>Staff Portal Active</span>
-                    {stats.pendingCount > 0 && (
-                      <span className="bg-amber-500 text-white text-[10px] px-1.5 py-0.2 rounded-full font-bold ml-0.5">
-                        {stats.pendingCount}
-                      </span>
-                    )}
-                    <span className="text-[10px] text-amber-700 font-normal">→</span>
-                  </Button>
-                </div>
-              )
             )}
 
             {/* Action Tools: Track for Clients; Notifications & Admin Controls for Authenticated Clinic Staff */}

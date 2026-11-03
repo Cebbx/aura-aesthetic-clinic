@@ -12,6 +12,7 @@ import {
   MobileOutlined,
   PhoneOutlined,
   LockOutlined,
+  UnlockOutlined,
   EnvironmentOutlined,
   CloseOutlined,
   ClockCircleOutlined,
@@ -72,7 +73,7 @@ const BrandQuickMenuModal = ({
   onOpenInstall,
   onOpenAdminAuth
 }) => {
-  const { clinicProfile, themeMode, changeThemeMode } = useApp();
+  const { clinicProfile, themeMode, changeThemeMode, isAdminAuthenticated } = useApp();
 
   const handleSelectTheme = (key) => {
     if (changeThemeMode) {
@@ -310,10 +311,20 @@ const BrandQuickMenuModal = ({
               onClose();
               if (onOpenAdminAuth) onOpenAdminAuth();
             }}
-            className="inline-flex items-center gap-1 text-[11px] font-semibold text-gray-500 hover:text-aura-700 cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-gray-500 hover:text-aura-700 cursor-pointer transition-colors"
           >
-            <LockOutlined className="text-xs" />
-            <span>Staff / Admin Portal</span>
+            {isAdminAuthenticated ? (
+              <>
+                <UnlockOutlined className="text-xs text-emerald-600" />
+                <span className="text-emerald-700 font-bold">Open Admin Portal</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              </>
+            ) : (
+              <>
+                <LockOutlined className="text-xs text-gray-400" />
+                <span>Staff / Admin Portal</span>
+              </>
+            )}
           </button>
 
           <Button
