@@ -342,20 +342,30 @@ const Step1SelectService = ({
 
                 {/* Popular or Promo Badge */}
                 <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
-                  {service.bookAndBuy && (
-                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-500 to-rose-600 text-white text-[10px] sm:text-[11px] font-black px-2 sm:px-2.5 py-0.5 rounded-full shadow-sm">
-                      👑 Book & Buy Slot
-                    </span>
-                  )}
-                  {service.popular && !service.bookAndBuy && (
-                    <span className="inline-flex items-center gap-1 bg-amber-500/95 text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs">
-                      <StarFilled /> Top Treatment
-                    </span>
-                  )}
-                  {service.promoBadge && (
-                    <span className="inline-flex items-center gap-1 bg-aura-700/90 text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs">
-                      <StarOutlined /> {service.promoBadge}
-                    </span>
+                  {service.bookAndBuy ? (
+                    <>
+                      <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-500 to-rose-600 text-white text-[10px] sm:text-[11px] font-black px-2 sm:px-2.5 py-0.5 rounded-full shadow-sm">
+                        👑 Book & Buy Slot
+                      </span>
+                      {service.originalPrice && service.originalPrice > service.price && (
+                        <span className="inline-flex items-center gap-1 bg-aura-950/90 text-amber-200 border border-amber-400/30 text-[10px] sm:text-[11px] font-bold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs">
+                          🔥 Save ₱{(service.originalPrice - service.price).toLocaleString()} ({Math.round(((service.originalPrice - service.price) / service.originalPrice) * 100)}% OFF)
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {service.popular && (
+                        <span className="inline-flex items-center gap-1 bg-amber-500/95 text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs">
+                          <StarFilled /> Top Treatment
+                        </span>
+                      )}
+                      {service.promoBadge && (
+                        <span className="inline-flex items-center gap-1 bg-aura-700/90 text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs">
+                          <StarOutlined /> {service.promoBadge}
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
 
