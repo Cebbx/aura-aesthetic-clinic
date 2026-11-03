@@ -260,8 +260,8 @@ const Header = () => {
 
             {/* Action Tools: Track for Clients; Notifications & Admin Controls for Authenticated Clinic Staff */}
             <div className="flex items-center gap-1 sm:gap-2 shrink-0 pr-1">
-              {/* About Clinic & Concierge Support Button */}
-              <Tooltip title="View Clinic Story, Doctors, Services Menu & Concierge Support">
+              {/* About Clinic Button */}
+              <Tooltip title="View Clinic Story, Doctors & Services Menu">
                 <Button
                   icon={<InfoCircleOutlined className="text-aura-700 text-xs sm:text-sm" />}
                   onClick={openAboutModal}

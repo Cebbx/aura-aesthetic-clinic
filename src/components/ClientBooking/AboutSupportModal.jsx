@@ -418,7 +418,7 @@ const AboutSupportModal = ({ open, onClose, onSelectServiceForBooking }) => {
       title={
         <div className="flex items-center gap-2 font-serif-luxury text-base sm:text-xl text-aura-dark">
           <InfoCircleOutlined className="text-aura-600" />
-          <span>About Us & Concierge Support</span>
+          <span>About Us</span>
         </div>
       }
       centered
