@@ -58,7 +58,7 @@ const BookingSuccess = ({ appointment, onReset }) => {
               </p>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold">
                 <BellOutlined />
-                <span>Status: Awaiting Clinic Staff Approval & SMS Confirmation</span>
+                <span>Status: {appointment.status === 'Confirmed' ? 'Confirmed' : 'Pending Approval'}</span>
               </div>
             </div>
           }
