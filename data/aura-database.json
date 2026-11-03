@@ -1,6 +1,15 @@
 {
-  "lastUpdated": 1793670936193,
+  "lastUpdated": 1793671375188,
   "appointments": [
+    {
+      "clientName": "Maria Santos (Phone Booking Test)",
+      "contact": "09171234567",
+      "serviceId": "srv-1",
+      "serviceName": "Aura Signature Glass Skin Facial",
+      "date": "2026-11-10",
+      "time": "02:00 PM",
+      "category": "Facial Treatments"
+    },
     {
       "id": "AURA-202611-4",
       "clientName": "Atty. Sofia Ramos",
