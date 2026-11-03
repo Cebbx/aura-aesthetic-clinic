@@ -9,7 +9,9 @@ import {
   FireOutlined,
   InfoCircleOutlined,
   ZoomInOutlined,
-  EyeOutlined
+  EyeOutlined,
+  PlusOutlined,
+  CheckOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 import PhotoViewerModal from '../common/PhotoViewerModal';
@@ -88,6 +90,36 @@ const Step1SelectService = ({
         </div>
       </div>
 
+      {/* Multi-Treatment Booking Info Banner */}
+      <div className="bg-gradient-to-r from-aura-50 via-white to-aura-100/50 border border-aura-200/90 rounded-2xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 shadow-2xs">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-aura-100 text-aura-700 flex items-center justify-center font-bold text-sm shrink-0">
+            ✨
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs sm:text-sm font-bold text-aura-900">
+                Multi-Treatment Selection
+              </span>
+              <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
+                Available
+              </span>
+            </div>
+            <p className="text-[11px] text-gray-500">
+              Maaari kang pumili ng 1 o higit pang treatments sa isang appointment session (e.g. Facial + Whitening + Laser).
+            </p>
+          </div>
+        </div>
+
+        {currentSelectedList.length > 0 && (
+          <div className="flex items-center gap-2 self-end sm:self-center">
+            <span className="text-xs text-aura-800 font-bold bg-white border border-aura-300 px-3 py-1 rounded-full shadow-2xs">
+              {currentSelectedList.length} {currentSelectedList.length === 1 ? 'Treatment Selected' : 'Treatments Selected'}
+            </span>
+          </div>
+        )}
+      </div>
+
       {/* Services Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {filteredServices.map(service => {
@@ -145,10 +177,16 @@ const Step1SelectService = ({
                   </div>
                 </div>
 
-                {/* Selection Check Circle */}
-                {isSelected && (
-                  <div className="absolute top-2.5 right-2.5 w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-aura-600 text-white flex items-center justify-center shadow-md animate-in fade-in zoom-in duration-200">
-                    <CheckCircleFilled className="text-sm sm:text-base" />
+                {/* Selection Check Circle / Badge */}
+                {isSelected ? (
+                  <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-aura-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-md animate-in fade-in zoom-in duration-200">
+                    <CheckCircleFilled className="text-xs" />
+                    <span>Selected</span>
+                  </div>
+                ) : (
+                  <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-black/40 hover:bg-black/60 backdrop-blur-xs text-white text-[10px] font-medium flex items-center gap-1 shadow-xs transition-colors">
+                    <PlusOutlined className="text-[9px]" />
+                    <span>Add</span>
                   </div>
                 )}
               </div>
@@ -224,13 +262,17 @@ const Step1SelectService = ({
 
                   <Button
                     type={isSelected ? 'primary' : 'default'}
-                    className={`!rounded-xl text-xs font-semibold !h-9 ${
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleServiceClick(service);
+                    }}
+                    className={`!rounded-xl text-xs font-semibold !h-9 transition-all cursor-pointer ${
                       isSelected
-                        ? '!bg-aura-700 hover:!bg-aura-800 !border-aura-700 text-white'
-                        : '!border-aura-300 !text-aura-700 hover:!border-aura-600'
+                        ? '!bg-aura-700 hover:!bg-aura-800 !border-aura-700 text-white shadow-xs'
+                        : '!border-aura-300 !text-aura-700 hover:!border-aura-600 hover:!bg-aura-50'
                     }`}
                   >
-                    {isSelected ? 'Selected' : 'Select'}
+                    {isSelected ? '✓ Selected' : '+ Add Treatment'}
                   </Button>
                 </div>
               </div>
@@ -263,11 +305,16 @@ const Step1SelectService = ({
               {currentSelectedList.length}
             </div>
             <div className="truncate">
-              <p className="text-[10px] text-aura-300 uppercase tracking-wider font-semibold">
-                {currentSelectedList.length === 1 ? '1 Treatment Selected' : `${currentSelectedList.length} Treatments Selected (Combined)`}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-[10px] text-aura-300 uppercase tracking-wider font-semibold">
+                  {currentSelectedList.length === 1 ? '1 Treatment Selected' : `${currentSelectedList.length} Treatments Selected (Combined)`}
+                </p>
+                <span className="text-[10px] text-amber-300 hidden sm:inline">
+                  {currentSelectedList.length === 1 ? '• Tap other cards to add more' : '• Ready to schedule'}
+                </span>
+              </div>
               <h5 className="font-medium text-white text-xs sm:text-sm truncate">
-                {currentSelectedList.map(s => s.name).join(' & ')}
+                {currentSelectedList.map(s => s.name).join(' + ')}
               </h5>
             </div>
           </div>
@@ -286,7 +333,7 @@ const Step1SelectService = ({
               onClick={onNext}
               className="!bg-gradient-to-r !from-aura-500 !to-aura-400 hover:!from-aura-600 hover:!to-aura-500 !border-none !text-white !font-bold !rounded-xl !px-4 sm:!px-6 !h-10 sm:!h-11 shadow-md shadow-aura-500/20 text-xs sm:text-sm shrink-0"
             >
-              Proceed to Schedule →
+              Proceed to Schedule ({currentSelectedList.length}) →
             </Button>
           </div>
         </div>

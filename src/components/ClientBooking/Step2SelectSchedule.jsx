@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DatePicker, Button, Tag, Alert, Tooltip } from 'antd';
 import {
   CalendarOutlined,
   ClockCircleOutlined,
   CheckCircleFilled,
   LeftOutlined,
-  SafetyCertificateOutlined
+  SafetyCertificateOutlined,
+  PlusCircleOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useApp } from '../../context/AppContext';
+import AddChangeServicesModal from './AddChangeServicesModal';
 
 const Step2SelectSchedule = ({
   selectedDate,
@@ -17,10 +19,13 @@ const Step2SelectSchedule = ({
   onSelectTime,
   selectedServices = [],
   selectedService,
+  onUpdateServices,
+  onGoToServices,
   onBack,
   onNext
 }) => {
   const { timeSlots, appointments } = useApp();
+  const [changeModalOpen, setChangeModalOpen] = useState(false);
 
   const currentList = Array.isArray(selectedServices) && selectedServices.length > 0
     ? selectedServices
@@ -72,6 +77,14 @@ const Step2SelectSchedule = ({
           <div className="font-serif-luxury text-base sm:text-lg font-bold text-aura-700">
             ₱{totalCombinedPrice.toLocaleString()}
           </div>
+          <button
+            type="button"
+            onClick={() => setChangeModalOpen(true)}
+            className="inline-flex items-center gap-1 text-aura-700 hover:text-aura-900 bg-white hover:bg-aura-100/70 border border-aura-300 px-2 py-0.5 rounded-lg text-[11px] font-bold transition-all shadow-2xs mt-1 cursor-pointer"
+          >
+            <PlusCircleOutlined className="text-[10px]" />
+            <span>+ Add / Change</span>
+          </button>
         </div>
       </div>
 
@@ -237,6 +250,19 @@ const Step2SelectSchedule = ({
           Proceed to Client Info →
         </Button>
       </div>
+
+      {/* Add or Change Treatments Modal */}
+      <AddChangeServicesModal
+        open={changeModalOpen}
+        onClose={() => setChangeModalOpen(false)}
+        selectedServices={currentList}
+        onSave={(newServices) => {
+          if (onUpdateServices) {
+            onUpdateServices(newServices);
+          }
+        }}
+        onGoToCatalog={onGoToServices}
+      />
     </div>
   );
 };

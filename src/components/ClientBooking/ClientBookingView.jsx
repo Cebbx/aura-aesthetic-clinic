@@ -201,6 +201,11 @@ const ClientBookingView = () => {
                 onSelectTime={(time) => setSelectedTime(time)}
                 selectedServices={selectedServices}
                 selectedService={selectedService}
+                onUpdateServices={(newServices) => setSelectedServices(newServices)}
+                onGoToServices={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setCurrentStep(0);
+                }}
                 onBack={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                   setCurrentStep(0);
@@ -218,6 +223,11 @@ const ClientBookingView = () => {
                 selectedServices={selectedServices}
                 selectedService={selectedService}
                 onRemoveService={handleRemoveService}
+                onUpdateServices={(newServices) => setSelectedServices(newServices)}
+                onGoToServices={() => {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  setCurrentStep(0);
+                }}
                 selectedDate={selectedDate}
                 selectedTime={selectedTime}
                 onBack={() => {

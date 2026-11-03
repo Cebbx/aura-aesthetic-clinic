@@ -16,10 +16,13 @@ import {
   DisconnectOutlined,
   StopOutlined,
   DeleteOutlined,
-  PlusOutlined
+  PlusOutlined,
+  PlusCircleOutlined,
+  EditOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 import GoogleAuthModal from './GoogleAuthModal';
+import AddChangeServicesModal from './AddChangeServicesModal';
 
 const { TextArea } = Input;
 
@@ -27,6 +30,8 @@ const Step3ClientInfo = ({
   selectedServices = [],
   selectedService,
   onRemoveService,
+  onUpdateServices,
+  onGoToServices,
   selectedDate,
   selectedTime,
   onBack,
@@ -50,6 +55,25 @@ const Step3ClientInfo = ({
   const [submitting, setSubmitting] = useState(false);
   const [googleModalVisible, setGoogleModalVisible] = useState(false);
   const [blockedModalData, setBlockedModalData] = useState(null);
+  const [changeServicesModalOpen, setChangeServicesModalOpen] = useState(false);
+
+  const handleSaveServices = (newServices) => {
+    if (onUpdateServices) {
+      onUpdateServices(newServices);
+    }
+    // Re-check voucher against new total
+    if (appliedVoucher) {
+      const newPrice = newServices.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
+      const result = validateVoucher(appliedVoucher.voucher.code, newPrice);
+      if (result.valid) {
+        setAppliedVoucher(result);
+      } else {
+        setAppliedVoucher(null);
+        setVoucherError('Voucher removed: requirements changed.');
+      }
+    }
+    message.success('Appointment treatments updated!');
+  };
 
   const currentList = Array.isArray(selectedServices) && selectedServices.length > 0
     ? selectedServices
@@ -482,13 +506,19 @@ const Step3ClientInfo = ({
           {/* Treatment Details List */}
           <div className="space-y-2.5">
             <div className="flex items-center justify-between text-xs font-semibold text-aura-800">
-              <span>Selected Treatments ({currentList.length})</span>
+              <span className="flex items-center gap-1.5">
+                <span>Selected Treatments</span>
+                <span className="bg-aura-100 text-aura-800 px-2 py-0.5 rounded-full text-[10px] font-bold">
+                  {currentList.length}
+                </span>
+              </span>
               <button
                 type="button"
-                onClick={onBack}
-                className="text-aura-600 hover:text-aura-800 text-[11px] hover:underline cursor-pointer"
+                onClick={() => setChangeServicesModalOpen(true)}
+                className="inline-flex items-center gap-1 text-aura-700 hover:text-aura-900 bg-aura-100 hover:bg-aura-200 border border-aura-300 px-2.5 py-1 rounded-lg text-xs font-bold transition-all shadow-2xs cursor-pointer"
               >
-                + Add / Change
+                <PlusCircleOutlined className="text-xs" />
+                <span>+ Add / Change</span>
               </button>
             </div>
 
@@ -517,14 +547,25 @@ const Step3ClientInfo = ({
 
                 <div className="flex items-center gap-2 shrink-0">
                   <span className="font-semibold text-aura-800 text-xs">₱{Number(srv.price).toLocaleString()}</span>
-                  {currentList.length > 1 && (
-                    <Tooltip title="Remove this service (keep 1 service)">
+                  {currentList.length > 1 ? (
+                    <Tooltip title="Remove this treatment">
                       <button
                         type="button"
                         onClick={() => onRemoveService && onRemoveService(srv.id)}
-                        className="text-gray-400 hover:text-rose-500 p-1 transition-colors"
+                        className="text-gray-400 hover:text-rose-500 p-1 transition-colors cursor-pointer"
                       >
                         <DeleteOutlined className="text-xs" />
+                      </button>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title="Change or swap this treatment">
+                      <button
+                        type="button"
+                        onClick={() => setChangeServicesModalOpen(true)}
+                        className="text-aura-600 hover:text-aura-800 p-1 text-xs hover:underline cursor-pointer flex items-center gap-0.5"
+                      >
+                        <EditOutlined className="text-[11px]" />
+                        <span className="text-[10px]">Change</span>
                       </button>
                     </Tooltip>
                   )}
@@ -640,6 +681,15 @@ const Step3ClientInfo = ({
           </p>
         </div>
       </Modal>
+
+      {/* Add or Change Treatments Modal */}
+      <AddChangeServicesModal
+        open={changeServicesModalOpen}
+        onClose={() => setChangeServicesModalOpen(false)}
+        selectedServices={currentList}
+        onSave={handleSaveServices}
+        onGoToCatalog={onGoToServices}
+      />
     </div>
   );
 };
