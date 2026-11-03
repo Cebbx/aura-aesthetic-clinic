@@ -94,7 +94,7 @@ const OverviewTab = ({ onNavigateTab }) => {
             <span>Clinic Director Live Control Panel</span>
           </div>
           <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold">
-            Good day, Aura Clinic Owner
+            Good day, Aura Aesthetic Team!
           </h2>
           <p className="text-aura-100/90 text-xs sm:text-sm mt-0.5">
             Today is {dayjs().format('dddd, MMMM DD, YYYY')}. You have{' '}
