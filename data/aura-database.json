@@ -1,5 +1,5 @@
 {
-  "lastUpdated": 1793686995871,
+  "lastUpdated": 1793697193756,
   "appointments": [
     {
       "id": "AURA-202611-8",
@@ -579,6 +579,21 @@
     }
   ],
   "vouchers": [
+    {
+      "code": "AURA-XMASPROMO-3JL0-585",
+      "voucherType": "public",
+      "maxUses": 1,
+      "usedCount": 0,
+      "clientName": "Open to All (Paunahan)",
+      "clientPhone": "Public Promo",
+      "serviceCategory": "All Services",
+      "discountAmount": 500,
+      "minSpend": 1500,
+      "purchaseDate": "2026-11-03",
+      "expiryDate": "2026-11-03",
+      "status": "Unredeemed",
+      "redeemedDate": null
+    },
     {
       "code": "AURA-HAIR-888",
       "clientName": "Open to All (Paunahan)",

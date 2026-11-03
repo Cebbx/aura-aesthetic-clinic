@@ -17,6 +17,7 @@ import Step1SelectService from './Step1SelectService';
 import Step2SelectSchedule from './Step2SelectSchedule';
 import Step3ClientInfo from './Step3ClientInfo';
 import BookingSuccess from './BookingSuccess';
+import ClientVouchersModal from './ClientVouchersModal';
 
 const ClientBookingView = () => {
   const { openAboutModal } = useApp();
@@ -27,6 +28,8 @@ const ClientBookingView = () => {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [selectedTime, setSelectedTime] = useState(null);
   const [completedBooking, setCompletedBooking] = useState(null);
+  const [showVouchersModal, setShowVouchersModal] = useState(false);
+  const [prefilledVoucherCode, setPrefilledVoucherCode] = useState('');
 
   // Fallback single selected service for backwards compatibility
   const selectedService = selectedServices[0] || null;
@@ -127,15 +130,18 @@ const ClientBookingView = () => {
               </span>
             </div>
 
-            {/* About Clinic & Services Explorer Pill Button */}
-            <div className="pt-1">
+            {/* Special Offers & Promo Vouchers Explorer Pill Button */}
+            <div className="pt-1.5 flex items-center justify-center">
               <button
-                onClick={openAboutModal}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white hover:bg-aura-50 border border-aura-300 text-aura-800 text-xs font-semibold shadow-xs hover:shadow-sm transition-all group cursor-pointer"
+                type="button"
+                onClick={() => setShowVouchersModal(true)}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-50/90 via-rose-50/70 to-aura-50 hover:from-amber-100 hover:to-aura-100 border border-aura-300 text-aura-900 text-xs font-semibold shadow-xs hover:shadow-sm transition-all group cursor-pointer"
               >
-                <InfoCircleOutlined className="text-aura-600" />
-                <span>Explore Doctor Credentials, Full Menu & Support</span>
-                <RightOutlined className="text-[10px] text-aura-500 group-hover:translate-x-0.5 transition-transform" />
+                <span className="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-br from-aura-700 to-aura-800 text-white text-[10px] shadow-xs">
+                  🎁
+                </span>
+                <span>Active Promo Vouchers & Special Offers (Up to ₱600 OFF)</span>
+                <RightOutlined className="text-[10px] text-aura-600 group-hover:translate-x-0.5 transition-transform" />
               </button>
             </div>
           </div>
@@ -230,6 +236,8 @@ const ClientBookingView = () => {
                 }}
                 selectedDate={selectedDate}
                 selectedTime={selectedTime}
+                initialVoucherCode={prefilledVoucherCode}
+                onOpenVouchersModal={() => setShowVouchersModal(true)}
                 onBack={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                   setCurrentStep(1);
@@ -243,6 +251,15 @@ const ClientBookingView = () => {
           </div>
         )}
       </main>
+
+      {/* Interactive Client Vouchers Modal */}
+      <ClientVouchersModal
+        open={showVouchersModal}
+        onClose={() => setShowVouchersModal(false)}
+        onSelectVoucher={(code) => {
+          setPrefilledVoucherCode(code);
+        }}
+      />
     </div>
   );
 };

@@ -36,7 +36,9 @@ const Step3ClientInfo = ({
   selectedDate,
   selectedTime,
   onBack,
-  onBookingComplete
+  onBookingComplete,
+  initialVoucherCode = '',
+  onOpenVouchersModal
 }) => {
   const [form] = Form.useForm();
   const {
@@ -50,7 +52,7 @@ const Step3ClientInfo = ({
     clinicProfile
   } = useApp();
 
-  const [voucherCodeInput, setVoucherCodeInput] = useState('');
+  const [voucherCodeInput, setVoucherCodeInput] = useState(initialVoucherCode || '');
   const [appliedVoucher, setAppliedVoucher] = useState(null);
   const [voucherError, setVoucherError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -101,6 +103,20 @@ const Step3ClientInfo = ({
       console.error(e);
     }
   }, [googleUser, form]);
+
+  // Auto-fill and apply voucher if passed from hero modal
+  useEffect(() => {
+    if (initialVoucherCode) {
+      setVoucherCodeInput(initialVoucherCode);
+      const res = validateVoucher(initialVoucherCode, servicePrice, currentList);
+      if (res.valid) {
+        setAppliedVoucher(res);
+        setVoucherError('');
+      } else {
+        setVoucherError(res.message);
+      }
+    }
+  }, [initialVoucherCode, servicePrice]);
 
   const handleGoogleClick = () => {
     setGoogleModalVisible(true);
@@ -425,15 +441,23 @@ const Step3ClientInfo = ({
                   <GiftOutlined className="text-aura-600" />
                   <span>Have a Promo Voucher / Gift Pass?</span>
                 </span>
-                {appliedVoucher && (
+                {appliedVoucher ? (
                   <button
                     type="button"
                     onClick={handleRemoveVoucher}
-                    className="text-xs text-rose-500 hover:underline font-normal"
+                    className="text-xs text-rose-500 hover:underline font-normal cursor-pointer"
                   >
                     Remove
                   </button>
-                )}
+                ) : onOpenVouchersModal ? (
+                  <button
+                    type="button"
+                    onClick={onOpenVouchersModal}
+                    className="text-[11px] text-aura-700 hover:text-aura-900 underline font-medium cursor-pointer"
+                  >
+                    Browse Vouchers 🎁
+                  </button>
+                ) : null}
               </label>
 
               {!appliedVoucher ? (
