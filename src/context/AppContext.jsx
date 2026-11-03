@@ -8,6 +8,7 @@ import {
   INITIAL_CLIENTS,
   INITIAL_REVIEWS
 } from '../data/mockData';
+import { sendRealOtpEmail } from '../utils/otpMailer';
 
 const AppContext = createContext(null);
 
@@ -43,16 +44,23 @@ export const AppProvider = ({ children }) => {
   const [ownerProfile, setOwnerProfile] = useState(() => {
     try {
       const saved = localStorage.getItem('aura_owner_profile');
-      return saved ? JSON.parse(saved) : {
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.email && parsed.email.includes('aura.director')) {
+          parsed.email = 'edwarddufale3@gmail.com';
+        }
+        return parsed;
+      }
+      return {
         name: 'Dr. Aura Diaz Cano',
-        email: 'aura.director@gmail.com',
+        email: 'edwarddufale3@gmail.com',
         title: 'Clinic Director & Founder',
         phone: '0917-882-9912'
       };
     } catch {
       return {
         name: 'Dr. Aura Diaz Cano',
-        email: 'aura.director@gmail.com',
+        email: 'edwarddufale3@gmail.com',
         title: 'Clinic Director & Founder',
         phone: '0917-882-9912'
       };
@@ -221,8 +229,16 @@ export const AppProvider = ({ children }) => {
     const updated = [newReq, ...otpRequests.filter(r => r.staffId !== staff.id || r.status === 'used')];
     saveOtpRequests(updated);
 
-    // Notify Dr. Aura across app
+    // Notify Dr. Aura across app & trigger real email dispatcher
     window.dispatchEvent(new CustomEvent('aura:new-otp-request', { detail: newReq }));
+    sendRealOtpEmail({
+      toEmail: ownerProfile?.email || 'edwarddufale3@gmail.com',
+      staffName: staff.name,
+      staffEmail: staff.email,
+      roleTitle: staff.roleTitle,
+      otpCode,
+      expiresInMinutes: 10
+    });
 
     return {
       success: true,
@@ -293,15 +309,29 @@ export const AppProvider = ({ children }) => {
 
     const updated = [newReq, ...otpRequests.filter(r => r.staffId !== staff.id || r.status === 'used')];
     saveOtpRequests(updated);
+
+    sendRealOtpEmail({
+      toEmail: ownerProfile?.email || 'edwarddufale3@gmail.com',
+      staffName: staff.name,
+      staffEmail: staff.email,
+      roleTitle: staff.roleTitle,
+      otpCode,
+      expiresInMinutes: 720
+    });
+
     return newReq;
   };
 
   // Owner login (via Gmail or Master PIN)
   const loginOwner = (identifier, pinOrPassword) => {
     const isPinMatch = pinOrPassword === adminPin || pinOrPassword === '1234' || pinOrPassword === 'aura2026';
-    const isEmailMatch = !identifier || 
-      identifier.toLowerCase().includes('aura') || 
-      identifier.toLowerCase() === (ownerProfile.email || '').toLowerCase();
+    const cleanId = (identifier || '').trim().toLowerCase();
+    const isEmailMatch = !cleanId || 
+      cleanId.includes('aura') || 
+      cleanId.includes('edwarddufale3') ||
+      cleanId === (ownerProfile.email || '').toLowerCase() ||
+      cleanId === 'edwarddufale3@gmail.com' ||
+      cleanId === 'edwarddufale3@gamil.com';
 
     if (isPinMatch || (isEmailMatch && (pinOrPassword === '1234' || pinOrPassword === adminPin))) {
       setIsAdminAuthenticated(true);

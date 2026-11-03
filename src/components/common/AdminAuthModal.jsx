@@ -29,7 +29,7 @@ const AdminAuthModal = ({ open, onClose }) => {
   const [activeTab, setActiveTab] = useState('owner'); // 'owner' | 'staff'
 
   // Owner form state
-  const [ownerEmail, setOwnerEmail] = useState(ownerProfile?.email || 'aura.director@gmail.com');
+  const [ownerEmail, setOwnerEmail] = useState(ownerProfile?.email || 'edwarddufale3@gmail.com');
   const [ownerPin, setOwnerPin] = useState('');
   const [ownerError, setOwnerError] = useState('');
   const [ownerLoading, setOwnerLoading] = useState(false);
@@ -56,7 +56,7 @@ const AdminAuthModal = ({ open, onClose }) => {
   // Reset states when modal closes or opens
   useEffect(() => {
     if (open) {
-      setOwnerEmail(ownerProfile?.email || 'aura.director@gmail.com');
+      setOwnerEmail(ownerProfile?.email || 'edwarddufale3@gmail.com');
       setOwnerPin('');
       setOwnerError('');
       setStaffError('');
@@ -365,10 +365,13 @@ const AdminAuthModal = ({ open, onClose }) => {
                   <div>
                     <div className="font-bold flex items-center gap-1">
                       <CheckCircleFilled className="text-emerald-600" />
-                      <span>OTP Dispatched to Dr. Aura</span>
+                      <span>Security OTP Dispatched</span>
                     </div>
                     <div className="text-[11px] text-gray-600 mt-0.5">
-                      Target: <strong>{selectedStaffEmail}</strong>
+                      Requester: <strong>{selectedStaffEmail}</strong>
+                    </div>
+                    <div className="text-[11px] text-emerald-800 font-semibold mt-0.5">
+                      Delivered to: <strong>{ownerProfile?.email || 'edwarddufale3@gmail.com'}</strong>
                     </div>
                   </div>
                   <Tag color="orange" className="!mr-0 font-mono text-[10px]">

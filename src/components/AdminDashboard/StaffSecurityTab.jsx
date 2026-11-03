@@ -30,9 +30,13 @@ import {
   LockOutlined,
   UnlockOutlined,
   ThunderboltOutlined,
-  SafetyCertificateOutlined
+  SafetyCertificateOutlined,
+  SendOutlined,
+  LinkOutlined,
+  CodeOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
+import { testRealEmailConnection } from '../../utils/otpMailer';
 
 const StaffSecurityTab = () => {
   const {
@@ -52,6 +56,99 @@ const StaffSecurityTab = () => {
   const [editStaff, setEditStaff] = useState(null);
   const [copiedOtp, setCopiedOtp] = useState(null);
   const [generatedPassModal, setGeneratedPassModal] = useState(null);
+
+  // Live Gmail Webhook state
+  const [webhookUrl, setWebhookUrl] = useState(() => {
+    try {
+      return localStorage.getItem('aura_email_webhook_url') || '';
+    } catch {
+      return '';
+    }
+  });
+  const [testingEmail, setTestingEmail] = useState(false);
+  const [copiedScript, setCopiedScript] = useState(false);
+  const [showSetupGuide, setShowSetupGuide] = useState(false);
+
+  const googleScriptTemplate = `function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var to = data.to || "edwarddufale3@gmail.com";
+    var subject = data.subject || ("Aura Clinic OTP Code: " + data.otpCode);
+    var otp = data.otpCode || "------";
+    var staff = data.staffName || "Clinic Staff";
+    var role = data.roleTitle || "Front Desk Co-Admin";
+    var body = data.message || ("Aura Clinic Access OTP: " + otp);
+
+    var htmlBody = '<div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; border: 1px solid #e2d9d0; border-radius: 16px; padding: 24px; background: #ffffff;">' +
+      '<div style="text-align: center; margin-bottom: 16px;">' +
+        '<h2 style="color: #64313e; margin: 0; font-size: 22px; font-weight: bold;">AURA AESTHETIC CLINIC</h2>' +
+        '<div style="font-size: 11px; color: #a38f85; text-transform: uppercase; letter-spacing: 2px; margin-top: 4px;">Security Access Alert</div>' +
+      '</div>' +
+      '<div style="background: #faf6f0; border-radius: 12px; padding: 14px; margin-bottom: 16px; border-left: 4px solid #b76e79;">' +
+        '<div style="font-size: 13px; color: #444; margin-bottom: 4px;">Staff Login Authorization Request:</div>' +
+        '<div style="font-size: 15px; font-weight: bold; color: #1f2937;">' + staff + '</div>' +
+        '<div style="font-size: 12px; color: #6b7280;">' + role + '</div>' +
+      '</div>' +
+      '<div style="text-align: center; padding: 18px; background: #fff5f6; border-radius: 12px; border: 1px dashed #b76e79; margin-bottom: 16px;">' +
+        '<div style="font-size: 11px; text-transform: uppercase; color: #881337; font-weight: bold; letter-spacing: 1px;">Your 6-Digit Staff Access Code</div>' +
+        '<div style="font-size: 36px; font-family: monospace; font-weight: 900; color: #64313e; letter-spacing: 8px; margin: 10px 0;">' + otp + '</div>' +
+        '<div style="font-size: 11px; color: #9f1239;">Valid for 10 minutes • Share only with duty staff</div>' +
+      '</div>' +
+      '<div style="font-size: 11px; color: #9ca3af; text-align: center;">Aura Aesthetic Medical Group • Owner Master System</div>' +
+    '</div>';
+
+    MailApp.sendEmail({
+      to: to,
+      subject: subject,
+      body: body,
+      htmlBody: htmlBody
+    });
+
+    return ContentService.createTextOutput(JSON.stringify({ status: "success", to: to }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}`;
+
+  const handleCopyScript = () => {
+    navigator.clipboard.writeText(googleScriptTemplate);
+    setCopiedScript(true);
+    message.success('Google Apps Script code copied to clipboard!');
+    setTimeout(() => setCopiedScript(false), 3000);
+  };
+
+  const handleSaveWebhook = (url) => {
+    const clean = (url || '').trim();
+    setWebhookUrl(clean);
+    try {
+      localStorage.setItem('aura_email_webhook_url', clean);
+      message.success('Gmail Webhook URL saved successfully!');
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleTestEmail = async () => {
+    if (!webhookUrl || !webhookUrl.trim().startsWith('http')) {
+      message.warning('Please enter your Google Apps Script Web App URL first!');
+      return;
+    }
+    setTestingEmail(true);
+    try {
+      const res = await testRealEmailConnection(webhookUrl, ownerProfile?.email || 'edwarddufale3@gmail.com');
+      if (res.success) {
+        message.success(res.message, 6);
+      } else {
+        message.error(res.message);
+      }
+    } catch (err) {
+      message.error(`Test failed: ${err.message}`);
+    } finally {
+      setTestingEmail(false);
+    }
+  };
 
   const [addForm] = Form.useForm();
   const [editForm] = Form.useForm();
@@ -361,7 +458,162 @@ const StaffSecurityTab = () => {
         />
       </Card>
 
-      {/* SECTION 3: CLINIC DIRECTOR MASTER SETTINGS */}
+      {/* SECTION 3: DIRECT GMAIL INBOX DELIVERY */}
+      <Card
+        className="!rounded-3xl border-aura-200 shadow-sm overflow-hidden"
+        title={
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2 font-serif-luxury text-base text-aura-dark">
+              <MailOutlined className="text-rose-600" />
+              <span>Direct Gmail Inbox Delivery System</span>
+            </div>
+            {webhookUrl ? (
+              <Tag color="success" className="!rounded-full font-bold text-[10px] flex items-center gap-1">
+                <CheckCircleFilled />
+                <span>Live Inbox Webhook Active</span>
+              </Tag>
+            ) : (
+              <Tag color="processing" className="!rounded-full font-bold text-[10px]">
+                In-App Live Sync Active
+              </Tag>
+            )}
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-rose-50/60 via-amber-50/40 to-aura-50/60 border border-rose-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-gray-900 text-xs sm:text-sm">
+                  Recipient Gmail:
+                </span>
+                <Tag color="purple" className="font-mono font-bold text-xs !m-0">
+                  {ownerProfile?.email || 'edwarddufale3@gmail.com'}
+                </Tag>
+              </div>
+              <p className="text-[11px] text-gray-500">
+                Whenever any staff member requests a login OTP, the 6-digit code will be delivered straight to this personal Gmail account.
+              </p>
+            </div>
+
+            <Button
+              type="primary"
+              icon={<SendOutlined />}
+              loading={testingEmail}
+              onClick={handleTestEmail}
+              disabled={!webhookUrl}
+              className="!bg-rose-700 hover:!bg-rose-800 !rounded-xl font-bold text-xs !h-9 shadow-xs shrink-0"
+            >
+              Send Test Real Email
+            </Button>
+          </div>
+
+          {/* Webhook Configuration Input */}
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold text-gray-700">
+              Google Apps Script Web App URL:
+            </label>
+            <div className="flex gap-2">
+              <Input
+                placeholder="https://script.google.com/macros/s/AKfycb.../exec"
+                value={webhookUrl}
+                onChange={(e) => setWebhookUrl(e.target.value)}
+                className="!rounded-xl font-mono text-xs"
+                prefix={<LinkOutlined className="text-gray-400" />}
+              />
+              <Button
+                type="primary"
+                onClick={() => handleSaveWebhook(webhookUrl)}
+                className="!bg-aura-800 hover:!bg-aura-900 !rounded-xl font-bold text-xs !h-9"
+              >
+                Save URL
+              </Button>
+            </div>
+            <p className="text-[10px] text-gray-400">
+              * Saved securely in your browser's private local clinic storage.
+            </p>
+          </div>
+
+          {/* Setup Guide Collapsible */}
+          <div className="border border-gray-200 rounded-2xl p-4 bg-gray-50/60 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-amber-100 text-amber-900 flex items-center justify-center font-bold text-xs">
+                  ⚡
+                </div>
+                <strong className="text-xs text-gray-800">
+                  1-Minute Setup Guide: Free Google Apps Script Webhook
+                </strong>
+              </div>
+              <Button
+                type="link"
+                size="small"
+                onClick={() => setShowSetupGuide(!showSetupGuide)}
+                className="!text-aura-700 !font-bold text-xs"
+              >
+                {showSetupGuide ? 'Hide Instructions ▲' : 'Show 3-Step Setup ▼'}
+              </Button>
+            </div>
+
+            {showSetupGuide && (
+              <div className="space-y-3 pt-2 text-xs text-gray-600 border-t border-gray-200">
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-aura-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                    1
+                  </span>
+                  <div>
+                    <strong>Open Google Apps Script:</strong>
+                    <p className="text-[11px] text-gray-500 mt-0.5">
+                      Go to <a href="https://script.google.com" target="_blank" rel="noreferrer" className="text-aura-700 underline font-semibold">script.google.com</a> using your account (<code>{ownerProfile?.email || 'edwarddufale3@gmail.com'}</code>). Click <strong>"New project"</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-aura-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                    2
+                  </span>
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <strong>Paste this 12-line script:</strong>
+                      <Button
+                        size="small"
+                        icon={copiedScript ? <CheckOutlined /> : <CopyOutlined />}
+                        onClick={handleCopyScript}
+                        className="!rounded-lg text-[11px] font-bold !bg-white"
+                      >
+                        {copiedScript ? 'Copied Code!' : 'Copy Script Code'}
+                      </Button>
+                    </div>
+                    <pre className="p-3 bg-gray-900 text-emerald-400 rounded-xl font-mono text-[11px] overflow-x-auto max-h-40">
+                      {googleScriptTemplate}
+                    </pre>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <span className="w-5 h-5 rounded-full bg-aura-800 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                    3
+                  </span>
+                  <div>
+                    <strong>Deploy as Web App:</strong>
+                    <ul className="text-[11px] text-gray-500 list-disc list-inside mt-0.5 space-y-0.5">
+                      <li>Click <strong>Deploy → New deployment</strong></li>
+                      <li>Click the gear icon (⚙️) next to "Select type" → choose <strong>Web app</strong></li>
+                      <li>Set <em>Execute as:</em> <strong>Me ({ownerProfile?.email || 'edwarddufale3@gmail.com'})</strong></li>
+                      <li>Set <em>Who has access:</em> <strong>Anyone</strong></li>
+                      <li>Click <strong>Deploy</strong> → Authorize access → Copy the <strong>Web app URL</strong></li>
+                      <li>Paste the URL above and click <strong>Save URL</strong>!</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </Card>
+
+      {/* SECTION 4: CLINIC DIRECTOR MASTER SETTINGS */}
       <Card
         className="!rounded-3xl border-aura-200 shadow-sm"
         title={
