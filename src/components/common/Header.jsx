@@ -11,7 +11,8 @@ import {
   EyeOutlined,
   SearchOutlined,
   EllipsisOutlined,
-  InfoCircleOutlined
+  InfoCircleOutlined,
+  MobileOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 import QRCodeModal from './QRCodeModal';
@@ -19,6 +20,7 @@ import AdminAuthModal from './AdminAuthModal';
 import ReceiptModal from '../ClientBooking/ReceiptModal';
 import TrackBookingModal from '../ClientBooking/TrackBookingModal';
 import SmsNotificationModal from '../AdminDashboard/SmsNotificationModal';
+import InstallAppModal from './InstallAppModal';
 
 const Header = () => {
   const {
@@ -39,6 +41,7 @@ const Header = () => {
   const [qrModalVisible, setQrModalVisible] = useState(false);
   const [authModalVisible, setAuthModalVisible] = useState(false);
   const [trackModalVisible, setTrackModalVisible] = useState(false);
+  const [installModalVisible, setInstallModalVisible] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [selectedAptDetails, setSelectedAptDetails] = useState(null);
   const [reminderModalApt, setReminderModalApt] = useState(null);
@@ -52,6 +55,12 @@ const Header = () => {
   };
 
   const mobileAdminMenuItems = [
+    {
+      key: 'install',
+      icon: <MobileOutlined className="text-aura-600" />,
+      label: 'Install Mobile App',
+      onClick: () => setInstallModalVisible(true)
+    },
     {
       key: 'qr',
       icon: <QrcodeOutlined className="text-aura-600" />,
@@ -299,6 +308,18 @@ const Header = () => {
                 </div>
               )}
 
+              {/* Install App Button (iPhone & Android) */}
+              <Tooltip title="Install Aura Clinic as a native app on iOS or Android">
+                <Button
+                  icon={<MobileOutlined className="text-aura-700 text-xs sm:text-sm" />}
+                  onClick={() => setInstallModalVisible(true)}
+                  className="!border-aura-300 hover:!border-aura-500 !bg-gradient-to-r !from-aura-50 !to-white hover:!bg-white !px-2 sm:!px-3 !h-7 sm:!h-9 !text-aura-900 text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 shrink-0 shadow-2xs"
+                >
+                  <span className="hidden sm:inline">Install App</span>
+                  <span className="sm:hidden">App</span>
+                </Button>
+              </Tooltip>
+
               {/* Clinic Staff Only: Notification Bell & Admin Controls */}
               {isAdminAuthenticated && currentView === 'admin' && (
                 <>
@@ -395,6 +416,12 @@ const Header = () => {
         onClose={() => setReminderModalApt(null)}
         appointment={reminderModalApt}
         defaultMode="reminder"
+      />
+
+      {/* PWA Install Guide Modal for iOS & Android */}
+      <InstallAppModal
+        open={installModalVisible}
+        onClose={() => setInstallModalVisible(false)}
       />
     </>
   );

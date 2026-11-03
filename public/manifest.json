@@ -1,0 +1,24 @@
+{
+  "name": "Aura Diaz Cano Aesthetic Center",
+  "short_name": "Aura Clinic",
+  "description": "HairCare Specialist & Advanced Medical Aesthetics Booking & Portal",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F7",
+  "theme_color": "#87424D",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
