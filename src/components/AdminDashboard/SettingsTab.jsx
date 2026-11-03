@@ -109,7 +109,7 @@ const SettingsTab = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-aura-200/60 pb-4">
         <div>
           <h2 className="font-serif-luxury text-xl sm:text-2xl font-bold text-aura-dark tracking-tight">
-            Clinic Settings & Profile
+            Clinic Settings
           </h2>
           <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
             Manage your clinic branding, Medical Director contact details, and Admin security PIN.
