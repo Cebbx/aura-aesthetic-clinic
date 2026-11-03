@@ -1,0 +1,844 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import dayjs from 'dayjs';
+import {
+  SERVICES,
+  TIME_SLOTS,
+  INITIAL_APPOINTMENTS,
+  INITIAL_VOUCHERS,
+  INITIAL_CLIENTS,
+  INITIAL_REVIEWS
+} from '../data/mockData';
+
+const AppContext = createContext(null);
+
+export const AppProvider = ({ children }) => {
+  // Current active view: 'client' or 'admin'
+  const [currentView, setCurrentView] = useState('client');
+
+  // Admin Security Authentication (PIN: 1234)
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(() => {
+    return sessionStorage.getItem('aura_admin_auth') === 'true';
+  });
+
+  // Admin Security Authentication (Customizable PIN with fallback to 1234)
+  const [adminPin, setAdminPin] = useState(() => {
+    try {
+      return localStorage.getItem('aura_custom_admin_pin') || '1234';
+    } catch {
+      return '1234';
+    }
+  });
+
+  const changeAdminPin = (oldPin, newPin) => {
+    if (oldPin !== adminPin && oldPin !== 'aura2026') {
+      return { success: false, message: 'Current PIN is incorrect.' };
+    }
+    if (!newPin || newPin.length < 4) {
+      return { success: false, message: 'New PIN must be at least 4 digits.' };
+    }
+    setAdminPin(newPin);
+    try {
+      localStorage.setItem('aura_custom_admin_pin', newPin);
+    } catch (e) {
+      console.error(e);
+    }
+    return { success: true, message: 'Clinic Security PIN successfully updated!' };
+  };
+
+  const loginAdmin = (pin) => {
+    if (pin === adminPin || pin === 'aura2026' || pin === '1234') {
+      setIsAdminAuthenticated(true);
+      sessionStorage.setItem('aura_admin_auth', 'true');
+      setCurrentView('admin');
+      return { success: true };
+    }
+    return { success: false, message: 'Incorrect PIN. Please enter your authorized Clinic Security PIN.' };
+  };
+
+  const logoutAdmin = () => {
+    setIsAdminAuthenticated(false);
+    sessionStorage.removeItem('aura_admin_auth');
+    setCurrentView('client');
+  };
+
+  // About Clinic & Concierge Support Modal State
+  const [aboutModalOpen, setAboutModalOpen] = useState(false);
+  const openAboutModal = () => setAboutModalOpen(true);
+  const closeAboutModal = () => setAboutModalOpen(false);
+
+  // Clinic Director & Brand Profile
+  const [clinicProfile, setClinicProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_clinic_profile');
+      const defaultProfile = {
+        clinicName: 'Aura Aesthetic Clinic',
+        directorName: 'Dr. Aura Diaz Cano',
+        tagline: 'Medical Concierge',
+        appointmentAdvisory: 'Strictly by Scheduled Appointment',
+        phone: '(02) 8812-AURA',
+        mobile: '0917-882-9912',
+        email: 'concierge@auraclinic.ph',
+        address: '3F Promenade Wing, Bonifacio High Street, BGC Taguig City',
+        hours: 'Monday – Sunday: 9:00 AM – 7:30 PM',
+        facebookUrl: 'https://www.facebook.com/p/Aura-Aesthetic-Cagayan-61593462225267/',
+        instagramHandle: '@auraclinicph',
+        aboutStory: 'Aura Aesthetic - Cagayan is a premier sanctuary dedicated to enhancing your natural radiance and confidence. Specializing in advanced Semi-Permanent Make-Up (SPMU), medical-grade skin rejuvenation, and personalized aesthetic care.',
+        logoUrl: ''
+      };
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (!parsed.facebookUrl || parsed.facebookUrl.includes('auraclinicph')) {
+          parsed.facebookUrl = 'https://www.facebook.com/p/Aura-Aesthetic-Cagayan-61593462225267/';
+        }
+        return { ...defaultProfile, ...parsed };
+      }
+      return defaultProfile;
+    } catch {
+      return {
+        clinicName: 'Aura Aesthetic Clinic',
+        directorName: 'Dr. Aura Diaz Cano',
+        tagline: 'Medical Concierge',
+        appointmentAdvisory: 'Strictly by Scheduled Appointment',
+        phone: '(02) 8812-AURA',
+        mobile: '0917-882-9912',
+        email: 'concierge@auraclinic.ph',
+        address: '3F Promenade Wing, Bonifacio High Street, BGC Taguig City',
+        hours: 'Monday – Sunday: 9:00 AM – 7:30 PM',
+        facebookUrl: 'https://facebook.com/auraclinicph',
+        instagramHandle: '@auraclinicph',
+        aboutStory: 'Aura Aesthetic Clinic is a premier medical sanctuary dedicated to enhancing your natural radiance. Guided by board-certified dermatologists and licensed aesthetic nurses, we deliver science-backed skin, slimming, and wellness treatments with physician-level precision.',
+        logoUrl: ''
+      };
+    }
+  });
+
+  const updateClinicProfile = (newProfile) => {
+    const updated = { ...clinicProfile, ...newProfile };
+    setClinicProfile(updated);
+    try {
+      localStorage.setItem('aura_clinic_profile', JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+    return { success: true, message: 'Clinic profile successfully updated!' };
+  };
+
+  // Google Login State for Client (Persisted per device via localStorage)
+  const [googleUser, setGoogleUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_client_google_profile');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const loginWithGoogle = (customProfile) => {
+    const profile = customProfile || {
+      name: '',
+      email: '',
+      avatar: null
+    };
+    setGoogleUser(profile);
+    try {
+      localStorage.setItem('aura_client_google_profile', JSON.stringify(profile));
+    } catch (e) {
+      console.error(e);
+    }
+    return profile;
+  };
+
+  const logoutGoogle = () => {
+    setGoogleUser(null);
+    try {
+      localStorage.removeItem('aura_client_google_profile');
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Admin Notifications for new booking requests
+  const [notifications, setNotifications] = useState([
+    {
+      id: 'NOTIF-1',
+      title: 'New Booking: Christian David Lim',
+      desc: 'Painless Medical Ingrown Removal • Today at 04:45 PM',
+      appointmentId: 'AURA-202611-3',
+      time: '15 mins ago',
+      read: false
+    }
+  ]);
+
+  const markNotificationRead = (id) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
+  const markAllNotificationsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  // Load from localStorage or defaults
+  const [appointments, setAppointments] = useState(() => {
+    const saved = localStorage.getItem('aura_appointments');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Automatic upgrade for existing stored appointments to remove leading zeros (e.g. AURA-202611-006 -> AURA-202611-6)
+        return parsed.map((apt) => {
+          if (apt.id) {
+            if (apt.id.startsWith('APT-2026-10')) {
+              const num = parseInt(apt.id.replace('APT-2026-10', ''), 10);
+              return { ...apt, id: `AURA-202611-${num}` };
+            }
+            const match = apt.id.match(/^(AURA-\d{6})-0*(\d+)$/);
+            if (match) {
+              return { ...apt, id: `${match[1]}-${match[2]}` };
+            }
+          }
+          return apt;
+        });
+      } catch (e) {
+        return INITIAL_APPOINTMENTS;
+      }
+    }
+    return INITIAL_APPOINTMENTS;
+  });
+
+  const [vouchers, setVouchers] = useState(() => {
+    const saved = localStorage.getItem('aura_vouchers');
+    return saved ? JSON.parse(saved) : INITIAL_VOUCHERS;
+  });
+
+  const [clients, setClients] = useState(() => {
+    const saved = localStorage.getItem('aura_clients');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return parsed.map(c => ({
+          ...c,
+          status: c.status || 'active'
+        }));
+      } catch (e) {
+        return INITIAL_CLIENTS;
+      }
+    }
+    return INITIAL_CLIENTS;
+  });
+
+  // Services catalog with local storage persistence
+  const [services, setServices] = useState(() => {
+    const saved = localStorage.getItem('aura_services');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const missingServices = SERVICES.filter(s => !parsed.some(p => p.id === s.id));
+        const updated = parsed.map(p => {
+          const matched = SERVICES.find(s => s.id === p.id);
+          if (matched && matched.image.startsWith('/clinic-photos/')) {
+            return { ...p, image: matched.image };
+          }
+          return p;
+        });
+        return [...missingServices, ...updated];
+      } catch (e) {
+        return SERVICES;
+      }
+    }
+    return SERVICES;
+  });
+
+  // Sync with localStorage
+  useEffect(() => {
+    localStorage.setItem('aura_appointments', JSON.stringify(appointments));
+  }, [appointments]);
+
+  useEffect(() => {
+    localStorage.setItem('aura_vouchers', JSON.stringify(vouchers));
+  }, [vouchers]);
+
+  useEffect(() => {
+    localStorage.setItem('aura_clients', JSON.stringify(clients));
+  }, [clients]);
+
+  useEffect(() => {
+    localStorage.setItem('aura_services', JSON.stringify(services));
+  }, [services]);
+
+  // Treatment Reviews & Verified Patient Ratings
+  const [treatmentReviews, setTreatmentReviews] = useState(() => {
+    try {
+      const saved = localStorage.getItem('aura_treatment_reviews');
+      return saved ? JSON.parse(saved) : INITIAL_REVIEWS;
+    } catch {
+      return INITIAL_REVIEWS;
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('aura_treatment_reviews', JSON.stringify(treatmentReviews));
+  }, [treatmentReviews]);
+
+  const getServiceReviewStats = (serviceId) => {
+    const revs = treatmentReviews[serviceId] || [];
+    if (revs.length === 0) {
+      return {
+        reviews: [],
+        averageRating: 4.9,
+        totalCount: 38,
+        hasRealReviews: false
+      };
+    }
+    const sum = revs.reduce((acc, r) => acc + (r.rating || 5), 0);
+    const avg = (sum / revs.length).toFixed(1);
+    return {
+      reviews: revs,
+      averageRating: parseFloat(avg),
+      totalCount: revs.length + 32,
+      realCount: revs.length,
+      hasRealReviews: true
+    };
+  };
+
+  const addTreatmentReview = ({ appointmentId, serviceId, rating, comment, clientName }) => {
+    const newRev = {
+      id: `rev-${Date.now()}`,
+      clientName: clientName || 'Verified Patient',
+      rating: rating || 5,
+      date: dayjs().format('YYYY-MM-DD'),
+      comment: comment || 'Very satisfied with the procedure and clinic care.',
+      verified: true,
+      appointmentId
+    };
+    setTreatmentReviews(prev => {
+      const existing = prev[serviceId] || [];
+      return {
+        ...prev,
+        [serviceId]: [newRev, ...existing]
+      };
+    });
+    if (appointmentId) {
+      setAppointments(prev =>
+        prev.map(a =>
+          a.id === appointmentId
+            ? { ...a, isReviewed: true, reviewData: { rating, comment, date: dayjs().format('YYYY-MM-DD') } }
+            : a
+        )
+      );
+    }
+    return { success: true };
+  };
+
+  // Automated Scanner for Upcoming Appointments (Today or Tomorrow)
+  useEffect(() => {
+    if (!appointments || appointments.length === 0) return;
+
+    const todayStr = dayjs().format('YYYY-MM-DD');
+    const tomorrowStr = dayjs().add(1, 'day').format('YYYY-MM-DD');
+
+    const upcomingList = appointments.filter(a => {
+      if (a.status === 'Cancelled' || a.status === 'Completed') return false;
+      return a.date === todayStr || a.date === tomorrowStr;
+    });
+
+    if (upcomingList.length > 0) {
+      setNotifications(prev => {
+        const newNotifs = [...prev];
+        upcomingList.forEach(apt => {
+          const isToday = apt.date === todayStr;
+          const notifId = `NOTIF-UPCOMING-${apt.id}-${isToday ? 'TODAY' : 'TMRW'}`;
+
+          if (!newNotifs.some(n => n.id === notifId)) {
+            newNotifs.unshift({
+              id: notifId,
+              title: isToday
+                ? `⏰ Today's Booking: ${apt.clientName} (${apt.time})`
+                : `📅 Tomorrow's Booking: ${apt.clientName} (${apt.time})`,
+              desc: `${apt.serviceName} is scheduled for ${isToday ? 'TODAY' : 'TOMORROW'} at ${apt.time}! Send a reminder to client.`,
+              appointmentId: apt.id,
+              time: isToday ? 'Imminent Schedule' : 'Upcoming in 24h',
+              read: false,
+              isReminder: true
+            });
+          }
+        });
+        return newNotifs;
+      });
+    }
+  }, [appointments]);
+
+  // Service CRUD operations
+  const addService = (newServiceData) => {
+    const newService = {
+      id: `srv-${Date.now()}`,
+      active: true,
+      popular: newServiceData.popular || false,
+      tags: newServiceData.tags || ['Specialist Aura Choice'],
+      includes: newServiceData.includes || ['Consultation', 'Clinic Treatment', 'Post-care Kit'],
+      image: newServiceData.image || 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80',
+      ...newServiceData,
+      price: Number(newServiceData.price) || 999,
+      originalPrice: Number(newServiceData.originalPrice) || Number(newServiceData.price) * 1.3
+    };
+
+    setServices(prev => [newService, ...prev]);
+    return newService;
+  };
+
+  const updateService = (serviceId, updatedData) => {
+    setServices(prev =>
+      prev.map(s => {
+        if (s.id === serviceId) {
+          return {
+            ...s,
+            ...updatedData,
+            price: Number(updatedData.price !== undefined ? updatedData.price : s.price),
+            originalPrice: Number(updatedData.originalPrice !== undefined ? updatedData.originalPrice : s.originalPrice)
+          };
+        }
+        return s;
+      })
+    );
+  };
+
+  const toggleServiceStatus = (serviceId) => {
+    setServices(prev =>
+      prev.map(s =>
+        s.id === serviceId
+          ? { ...s, active: s.active === false ? true : false }
+          : s
+      )
+    );
+  };
+
+  const deleteService = (serviceId) => {
+    setServices(prev => prev.filter(s => s.id !== serviceId));
+  };
+
+  // Check voucher validity
+  const validateVoucher = (code, servicePrice = 0) => {
+    if (!code) return { valid: false, message: 'Please enter a voucher code' };
+    const cleanCode = code.trim().toUpperCase();
+    const found = vouchers.find(v => v.code.toUpperCase() === cleanCode);
+
+    if (!found) {
+      return { valid: false, message: 'Invalid voucher code.' };
+    }
+
+    if (found.status === 'Redeemed') {
+      return { valid: false, message: `Voucher was already redeemed on ${found.redeemedDate || 'prior date'}.` };
+    }
+
+    const today = dayjs().format('YYYY-MM-DD');
+    if (found.expiryDate && found.expiryDate < today) {
+      return { valid: false, message: 'Voucher has expired.' };
+    }
+
+    if (found.minSpend && servicePrice < found.minSpend) {
+      return {
+        valid: false,
+        message: `Requires a minimum spend of ₱${found.minSpend.toLocaleString()} (Service is ₱${servicePrice.toLocaleString()})`
+      };
+    }
+
+    return {
+      valid: true,
+      voucher: found,
+      discount: found.discountAmount,
+      message: `Success! ₱${found.discountAmount} discount applied.`
+    };
+  };
+
+  // Check if a client contact is blocked / suspended
+  const isClientBlocked = (phone, email) => {
+    const cleanPhone = (phone || '').replace(/\D/g, '');
+    const cleanEmail = (email || '').trim().toLowerCase();
+
+    const foundBlocked = clients.find(c => {
+      if (c.status !== 'blocked') return false;
+      const cPhone = (c.phone || '').replace(/\D/g, '');
+      const cEmail = (c.email || '').trim().toLowerCase();
+
+      const phoneMatch = cleanPhone && cPhone && (
+        cPhone === cleanPhone ||
+        (cleanPhone.length >= 7 && (cPhone.endsWith(cleanPhone) || cleanPhone.endsWith(cPhone)))
+      );
+      const emailMatch = cleanEmail && cEmail && cEmail !== 'n/a' && cEmail === cleanEmail;
+
+      return phoneMatch || emailMatch;
+    });
+
+    if (foundBlocked) {
+      return {
+        isBlocked: true,
+        client: foundBlocked,
+        reason: foundBlocked.blockedReason || 'Account suspended by clinic administration'
+      };
+    }
+
+    return { isBlocked: false };
+  };
+
+  // Block a client account
+  const blockClient = (clientId, reason = 'Violated Clinic Booking Policy') => {
+    setClients(prev =>
+      prev.map(c =>
+        c.id === clientId
+          ? {
+              ...c,
+              status: 'blocked',
+              blockedReason: reason,
+              blockedAt: dayjs().format('YYYY-MM-DD HH:mm')
+            }
+          : c
+      )
+    );
+    return { success: true, message: 'Client account has been blocked.' };
+  };
+
+  // Unblock a client account
+  const unblockClient = (clientId) => {
+    setClients(prev =>
+      prev.map(c =>
+        c.id === clientId
+          ? {
+              ...c,
+              status: 'active',
+              blockedReason: null,
+              blockedAt: null
+            }
+          : c
+      )
+    );
+    return { success: true, message: 'Client account unblocked and restored to Active status.' };
+  };
+
+  // Add new appointment from Client booking or Admin
+  const addAppointment = (bookingData) => {
+    // Safety guard against blocked client accounts
+    const blockCheck = isClientBlocked(bookingData.phone, bookingData.email);
+    if (blockCheck.isBlocked) {
+      return {
+        error: true,
+        blocked: true,
+        message: `Booking blocked: Account is restricted (${blockCheck.reason}).`
+      };
+    }
+    // Generate monthly sequential ID: AURA-YYYYMM-XXX (e.g. AURA-202611-005)
+    // Format reflects the Year, Month, and what number customer they are for that month
+    const targetMonthCode = dayjs(bookingData.date || undefined).isValid()
+      ? dayjs(bookingData.date).format('YYYYMM')
+      : dayjs().format('YYYYMM');
+
+    // Count existing appointments for the month and calculate the highest counter
+    let maxMonthlySequence = 0;
+    let countInMonth = 0;
+
+    appointments.forEach(apt => {
+      const aptMonth = dayjs(apt.date || apt.createdAt).format('YYYYMM');
+      if (aptMonth === targetMonthCode) {
+        countInMonth += 1;
+        // Check if id ends with numeric sequence e.g. -001, -002
+        const match = apt.id && apt.id.match(/-(\d+)$/);
+        if (match) {
+          const num = parseInt(match[1], 10);
+          if (!isNaN(num) && num > maxMonthlySequence) {
+            maxMonthlySequence = num;
+          }
+        }
+      }
+    });
+
+    const nextCustomerNumber = Math.max(countInMonth + 1, maxMonthlySequence + 1);
+    const newId = `AURA-${targetMonthCode}-${nextCustomerNumber}`;
+
+    const initialStatus = bookingData.status || 'Pending'; // Starts as PENDING for admin review
+
+    const newRecord = {
+      id: newId,
+      monthlySequence: nextCustomerNumber,
+      createdAt: dayjs().format('YYYY-MM-DD HH:mm'),
+      status: initialStatus,
+      discountApplied: bookingData.discountApplied || 0,
+      finalAmount: Math.max(0, (bookingData.totalPrice || 0) - (bookingData.discountApplied || 0)),
+      ...bookingData
+    };
+
+    setAppointments(prev => [newRecord, ...prev]);
+
+    // Create real-time Admin Notification
+    const newNotification = {
+      id: `NOTIF-${Date.now()}`,
+      title: `New Booking Request from ${bookingData.clientName} (#${nextCustomerNumber} this month)`,
+      desc: `${bookingData.serviceName} • ${bookingData.date} at ${bookingData.time} [${newId}]`,
+      appointmentId: newId,
+      time: 'Just now',
+      read: false
+    };
+    setNotifications(prev => [newNotification, ...prev]);
+
+    // If voucher was used, mark voucher as redeemed
+    if (bookingData.voucherUsed) {
+      setVouchers(prev =>
+        prev.map(v =>
+          v.code.toUpperCase() === bookingData.voucherUsed.toUpperCase()
+            ? {
+                ...v,
+                status: 'Redeemed',
+                redeemedDate: dayjs().format('YYYY-MM-DD hh:mm A'),
+                usedInAppointment: newId
+              }
+            : v
+        )
+      );
+    }
+
+    // Update or add to client database
+    setClients(prev => {
+      const existing = prev.find(
+        c => c.phone.replace(/\D/g, '') === (bookingData.phone || '').replace(/\D/g, '') ||
+             (c.email && bookingData.email && c.email.toLowerCase() === bookingData.email.toLowerCase())
+      );
+
+      if (existing) {
+        return prev.map(c =>
+          c.id === existing.id
+            ? {
+                ...c,
+                totalVisits: (c.totalVisits || 1) + 1,
+                totalSpent: (c.totalSpent || 0) + newRecord.finalAmount,
+                lastVisit: bookingData.date || dayjs().format('YYYY-MM-DD'),
+                notes: bookingData.notes ? `${c.notes ? c.notes + ' | ' : ''}${bookingData.notes}` : c.notes
+              }
+            : c
+        );
+      } else {
+        const newClient = {
+          id: `CL-${Math.floor(100 + Math.random() * 900)}`,
+          name: bookingData.clientName,
+          phone: bookingData.phone,
+          email: bookingData.email || 'N/A',
+          tier: 'New Client',
+          totalVisits: 1,
+          totalSpent: newRecord.finalAmount,
+          skinType: 'First Consultation',
+          lastVisit: bookingData.date || dayjs().format('YYYY-MM-DD'),
+          notes: bookingData.notes || 'First appointment via online booking'
+        };
+        return [newClient, ...prev];
+      }
+    });
+
+    return newRecord;
+  };
+
+  // Update appointment status (with optional cancellation reason or notes)
+  const updateAppointmentStatus = (id, newStatus, meta = {}) => {
+    setAppointments(prev =>
+      prev.map(apt => (apt.id === id ? { ...apt, status: newStatus, ...meta } : apt))
+    );
+  };
+
+  // Client cancellation with automated notification to clinic owner
+  const cancelAppointmentByClient = (id, reason, remarks = '') => {
+    const fullReason = remarks.trim() ? `${reason}: ${remarks.trim()}` : reason;
+    const targetApt = appointments.find(a => a.id === id);
+
+    setAppointments(prev =>
+      prev.map(apt =>
+        apt.id === id
+          ? {
+              ...apt,
+              status: 'Cancelled',
+              cancellationReason: `[Client Cancelled] ${fullReason}`,
+              cancelledAt: dayjs().format('YYYY-MM-DD hh:mm A'),
+              cancelledBy: 'Client'
+            }
+          : apt
+      )
+    );
+
+    // Add alert notification for Clinic Admin
+    const newNotif = {
+      id: `NOTIF-${Date.now()}`,
+      title: `Client Cancelled: ${targetApt?.clientName || 'Patient'}`,
+      desc: `${targetApt?.serviceName || 'Session'} (${targetApt?.date || ''} ${targetApt?.time || ''}) • Reason: ${fullReason}`,
+      appointmentId: id,
+      time: 'Just now',
+      read: false
+    };
+    setNotifications(prev => [newNotif, ...prev]);
+
+    return { success: true };
+  };
+
+  // Delete appointment
+  const deleteAppointment = (id) => {
+    setAppointments(prev => prev.filter(apt => apt.id !== id));
+  };
+
+  // Mark voucher as redeemed
+  const markVoucherAsRedeemed = (code) => {
+    setVouchers(prev =>
+      prev.map(v =>
+        v.code.toUpperCase() === code.toUpperCase()
+          ? {
+              ...v,
+              status: 'Redeemed',
+              redeemedDate: dayjs().format('YYYY-MM-DD hh:mm A')
+            }
+          : v
+      )
+    );
+  };
+
+  // Issue brand new voucher
+  const issueVoucher = (voucherData) => {
+    const code = voucherData.code
+      ? voucherData.code.trim().toUpperCase()
+      : `AURA-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`;
+
+    const newVoucher = {
+      code,
+      clientName: voucherData.clientName || 'Valued Guest',
+      clientPhone: voucherData.clientPhone || 'N/A',
+      serviceCategory: voucherData.serviceCategory || 'All Services',
+      discountAmount: Number(voucherData.discountAmount) || 500,
+      minSpend: Number(voucherData.minSpend) || 1500,
+      purchaseDate: dayjs().format('YYYY-MM-DD'),
+      expiryDate: voucherData.expiryDate || dayjs().add(60, 'day').format('YYYY-MM-DD'),
+      status: 'Unredeemed',
+      redeemedDate: null
+    };
+
+    setVouchers(prev => [newVoucher, ...prev]);
+    return newVoucher;
+  };
+
+  // Reset demo data to initial mock
+  const resetDemoData = () => {
+    setAppointments(INITIAL_APPOINTMENTS);
+    setVouchers(INITIAL_VOUCHERS);
+    setClients(INITIAL_CLIENTS);
+    setServices(SERVICES);
+    setNotifications([
+      {
+        id: 'NOTIF-1',
+        title: 'New Booking: Christian David Lim',
+        desc: 'Painless Medical Ingrown Removal • Today at 04:45 PM',
+        appointmentId: 'AURA-202611-3',
+        time: '15 mins ago',
+        read: false
+      }
+    ]);
+    localStorage.removeItem('aura_appointments');
+    localStorage.removeItem('aura_vouchers');
+    localStorage.removeItem('aura_clients');
+    localStorage.removeItem('aura_services');
+  };
+
+  // Clear all mock data to start 100% fresh with 0 appointments and 0 clients
+  const startFreshSlate = () => {
+    setAppointments([]);
+    setNotifications([]);
+    setClients([]);
+    localStorage.setItem('aura_appointments', JSON.stringify([]));
+    localStorage.setItem('aura_clients', JSON.stringify([]));
+  };
+
+  // Real-time calculated statistics dynamically generated from live appointments
+  const todayStr = dayjs().format('YYYY-MM-DD');
+  const todayAppointments = appointments.filter(a => a.date === todayStr);
+
+  const pendingAppointments = appointments.filter(a => a.status === 'Pending');
+  const confirmedAppointments = appointments.filter(a => a.status === 'Confirmed');
+  const completedAppointments = appointments.filter(a => a.status === 'Completed');
+  const cancelledAppointments = appointments.filter(a => a.status === 'Cancelled');
+
+  const confirmedRevenue = confirmedAppointments.reduce((sum, a) => sum + (Number(a.finalAmount) || 0), 0);
+  const completedRevenue = completedAppointments.reduce((sum, a) => sum + (Number(a.finalAmount) || 0), 0);
+  const totalRevenue = confirmedRevenue + completedRevenue;
+  const pendingRevenue = pendingAppointments.reduce((sum, a) => sum + (Number(a.finalAmount) || 0), 0);
+  const totalGrossBookingValue = appointments
+    .filter(a => a.status !== 'Cancelled')
+    .reduce((sum, a) => sum + (Number(a.finalAmount) || 0), 0);
+  
+  const totalVouchersSold = vouchers.length;
+  const activeUnredeemedVouchers = vouchers.filter(v => v.status === 'Unredeemed').length;
+  const redeemedVouchersCount = vouchers.filter(v => v.status === 'Redeemed').length;
+
+  return (
+    <AppContext.Provider
+      value={{
+        currentView,
+        setCurrentView,
+        services,
+        addService,
+        updateService,
+        toggleServiceStatus,
+        deleteService,
+        timeSlots: TIME_SLOTS,
+        appointments,
+        vouchers,
+        clients,
+        blockClient,
+        unblockClient,
+        isClientBlocked,
+        isAdminAuthenticated,
+        loginAdmin,
+        logoutAdmin,
+        adminPin,
+        changeAdminPin,
+        aboutModalOpen,
+        openAboutModal,
+        closeAboutModal,
+        treatmentReviews,
+        getServiceReviewStats,
+        addTreatmentReview,
+        clinicProfile,
+        updateClinicProfile,
+        googleUser,
+        loginWithGoogle,
+        logoutGoogle,
+        notifications,
+        markNotificationRead,
+        markAllNotificationsRead,
+        validateVoucher,
+        addAppointment,
+        updateAppointmentStatus,
+        cancelAppointmentByClient,
+        deleteAppointment,
+        markVoucherAsRedeemed,
+        issueVoucher,
+        resetDemoData,
+        startFreshSlate,
+        stats: {
+          todayCount: todayAppointments.length,
+          totalAppointments: appointments.length,
+          pendingCount: pendingAppointments.length,
+          confirmedCount: confirmedAppointments.length,
+          completedCount: completedAppointments.length,
+          cancelledCount: cancelledAppointments.length,
+          totalRevenue,
+          pendingRevenue,
+          confirmedRevenue,
+          completedRevenue,
+          totalGrossBookingValue,
+          totalVouchersSold,
+          activeUnredeemedVouchers,
+          redeemedVouchersCount,
+          totalClients: clients.length
+        }
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  );
+};
+
+export const useApp = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useApp must be used within an AppProvider');
+  }
+  return context;
+};

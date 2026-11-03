@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aura Diaz Cano Aesthetic Center — HairCare Specialist & Medical Aesthetics</title>
+    
+    <!-- Google Fonts: Playfair Display + Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              serif: ['"Playfair Display"', 'Georgia', 'serif'],
+              sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            },
+            colors: {
+              aura: {
+                50: '#fdf8f8',
+                100: '#faeff1',
+                200: '#f6dfe3',
+                300: '#ecc4cb',
+                400: '#de9fa9',
+                500: '#b76e79', // Rose gold primary
+                600: '#a35561',
+                700: '#87424d',
+                800: '#713942',
+                900: '#60333a',
+                dark: '#1e1417',
+                gold: '#c5a059',
+                champagne: '#f7f1e5',
+                cream: '#fbf9f6'
+              }
+            }
+          }
+        }
+      }
+    </script>
+    
+    <style>
+      body {
+        font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+        background-color: #faf7f7;
+        color: #2e1d23;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+      
+      .font-serif-luxury {
+        font-family: 'Playfair Display', Georgia, serif;
+      }
+      
+      /* Glassmorphism & soft aesthetic card styles */
+      .aura-glass {
+        background: rgba(255, 255, 255, 0.88);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(236, 196, 203, 0.35);
+      }
+      
+      .aura-gradient-card {
+        background: linear-gradient(135deg, #fffefe 0%, #fff6f8 100%);
+      }
+
+      .aura-hero-pattern {
+        background-color: #faf7f7;
+        background-image: radial-gradient(#ecc4cb 0.8px, transparent 0.8px), radial-gradient(#ecc4cb 0.8px, #faf7f7 0.8px);
+        background-size: 32px 32px;
+        background-position: 0 0, 16px 16px;
+      }
+
+      /* Custom scrollbars */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f6dfe3;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #b76e79;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #87424d;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

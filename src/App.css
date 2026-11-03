@@ -1,0 +1,36 @@
+/* App-level utility enhancements */
+.aura-steps .ant-steps-item-title {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+.aura-antd-table .ant-table {
+  border-radius: 16px !important;
+}
+
+/* Smooth Touch & Side-scroll without needing to scroll to the bottom */
+.aura-antd-table .ant-table-content,
+.aura-antd-table .ant-table-body {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #b76e79 #fbf0f2;
+}
+
+.aura-antd-table .ant-table-content::-webkit-scrollbar,
+.aura-antd-table .ant-table-body::-webkit-scrollbar {
+  height: 6px;
+}
+
+.aura-antd-table .ant-table-content::-webkit-scrollbar-track,
+.aura-antd-table .ant-table-body::-webkit-scrollbar-track {
+  background: #fbf0f2;
+  border-radius: 9999px;
+}
+
+.aura-antd-table .ant-table-content::-webkit-scrollbar-thumb,
+.aura-antd-table .ant-table-body::-webkit-scrollbar-thumb {
+  background: #b76e79;
+  border-radius: 9999px;
+}
