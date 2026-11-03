@@ -121,7 +121,7 @@ const TrackBookingModal = ({ open, onClose }) => {
         title={
           <div className="flex items-center gap-2 font-serif-luxury text-lg text-aura-dark">
             <CalendarOutlined className="text-aura-700" />
-            <span>Track & Manage My Appointments</span>
+            <span>Track Appointment</span>
           </div>
         }
         footer={null}
