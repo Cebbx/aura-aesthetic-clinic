@@ -37,6 +37,12 @@ class ErrorBoundary extends Component {
               Your session and clinic records are safe. We detected a minor connection hiccup, but no data was lost.
             </p>
 
+            {this.state.error && (
+              <div className="text-left bg-rose-50 border border-rose-200 text-rose-800 p-3 rounded-xl text-xs max-h-36 overflow-auto font-mono">
+                <strong>Error:</strong> {this.state.error.message || String(this.state.error)}
+              </div>
+            )}
+
             <div className="pt-2">
               <Button
                 type="primary"

@@ -198,7 +198,7 @@ const ClientBookingView = () => {
                 selectedDate={selectedDate}
                 onSelectDate={(date) => setSelectedDate(date)}
                 selectedTime={selectedTime}
-                onSelectTime={(time) => setSelectedTime(time)}
+                onSelectTime={(time) => setSelectedTime(typeof time === 'object' && time !== null ? (time.time || String(time)) : time)}
                 selectedServices={selectedServices}
                 selectedService={selectedService}
                 onUpdateServices={(newServices) => setSelectedServices(newServices)}

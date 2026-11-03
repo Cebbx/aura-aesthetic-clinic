@@ -170,7 +170,7 @@ const Step3ClientInfo = ({
         serviceName: currentList.map(s => s.name).join(' & '),
         serviceCategory: currentList[0]?.category || 'General',
         date: selectedDate.format('YYYY-MM-DD'),
-        time: selectedTime,
+        time: typeof selectedTime === 'object' && selectedTime !== null ? (selectedTime.time || '') : selectedTime,
         totalPrice: servicePrice,
         discountApplied: discount,
         finalAmount: finalPrice,
@@ -580,7 +580,9 @@ const Step3ClientInfo = ({
             </div>
             <div className="flex items-center gap-2 text-gray-700">
               <ClockCircleOutlined className="text-aura-600" />
-              <span className="font-semibold text-aura-800">{selectedTime}</span>
+              <span className="font-semibold text-aura-800">
+                {typeof selectedTime === 'object' && selectedTime !== null ? (selectedTime.time || '') : (selectedTime || '')}
+              </span>
             </div>
           </div>
 

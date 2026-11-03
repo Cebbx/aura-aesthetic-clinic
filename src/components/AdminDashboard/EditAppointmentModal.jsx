@@ -205,9 +205,15 @@ const EditAppointmentModal = ({ open, onClose, appointment }) => {
             className="!mb-0"
           >
             <Select className="!rounded-xl">
-              {timeSlots.map(t => (
-                <Option key={t} value={t}>{t}</Option>
-              ))}
+              {timeSlots.map(t => {
+                const slotTime = typeof t === 'object' && t !== null ? t.time : t;
+                const slotPeriod = typeof t === 'object' && t !== null && t.period ? ` (${t.period})` : '';
+                return (
+                  <Option key={slotTime} value={slotTime}>
+                    {slotTime}{slotPeriod}
+                  </Option>
+                );
+              })}
             </Select>
           </Form.Item>
         </div>

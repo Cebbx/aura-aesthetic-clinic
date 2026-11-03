@@ -220,7 +220,9 @@ const Step2SelectSchedule = ({
               <CheckCircleFilled className="text-emerald-500 text-sm shrink-0" />
               <span>
                 <strong>Reserved:</strong> {selectedDate.format('MMM D, YYYY')} at{' '}
-                <span className="text-aura-700 font-bold">{selectedTime}</span>
+                <span className="text-aura-700 font-bold">
+                  {typeof selectedTime === 'object' && selectedTime !== null ? (selectedTime.time || '') : (selectedTime || '')}
+                </span>
               </span>
             </div>
           }
