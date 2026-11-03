@@ -80,7 +80,7 @@ const VoucherTrackerTab = ({ initialFilters }) => {
             <div>
               <div className="flex items-center gap-1">
                 <Tag color="blue" className="!rounded-md text-[11px] font-semibold !m-0">
-                  ⚡ Paunahan Promo
+                  ⚡ Public Promo
                 </Tag>
               </div>
               <div className="text-[10px] text-gray-500 mt-0.5 font-medium">
@@ -99,7 +99,7 @@ const VoucherTrackerTab = ({ initialFilters }) => {
               </div>
               <div className="text-[11px] text-gray-400">{record.clientPhone}</div>
               <Tag color="green" className="!rounded text-[10px] !mt-0.5 !mr-0">
-                Claimed Winner ({record.usedCount || 1}/{record.maxUses || 1})
+                Claimed ({record.usedCount || 1}/{record.maxUses || 1})
               </Tag>
             </div>
           );
@@ -180,7 +180,7 @@ const VoucherTrackerTab = ({ initialFilters }) => {
           return (
             <div>
               <Tag color="default" className="!rounded-md !text-xs font-semibold bg-gray-100 text-gray-600 border-gray-300">
-                Ubos Na (Redeemed)
+                Fully Claimed
               </Tag>
               {record.redeemedDate && (
                 <div className="text-[10px] text-gray-400 mt-0.5">

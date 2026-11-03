@@ -88,10 +88,10 @@ const EditVoucherModal = ({ open, onClose, voucher }) => {
         >
           <Radio.Group className="w-full grid grid-cols-2 gap-2" buttonStyle="solid">
             <Radio.Button value="public" className="!rounded-xl text-center text-xs !py-1 !h-auto">
-              ⚡ Paunahan (Public Promo)
+              ⚡ Public Promo (First-Come)
             </Radio.Button>
             <Radio.Button value="personal" className="!rounded-xl text-center text-xs !py-1 !h-auto">
-              💎 Exclusive VIP Pass
+              💎 Exclusive VIP Client
             </Radio.Button>
           </Radio.Group>
         </Form.Item>
@@ -107,35 +107,52 @@ const EditVoucherModal = ({ open, onClose, voucher }) => {
           />
         </Form.Item>
 
-        {/* Public Paunahan Info Box OR Personal Client Input */}
+        {/* Public Promo Info Box OR Personal Client Input */}
         {voucherType === 'public' ? (
-          <div className="bg-amber-50/80 border border-amber-200/90 rounded-2xl p-3.5 mb-4 space-y-2.5">
+          <div className="bg-aura-50/70 border border-aura-200/90 rounded-2xl p-3.5 mb-4 space-y-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-950">
-                <ThunderboltOutlined className="text-amber-600" />
-                <span>Open Promo (First-Come, First-Served)</span>
+              <div className="flex items-center gap-1.5 text-xs font-bold text-aura-900">
+                <ThunderboltOutlined className="text-aura-700" />
+                <span>Public Campaign Policy</span>
               </div>
-              <span className="text-[10px] bg-amber-200/60 text-amber-900 font-semibold px-2 py-0.5 rounded-full">
-                {voucher.usedCount ? `${voucher.usedCount} Claimed` : 'No Name Needed'}
+              <span className="text-[10px] bg-white border border-aura-200 text-aura-800 font-semibold px-2 py-0.5 rounded-full">
+                {voucher.usedCount ? `${voucher.usedCount} Claimed` : 'Open to All'}
               </span>
             </div>
-            <p className="text-[11px] text-amber-900/80 leading-relaxed m-0">
+            <p className="text-[11px] text-gray-600 leading-relaxed m-0">
               {voucher.usedCount > 0
-                ? `Kasalukuyang may ${voucher.usedCount} customer nang nag-claim sa voucher na ito (${voucher.clientName}).`
-                : 'Bukas ito sa lahat ng client at paunahan silang mag-book. Ang unang mag-book ang magiging opisyal na winner!'}
+                ? `Currently redeemed by ${voucher.usedCount} client(s): ${voucher.clientName.replace(' (Claimed)', '')}.`
+                : 'No recipient name or phone required. Available to all clients on a first-come, first-served basis.'}
             </p>
-            <Form.Item
-              name="maxUses"
-              label={<span className="text-xs font-semibold text-amber-950">Total Available Slots (Ilan ang pwedeng makakuha bago maubos?)</span>}
-              className="!mb-0"
-            >
-              <InputNumber
-                min={Math.max(1, voucher.usedCount || 1)}
-                max={50}
-                className="w-full !rounded-xl text-xs"
-                placeholder="1 (Single Winner)"
-              />
-            </Form.Item>
+            <div className="pt-1">
+              <Form.Item
+                name="maxUses"
+                label={<span className="text-xs font-semibold text-aura-950">Available Redemption Slots</span>}
+                className="!mb-1"
+                rules={[{ required: true, message: 'Please enter available slots' }]}
+              >
+                <InputNumber
+                  min={Math.max(1, voucher.usedCount || 1)}
+                  max={100}
+                  className="w-full !rounded-xl text-xs"
+                  placeholder="1 (Single Winner)"
+                />
+              </Form.Item>
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <span className="text-[10px] text-gray-400">Quick select:</span>
+                {[1, 3, 5, 10].map(n => (
+                  <button
+                    key={n}
+                    type="button"
+                    disabled={n < (voucher.usedCount || 0)}
+                    onClick={() => form.setFieldsValue({ maxUses: n })}
+                    className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-aura-200 text-aura-700 hover:bg-aura-100 disabled:opacity-40 transition-colors cursor-pointer"
+                  >
+                    {n === 1 ? '1 Winner' : `${n} Slots`}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3">
