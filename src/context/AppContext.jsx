@@ -902,6 +902,28 @@ export const AppProvider = ({ children }) => {
     return newVoucher;
   };
 
+  // Update existing voucher
+  const updateVoucher = (code, updatedData) => {
+    setVouchers(prev =>
+      prev.map(v => {
+        if (v.code === code) {
+          return {
+            ...v,
+            ...updatedData,
+            discountAmount: updatedData.discountAmount !== undefined ? Number(updatedData.discountAmount) : v.discountAmount,
+            minSpend: updatedData.minSpend !== undefined ? Number(updatedData.minSpend) : v.minSpend
+          };
+        }
+        return v;
+      })
+    );
+  };
+
+  // Delete voucher
+  const deleteVoucher = (code) => {
+    setVouchers(prev => prev.filter(v => v.code !== code));
+  };
+
   // Reset demo data to initial mock
   const resetDemoData = () => {
     setAppointments(INITIAL_APPOINTMENTS);
@@ -1000,6 +1022,8 @@ export const AppProvider = ({ children }) => {
         deleteAppointment,
         markVoucherAsRedeemed,
         issueVoucher,
+        updateVoucher,
+        deleteVoucher,
         resetDemoData,
         startFreshSlate,
         stats: {

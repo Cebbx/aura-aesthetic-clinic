@@ -8,19 +8,23 @@ import {
   CopyOutlined,
   CheckCircleFilled,
   ClockCircleOutlined,
-  DollarOutlined
+  DollarOutlined,
+  EditOutlined,
+  DeleteOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 import CreateVoucherModal from './CreateVoucherModal';
+import EditVoucherModal from './EditVoucherModal';
 
 const { Option } = Select;
 const { Text } = Typography;
 
 const VoucherTrackerTab = ({ initialFilters }) => {
-  const { vouchers, markVoucherAsRedeemed } = useApp();
+  const { vouchers, markVoucherAsRedeemed, deleteVoucher } = useApp();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState(initialFilters?.statusFilter || 'ALL');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [editTargetVoucher, setEditTargetVoucher] = useState(null);
 
   // Filter vouchers
   const filteredVouchers = vouchers.filter(v => {
@@ -137,37 +141,62 @@ const VoucherTrackerTab = ({ initialFilters }) => {
     {
       title: 'Action',
       key: 'action',
-      width: 170,
-      render: (_, record) => {
-        if (record.status === 'Redeemed') {
-          return (
-            <span className="text-[11px] text-gray-400 flex items-center gap-1">
-              <CheckCircleFilled className="text-emerald-500" />
-              <span>Already Used</span>
-            </span>
-          );
-        }
-
-        return (
-          <Popconfirm
-            title="Mark Voucher as Redeemed"
-            description={`Verify that client ${record.clientName} is redeeming voucher ${record.code} now in the clinic?`}
-            onConfirm={() => handleRedeem(record.code)}
-            okText="Yes, Mark Redeemed"
-            cancelText="Cancel"
-            okButtonProps={{ className: '!bg-aura-700' }}
-          >
-            <Button
-              type="primary"
-              size="small"
-              icon={<CheckOutlined />}
-              className="!bg-aura-700 hover:!bg-aura-800 !border-none !rounded-lg text-xs font-semibold shadow-xs"
+      width: 230,
+      render: (_, record) => (
+        <Space size={6} wrap>
+          {record.status !== 'Redeemed' && (
+            <Popconfirm
+              title="Mark Voucher as Redeemed"
+              description={`Verify that client ${record.clientName} is redeeming voucher ${record.code} now in the clinic?`}
+              onConfirm={() => handleRedeem(record.code)}
+              okText="Yes, Redeem"
+              cancelText="Cancel"
+              okButtonProps={{ className: '!bg-emerald-600' }}
             >
-              Mark as Redeemed
+              <Button
+                type="primary"
+                size="small"
+                icon={<CheckOutlined />}
+                className="!bg-emerald-600 hover:!bg-emerald-700 !border-none !rounded-lg text-xs font-semibold shadow-xs"
+              >
+                Redeem
+              </Button>
+            </Popconfirm>
+          )}
+
+          <Tooltip title="Edit Voucher (Discount Amount, Min Spend, Expiry)">
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => setEditTargetVoucher(record)}
+              className="!rounded-lg text-xs !border-aura-400 !text-aura-800 hover:!bg-aura-50"
+            >
+              Edit
             </Button>
+          </Tooltip>
+
+          <Popconfirm
+            title="Delete Voucher"
+            description={`Are you sure you want to delete voucher ${record.code}?`}
+            onConfirm={() => {
+              deleteVoucher(record.code);
+              message.success(`Voucher ${record.code} deleted.`);
+            }}
+            okText="Delete"
+            cancelText="Cancel"
+            okButtonProps={{ danger: true }}
+          >
+            <Tooltip title="Delete Voucher">
+              <Button
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+                className="!rounded-lg text-xs hover:!bg-rose-50"
+              />
+            </Tooltip>
           </Popconfirm>
-        );
-      }
+        </Space>
+      )
     }
   ];
 
@@ -224,6 +253,13 @@ const VoucherTrackerTab = ({ initialFilters }) => {
       <CreateVoucherModal
         open={showCreateModal}
         onClose={() => setShowCreateModal(false)}
+      />
+
+      {/* Edit Voucher Modal */}
+      <EditVoucherModal
+        open={Boolean(editTargetVoucher)}
+        onClose={() => setEditTargetVoucher(null)}
+        voucher={editTargetVoucher}
       />
     </div>
   );
