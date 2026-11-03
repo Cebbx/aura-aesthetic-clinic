@@ -269,7 +269,7 @@ const Header = () => {
                     onClick={openAboutModal}
                     className="!border-aura-200 hover:!border-aura-400 !bg-aura-50/50 hover:!bg-white !px-2 sm:!px-3 !h-7 sm:!h-9 !text-aura-800 text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 shrink-0"
                   >
-                    <span>About</span>
+                    <span>About Us</span>
                   </Button>
                 </Tooltip>
               )}
