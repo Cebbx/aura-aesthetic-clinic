@@ -54,40 +54,13 @@ input, textarea, select {
   scrollbar-width: none;
 }
 
-/* Custom Ant Design overrides for luxury aesthetic theme */
+/* Custom Ant Design overrides - let ConfigProvider tokens control colors per theme */
 .ant-btn-primary {
-  background-color: #b76e79 !important;
-  border-color: #b76e79 !important;
-}
-
-.ant-btn-primary:hover,
-.ant-btn-primary:focus {
-  background-color: #87424d !important;
-  border-color: #87424d !important;
-}
-
-.ant-steps .ant-steps-item-finish .ant-steps-item-icon {
-  background-color: #b76e79 !important;
-  border-color: #b76e79 !important;
+  font-weight: 600;
 }
 
 .ant-steps .ant-steps-item-finish .ant-steps-item-icon > .ant-steps-icon {
-  color: #ffffff !important;
-}
-
-.ant-steps .ant-steps-item-process .ant-steps-item-icon {
-  background-color: #b76e79 !important;
-  border-color: #b76e79 !important;
-}
-
-.ant-steps .ant-steps-item-finish > .ant-steps-item-container > .ant-steps-item-tail::after {
-  background-color: #b76e79 !important;
-}
-
-.ant-menu-item-selected {
-  background-color: #fbf0f2 !important;
-  color: #87424d !important;
-  font-weight: 600;
+  color: #ffffff;
 }
 
 /* Print styles for booking receipt slip */

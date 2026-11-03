@@ -128,10 +128,25 @@ const ThemedApp = () => {
       components: {
         Button: {
           controlHeight: 40,
-          borderRadius: 10
+          borderRadius: 10,
+          primaryShadow: '0 4px 14px 0 rgba(226, 136, 150, 0.25)'
         },
         Card: {
           borderRadiusLG: 16
+        },
+        Table: {
+          headerBg: '#231820',
+          headerColor: '#fcf5f8',
+          rowHoverBg: '#2a1e26'
+        },
+        Steps: {
+          colorPrimary: '#e28896',
+          finishIconBorderColor: '#e28896'
+        },
+        Menu: {
+          itemSelectedBg: '#2e1c25',
+          itemSelectedColor: '#f7b0bc',
+          itemHoverBg: '#24171e'
         }
       }
     };
@@ -152,10 +167,25 @@ const ThemedApp = () => {
       components: {
         Button: {
           controlHeight: 40,
-          borderRadius: 10
+          borderRadius: 10,
+          primaryShadow: '0 4px 14px 0 rgba(184, 134, 11, 0.25)'
         },
         Card: {
           borderRadiusLG: 16
+        },
+        Table: {
+          headerBg: '#fbf6ea',
+          headerColor: '#6b4f0b',
+          rowHoverBg: '#fffdf9'
+        },
+        Steps: {
+          colorPrimary: '#b8860b',
+          finishIconBorderColor: '#b8860b'
+        },
+        Menu: {
+          itemSelectedBg: '#fcf7ee',
+          itemSelectedColor: '#8a660a',
+          itemHoverBg: '#faf3e3'
         }
       }
     };
@@ -176,10 +206,25 @@ const ThemedApp = () => {
       components: {
         Button: {
           controlHeight: 40,
-          borderRadius: 10
+          borderRadius: 10,
+          primaryShadow: '0 4px 14px 0 rgba(15, 118, 110, 0.25)'
         },
         Card: {
           borderRadiusLG: 16
+        },
+        Table: {
+          headerBg: '#f0fdfa',
+          headerColor: '#115e59',
+          rowHoverBg: '#f8fafc'
+        },
+        Steps: {
+          colorPrimary: '#0f766e',
+          finishIconBorderColor: '#0f766e'
+        },
+        Menu: {
+          itemSelectedBg: '#f0fdfa',
+          itemSelectedColor: '#0f766e',
+          itemHoverBg: '#f0fdfa'
         }
       }
     };

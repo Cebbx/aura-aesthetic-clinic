@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Tag, Tooltip, Button } from 'antd';
+import { Modal, Tag, Tooltip, Button, message } from 'antd';
 import {
   BgColorsOutlined,
   CheckCircleFilled,
@@ -78,6 +78,13 @@ const BrandQuickMenuModal = ({
   const handleSelectTheme = (key) => {
     if (changeThemeMode) {
       changeThemeMode(key);
+      const names = {
+        rose: '🌸 Aura Rose',
+        dark: '🌙 Midnight Noir (Dark Mode)',
+        champagne: '👑 Royal Champagne (VIP Gold)',
+        diamond: '💎 Pure Diamond (Platinum)'
+      };
+      message.success(`Theme switched to ${names[key] || key}!`);
     }
   };
 
