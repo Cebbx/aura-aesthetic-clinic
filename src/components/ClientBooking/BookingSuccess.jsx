@@ -113,19 +113,28 @@ const BookingSuccess = ({ appointment, onReset }) => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs">
-              <div className="space-y-0.5 sm:col-span-2">
+              <div className="space-y-1 sm:col-span-2">
                 <span className="text-gray-400">
                   {Array.isArray(appointment.services) && appointment.services.length > 1 ? `Booked Treatments (${appointment.services.length}):` : 'Treatment:'}
                 </span>
-                <p className="font-bold text-gray-800 text-xs sm:text-sm">{appointment.serviceName}</p>
-                {Array.isArray(appointment.services) && appointment.services.length > 1 && (
-                  <div className="flex flex-wrap gap-1.5 pt-1">
+                
+                {Array.isArray(appointment.services) && appointment.services.length > 1 ? (
+                  <div className="flex flex-col gap-1.5 pt-1">
                     {appointment.services.map((s, idx) => (
-                      <span key={idx} className="bg-aura-50 border border-aura-200 text-aura-800 text-[11px] px-2.5 py-0.5 rounded-lg font-medium">
-                        ✓ {s.name} • ₱{Number(s.price).toLocaleString()}
-                      </span>
+                      <div
+                        key={idx}
+                        className="flex items-center justify-between bg-aura-50/70 border border-aura-200/80 text-aura-900 text-xs px-3 py-1.5 rounded-xl font-medium"
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <span className="text-aura-600 font-bold">✓</span>
+                          <span className="font-semibold text-gray-800">{s.name}</span>
+                        </span>
+                        <span className="font-mono text-aura-700 font-bold ml-2">₱{Number(s.price).toLocaleString()}</span>
+                      </div>
                     ))}
                   </div>
+                ) : (
+                  <p className="font-bold text-gray-800 text-xs sm:text-sm">{appointment.serviceName}</p>
                 )}
               </div>
 
