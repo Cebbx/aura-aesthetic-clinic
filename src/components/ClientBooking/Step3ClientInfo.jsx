@@ -327,14 +327,12 @@ const Step3ClientInfo = ({
               <Form.Item
                 name="phone"
                 label={
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-xs font-semibold text-gray-700">
-                      Mobile Number *
+                  <span className="text-xs font-semibold text-gray-700 flex items-center gap-2">
+                    <span>Mobile Number *</span>
+                    <span className="text-[10px] text-aura-700 font-normal bg-aura-50 px-1.5 py-0.5 rounded border border-aura-200">
+                      09XX
                     </span>
-                    <span className="text-[10px] text-aura-700 font-semibold bg-aura-50 px-2 py-0.5 rounded border border-aura-200">
-                      Format: 09XX
-                    </span>
-                  </div>
+                  </span>
                 }
                 normalize={(value) => {
                   if (!value) return '';
@@ -370,10 +368,10 @@ const Step3ClientInfo = ({
               <Form.Item
                 name="email"
                 label={
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-xs font-semibold text-gray-700">Email Address</span>
-                    <span className="text-[10px] text-gray-400">For e-Receipt & Slip</span>
-                  </div>
+                  <span className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+                    <span>Email Address</span>
+                    <span className="text-[11px] font-normal text-gray-400">(Optional)</span>
+                  </span>
                 }
                 rules={[{ type: 'email', message: 'Please enter a valid email address (e.g. name@gmail.com)' }]}
               >
