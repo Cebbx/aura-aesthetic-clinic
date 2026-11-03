@@ -203,17 +203,17 @@ const TrackBookingModal = ({ open, onClose }) => {
                         <div>
                           {apt.status === 'Confirmed' && (
                             <Tag color="green" className="!rounded-full px-2.5 py-0.5 font-semibold text-xs flex items-center gap-1">
-                              <CheckCircleFilled /> Approved & Confirmed
+                              <CheckCircleFilled /> Confirmed
                             </Tag>
                           )}
                           {apt.status === 'Pending' && (
                             <Tag color="gold" className="!rounded-full px-2.5 py-0.5 font-semibold text-xs flex items-center gap-1">
-                              <HourglassFilled /> Awaiting Staff Approval
+                              <HourglassFilled /> Pending Approval
                             </Tag>
                           )}
                           {apt.status === 'Completed' && (
                             <Tag color="blue" className="!rounded-full px-2.5 py-0.5 font-semibold text-xs flex items-center gap-1">
-                              <CheckCircleFilled /> Session Done
+                              <CheckCircleFilled /> Completed
                             </Tag>
                           )}
                           {apt.status === 'Cancelled' && (
@@ -295,7 +295,7 @@ const TrackBookingModal = ({ open, onClose }) => {
 
                       {apt.status === 'Confirmed' && apt.date !== dayjs().format('YYYY-MM-DD') && apt.date !== dayjs().add(1, 'day').format('YYYY-MM-DD') && (
                         <div className="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200 text-emerald-800 text-[11px] leading-relaxed">
-                          Your schedule is officially <strong>Approved</strong>! Location: <strong>{clinicProfile?.address || '3F Promenade, BGC Taguig'}</strong>.
+                          Your schedule is officially <strong>Confirmed</strong>! Location: <strong>{clinicProfile?.address || '3F Promenade, BGC Taguig'}</strong>.
                         </div>
                       )}
 

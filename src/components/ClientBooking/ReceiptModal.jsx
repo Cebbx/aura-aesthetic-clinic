@@ -86,11 +86,11 @@ const ReceiptModal = ({ open, onClose, appointment }) => {
           <div className="text-right">
             {appointment.status === 'Confirmed' ? (
               <Tag color="green" className="!rounded-full px-3 py-0.5 font-semibold text-xs">
-                CONFIRMED SLOT
+                CONFIRMED
               </Tag>
             ) : appointment.status === 'Completed' ? (
               <Tag color="blue" className="!rounded-full px-3 py-0.5 font-semibold text-xs">
-                COMPLETED SESSION
+                COMPLETED
               </Tag>
             ) : appointment.status === 'Cancelled' ? (
               <Tag color="red" className="!rounded-full px-3 py-0.5 font-semibold text-xs">
