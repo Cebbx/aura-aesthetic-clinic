@@ -45,12 +45,16 @@ const Step2SelectSchedule = ({
     return current && current < dayjs().startOf('day');
   };
 
+  const hasBookAndBuy = currentList.some(s => s && s.bookAndBuy);
+
   // Quick Date Selectors
   const quickDates = [
     { label: 'Today', date: dayjs() },
     { label: 'Tomorrow', date: dayjs().add(1, 'day') },
-    { label: 'In 2 Days', date: dayjs().add(2, 'day') },
-    { label: 'Weekend', date: dayjs().day(6) >= dayjs() ? dayjs().day(6) : dayjs().add(7, 'day').day(6) }
+    { label: 'Weekend', date: dayjs().day(6) >= dayjs() ? dayjs().day(6) : dayjs().add(7, 'day').day(6) },
+    { label: '🎄 Dec 2026 (Christmas)', date: dayjs('2026-12-23') },
+    { label: '🎆 Jan 2027 (New Year)', date: dayjs('2027-01-15') },
+    { label: '💖 Feb 2027 (Valentine)', date: dayjs('2027-02-14') }
   ];
 
   const morningSlots = timeSlots.filter(s => s.period === 'Morning');
@@ -87,6 +91,26 @@ const Step2SelectSchedule = ({
           </button>
         </div>
       </div>
+
+      {/* Book & Buy Privilege Holiday Notice */}
+      {hasBookAndBuy && (
+        <div className="bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-amber-500/10 border border-amber-300/80 rounded-2xl p-3.5 sm:p-4 flex items-start gap-3 shadow-2xs">
+          <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-sm shrink-0">
+            👑
+          </div>
+          <div>
+            <div className="text-xs sm:text-sm font-bold text-amber-950 flex flex-wrap items-center gap-2">
+              <span>Book & Buy Privilege Slot Active</span>
+              <span className="text-[10px] bg-amber-200 text-amber-900 font-bold px-2 py-0.5 rounded-full">
+                Zero Peak Surge Fees
+              </span>
+            </div>
+            <p className="text-[11px] sm:text-xs text-amber-900/85 mt-1 leading-relaxed">
+              Your lean-season promotional price is locked in! You may schedule anytime this week or advance-book for the Christmas Rush (Dec 2026), New Year (Jan 2027), or Valentine’s (Feb 2027) at your most convenient time.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Date Selection */}

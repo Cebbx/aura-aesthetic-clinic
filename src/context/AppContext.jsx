@@ -210,7 +210,16 @@ export const AppProvider = ({ children }) => {
 
   const [vouchers, setVouchers] = useState(() => {
     const saved = localStorage.getItem('aura_vouchers');
-    return saved ? JSON.parse(saved) : INITIAL_VOUCHERS;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const missingVouchers = INITIAL_VOUCHERS.filter(v => !parsed.some(p => p.code === v.code));
+        return [...missingVouchers, ...parsed];
+      } catch (e) {
+        return INITIAL_VOUCHERS;
+      }
+    }
+    return INITIAL_VOUCHERS;
   });
 
   const [clients, setClients] = useState(() => {
@@ -312,8 +321,14 @@ export const AppProvider = ({ children }) => {
               }).catch(() => {});
             }
 
-            if (db.services && db.services.length > 0) setServices(db.services);
-            if (db.vouchers && db.vouchers.length > 0) setVouchers(db.vouchers);
+            if (db.services && db.services.length > 0) {
+              const missingFromDb = SERVICES.filter(s => !db.services.some(p => p.id === s.id));
+              setServices([...db.services, ...missingFromDb]);
+            }
+            if (db.vouchers && db.vouchers.length > 0) {
+              const missingVouchersFromDb = INITIAL_VOUCHERS.filter(v => !db.vouchers.some(p => p.code === v.code));
+              setVouchers([...db.vouchers, ...missingVouchersFromDb]);
+            }
             if (db.clients && db.clients.length > 0) setClients(db.clients);
             if (db.treatmentReviews && Object.keys(db.treatmentReviews).length > 0) setTreatmentReviews(db.treatmentReviews);
             if (db.clinicProfile && db.clinicProfile.clinicName) setClinicProfile(db.clinicProfile);

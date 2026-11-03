@@ -19,6 +19,7 @@ const { Option } = Select;
 
 const CATEGORIES = [
   'All Services',
+  '🔥 Book & Buy Privilege',
   'Hair Care & Scalp',
   'Facial',
   'Slimming',
@@ -37,7 +38,10 @@ const ServicesTab = () => {
 
   // Filtered services
   const filteredServices = services.filter(service => {
-    const matchesCat = selectedCategory === 'All Services' || service.category === selectedCategory;
+    const matchesCat =
+      selectedCategory === 'All Services' ||
+      (selectedCategory.includes('Book & Buy') && service.bookAndBuy) ||
+      service.category === selectedCategory;
     const matchesSearch =
       service.name.toLowerCase().includes(search.toLowerCase()) ||
       service.category.toLowerCase().includes(search.toLowerCase()) ||

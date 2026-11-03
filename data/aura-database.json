@@ -1,5 +1,5 @@
 {
-  "lastUpdated": 1793697666713,
+  "lastUpdated": 1793700880582,
   "appointments": [
     {
       "id": "AURA-202611-9",
@@ -315,6 +315,366 @@
   ],
   "services": [
     {
+      "id": "srv-bnb-1",
+      "name": "Traditional Hair Rebonding (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 799,
+      "originalPrice": 2000,
+      "duration": "2.5 hrs",
+      "description": "Classic sleek, pin-straight hair rebonding using Japanese thermal silk softening cream. Locks in mirror shine and long-lasting straightness. Avail anytime during peak season.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Lock Peak Season",
+        "60% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱799",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1560750588-73207b1ef5b8?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Pre-Wash Clarifying Purge",
+        "Japanese Thermal Softening Complex",
+        "Keratin Silk Infusion Glaze",
+        "Post-Straightening Blowout"
+      ]
+    },
+    {
+      "id": "srv-bnb-2",
+      "name": "Nano Steam & Frozen Cryo-Iron Treatment (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 699,
+      "originalPrice": 1800,
+      "duration": "60 mins",
+      "description": "Cryogenic cold-iron therapy (-16°C) sealing open cuticles paired with sub-micron nano steam mist to deep-infuse amino acid proteins into brittle, heat-damaged hair.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Sub-Zero Cuticle Seal",
+        "61% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱699",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Nano-Mist Steam Vapor Therapy",
+        "Cryo-Plate Sub-Zero Sealing",
+        "Deep Ceramide Bond Ampoule",
+        "Thermal Shield Blowout"
+      ]
+    },
+    {
+      "id": "srv-bnb-3",
+      "name": "Organic Botanical Rebonding Therapy (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 1499,
+      "originalPrice": 3500,
+      "duration": "3 hrs",
+      "description": "Gentle, formaldehyde-free organic botanical rebonding enriched with argan and plant ceramides. Delivers smooth, pin-straight hair without harsh chemical fumes.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "100% Formaldehyde-Free",
+        "57% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱1,499",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Organic Herbal Hair Prep",
+        "Zero-Ammonia Straightening Complex",
+        "Argan & Jojoba Sealing Glaze",
+        "Botanical Moisture Wrap"
+      ]
+    },
+    {
+      "id": "srv-bnb-4",
+      "name": "Glossing Cellophane Color & Shine Treatment (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 299,
+      "originalPrice": 800,
+      "duration": "45 mins",
+      "description": "Super-gloss high-shine protective cellophane coating that revitalizes dull hair, enhances color vibrancy, and adds a glass-like lustrous sheen starting at only ₱299.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Starting at ₱299",
+        "63% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱299",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Deep Cleansing Scalp Wash",
+        "High-Gloss Cellophane Glaze",
+        "Thermal Heat Cap Activation",
+        "Cool-Blast Silkening Blowdry"
+      ]
+    },
+    {
+      "id": "srv-bnb-5",
+      "name": "Protein Straight Bond Cellular Infusion (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 1499,
+      "originalPrice": 3500,
+      "duration": "2.5 hrs",
+      "description": "Intensive peptide and hydrolyzed wheat protein bond restructuring. Straightens rebel curls and reinforces broken hair disulphide bonds from within.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Disulphide Bond Repair",
+        "57% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱1,499",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Protein Porosity Assessment",
+        "Hydrolyzed Amino Straight Complex",
+        "Ultrasonic Micro-Iron Infusion",
+        "Peptide Sealing Serum"
+      ]
+    },
+    {
+      "id": "srv-bnb-6",
+      "name": "Cysteine Complex Amino Acid Straightening (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 999,
+      "originalPrice": 2500,
+      "duration": "2 hrs",
+      "description": "Natural, non-chemical cysteine amino acid smoothing treatment. Eliminates 90% frizz and relaxes wavy texture while preserving natural hair bounce and body.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Zero Damage Amino Care",
+        "60% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱999",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Clarifying Keratin Wash",
+        "Concentrated Cysteine Amino Formula",
+        "Controlled Heat Activation",
+        "Antioxidant Glaze Finish"
+      ]
+    },
+    {
+      "id": "srv-bnb-7",
+      "name": "Wireless Infrared Keratin Restoration Therapy (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 999,
+      "originalPrice": 2500,
+      "duration": "90 mins",
+      "description": "Cutting-edge wireless infrared & ultrasonic cold plate technology that seals liquid keratin molecules deep into the hair cortex without extreme heat damage.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Infrared Cold-Iron Tech",
+        "60% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱999",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1582095133179-bfd08e2fc6b3?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Purifying Detox Wash",
+        "Pure Hydrolyzed Liquid Keratin",
+        "Wireless Infrared Plate Infusion",
+        "Velvet Smooth Blowout"
+      ]
+    },
+    {
+      "id": "srv-bnb-8",
+      "name": "Brazilian Keratin Blowout Express Spa (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 499,
+      "originalPrice": 1500,
+      "duration": "90 mins",
+      "description": "The classic frizz-taming salon staple. Creates a protective protein layer around each hair strand to banish humidity frizz and leave hair soft and manageable.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Anti-Humidity Seal",
+        "66% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱499",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1500840216050-6ffa99d75160?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Anti-Residue Hair Cleansing",
+        "Brazilian Acai Keratin Elixir",
+        "Titanium Seal Pass",
+        "Silky Mirror Shine Finish"
+      ]
+    },
+    {
+      "id": "srv-bnb-9",
+      "name": "Full Luxury Hair Color & Tone Balance (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 499,
+      "originalPrice": 1200,
+      "duration": "75 mins",
+      "description": "Vibrant single-process permanent or semi-permanent rich hair color with customized tones. Provides 100% gray coverage and radiant, multi-dimensional luster.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Full Pigment Saturation",
+        "58% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱499",
+      "popular": false,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Personal Shade Consultation",
+        "Low-Ammonia Color Application",
+        "Scalp Barrier Oil Guard",
+        "Color-Lock Acidifying Rinse"
+      ]
+    },
+    {
+      "id": "srv-bnb-10",
+      "name": "Dimension Foil Highlights & Lowlights (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 599,
+      "originalPrice": 1500,
+      "duration": "90 mins",
+      "description": "Section-by-section precision foil weaving to create sun-kissed brightness, contrast, and depth throughout your crown and face-framing sections.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Multi-Tonal Weaving",
+        "60% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱599",
+      "popular": false,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Sectional Foil Weave Technique",
+        "Bond-Protecting Lightener",
+        "Neutralizing Toner Wash",
+        "Silk Smooth Conditioning"
+      ]
+    },
+    {
+      "id": "srv-bnb-11",
+      "name": "Artisan French Balayage & Glaze Melt (Book & Buy)",
+      "category": "Hair Care & Scalp",
+      "price": 1499,
+      "originalPrice": 3500,
+      "duration": "2.5 hrs",
+      "description": "Hand-painted bespoke French balayage for a seamless, natural transition of light and dimension with soft root melt. Gorgeous grow-out with no harsh lines.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Hand-Painted Couture",
+        "57% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱1,499",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Custom Gradient Hand-Painting",
+        "Bond Multiplier Blend",
+        "Gloss Shadow Root Melt",
+        "Luxury Wave Styling"
+      ]
+    },
+    {
+      "id": "srv-bnb-12",
+      "name": "Collagen Induction Microneedling Therapy (Book & Buy)",
+      "category": "Facial",
+      "price": 999,
+      "originalPrice": 2500,
+      "duration": "50 mins",
+      "description": "Medical-grade automated micro-punctures stimulating elastin and collagen renewal to fade acne scars, shrink enlarged pores, and tighten fine lines.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Acne Scar Smoothing",
+        "60% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱999",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Topical Numbing Cream",
+        "Sterile Titanium 36-Pin Cartridge",
+        "EGF Growth Factor Serum Infusion",
+        "Cryo Calming Collagen Sheet Mask"
+      ]
+    },
+    {
+      "id": "srv-bnb-13",
+      "name": "Classic Deep Cleansing Glow Facial & Steam Purge (Book & Buy)",
+      "category": "Facial",
+      "price": 499,
+      "originalPrice": 1200,
+      "duration": "45 mins",
+      "description": "Essential medical skin detox including warm herbal ozone steaming, hygienic comedone vacuum extraction, high frequency pore sterilization, and calming mask.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Deep Pore Detox",
+        "58% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱499",
+      "popular": false,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1512290900672-1f55b9659f61?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Herbal Ozone Steaming",
+        "Aseptic Blackhead Extraction",
+        "High-Frequency Antibacterial Wand",
+        "Cooling Botanical Jelly Mask"
+      ]
+    },
+    {
+      "id": "srv-bnb-14",
+      "name": "Korean Semi-Permanent BB Glow Porcelain Skin (Book & Buy)",
+      "category": "Facial",
+      "price": 699,
+      "originalPrice": 1800,
+      "duration": "60 mins",
+      "description": "Infusion of plant-based tinted pigment serums and niacinamide peptides using nano-needling to achieve an instant, semi-permanent radiant foundation glow.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "Foundation-Free Radiance",
+        "61% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱699",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Gentle Enzyme Exfoliation",
+        "Korean Meso BB Ampoule Shading",
+        "Nano-Needle Cartridge Infusion",
+        "LED Light Rejuvenation Shield"
+      ]
+    },
+    {
+      "id": "srv-bnb-15",
+      "name": "HydraFacial 7-in-1 Hydro-Dermabrasion & Aqua Peel (Book & Buy)",
+      "category": "Facial",
+      "price": 899,
+      "originalPrice": 2000,
+      "duration": "50 mins",
+      "description": "Complete 7-stage aqua vortex skin overhaul: deep peeling, gentle blackhead suction, ultrasonic nutrient infusion, RF contouring, and cold hammer tightener.",
+      "tags": [
+        "🔥 Book & Buy Privilege",
+        "7-in-1 Aqua Vortex",
+        "55% OFF"
+      ],
+      "promoBadge": "Book & Buy: ₱899",
+      "popular": true,
+      "bookAndBuy": true,
+      "image": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80",
+      "includes": [
+        "Vortex-Suction Aqua Cleansing",
+        "AHA/BHA Solution Peel",
+        "Ultrasonic Serum Delivery",
+        "Cryo-Hammer Pore Tightener"
+      ]
+    },
+    {
       "id": "srv-nail-1",
       "name": "Precision Gel Manicure & Hand Restoration Spa",
       "category": "Ingrown Removal",
@@ -623,6 +983,36 @@
     }
   ],
   "vouchers": [
+    {
+      "code": "PRIVILEGE-DEC",
+      "voucherType": "public",
+      "maxUses": 10,
+      "usedCount": 0,
+      "clientName": "Open to All (Book & Buy Privilege)",
+      "clientPhone": "Public Promo",
+      "serviceCategory": "All Services",
+      "discountAmount": 500,
+      "minSpend": 1499,
+      "purchaseDate": "2026-11-01",
+      "expiryDate": "2027-02-28",
+      "status": "Unredeemed",
+      "redeemedDate": null
+    },
+    {
+      "code": "BOOK-BUY-PEAK",
+      "voucherType": "public",
+      "maxUses": 10,
+      "usedCount": 0,
+      "clientName": "Open to All (Book & Buy Privilege)",
+      "clientPhone": "Public Promo",
+      "serviceCategory": "All Services",
+      "discountAmount": 300,
+      "minSpend": 999,
+      "purchaseDate": "2026-11-01",
+      "expiryDate": "2027-02-28",
+      "status": "Unredeemed",
+      "redeemedDate": null
+    },
     {
       "code": "AURA-XMASPROMO-3JL0-585",
       "voucherType": "public",

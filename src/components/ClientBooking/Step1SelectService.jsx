@@ -17,7 +17,16 @@ import { useApp } from '../../context/AppContext';
 import PhotoViewerModal from '../common/PhotoViewerModal';
 import TreatmentReviewsModal from './TreatmentReviewsModal';
 
-const CATEGORIES = ['All Services', 'Facial', 'Hair Care & Scalp', 'Slimming', 'Ingrown Removal', 'Whitening', 'Anti-Aging'];
+const CATEGORIES = [
+  'All Services',
+  '🔥 Book & Buy Privilege (Up to 66% OFF)',
+  'Hair Care & Scalp',
+  'Facial',
+  'Slimming',
+  'Ingrown Removal',
+  'Whitening',
+  'Anti-Aging'
+];
 
 const Step1SelectService = ({
   selectedServices = [],
@@ -49,10 +58,15 @@ const Step1SelectService = ({
   const filteredServices = services.filter(service => {
     // Only show active services to clients
     const isAvailable = service.active !== false;
-    const matchesCategory = selectedCategory === 'All Services' || service.category === selectedCategory;
-    const matchesSearch = service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          service.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          service.category.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === 'All Services' ||
+      (selectedCategory.includes('Book & Buy') && service.bookAndBuy) ||
+      service.category === selectedCategory;
+    const matchesSearch =
+      service.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      service.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      service.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (service.tags && service.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase())));
     return isAvailable && matchesCategory && matchesSearch;
   });
 
@@ -87,6 +101,62 @@ const Step1SelectService = ({
             allowClear
             className="rounded-full !border-aura-200 focus:!border-aura-500 py-1.5 text-xs"
           />
+        </div>
+      </div>
+
+      {/* 👑 Official Book & Buy Privilege Promo Showcase Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#270e14] via-[#3a131e] to-[#1a0a10] text-white p-4 sm:p-5 border border-amber-500/40 shadow-lg">
+        {/* Decorative background glow */}
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-rose-600/20 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="space-y-1.5 max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-amber-600 text-black text-[11px] font-black px-3 py-0.5 rounded-full shadow-sm tracking-wide uppercase">
+                👑 Privilege Promo
+              </span>
+              <span className="bg-white/15 text-amber-200 border border-amber-300/30 text-[10px] sm:text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
+                🔥 Book & Buy: Up to 66% OFF
+              </span>
+              <span className="text-[11px] text-amber-200/90 font-medium hidden sm:inline">
+                Lean Season Lock-In • Peak Season Avail
+              </span>
+            </div>
+
+            <h3 className="font-serif-luxury text-base sm:text-xl font-bold text-white tracking-tight leading-snug">
+              Bumili ng Slot Ngayon sa Murang Halaga, I-avail sa Peak Season nang Walang Patong!
+            </h3>
+
+            <p className="text-xs sm:text-[13px] text-rose-100/90 leading-relaxed">
+              Sa peak season (December rush), ang services ay karaniwang <strong>₱3,000 – ₱5,000</strong>. Pero with <strong>Book & Buy Privilege</strong>, bilhin ang slot mo simula <strong>₱299 – ₱1,499 lang</strong> at i-avail sa convenient date mo sa darating na <strong>December 25, January 2027, or February</strong> nang ZERO surge fee!
+            </p>
+
+            <div className="flex flex-wrap gap-2 pt-1 text-[11px] text-amber-300/95 font-medium">
+              <span className="bg-white/10 px-2 py-0.5 rounded-md border border-white/10">✨ Rebond from ₱799</span>
+              <span className="bg-white/10 px-2 py-0.5 rounded-md border border-white/10">❄️ Cryo-Iron ₱699</span>
+              <span className="bg-white/10 px-2 py-0.5 rounded-md border border-white/10">💆‍♀️ Cysteine & Keratin ₱999</span>
+              <span className="bg-white/10 px-2 py-0.5 rounded-md border border-white/10">🌟 Facials & BB Glow from ₱499</span>
+            </div>
+          </div>
+
+          <div className="flex sm:flex-col items-center sm:items-end justify-between w-full md:w-auto gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-white/10">
+            <div className="text-left md:text-right">
+              <div className="text-[10px] text-amber-300 uppercase tracking-wider font-semibold">15 Exclusive Deals</div>
+              <div className="font-serif-luxury text-lg sm:text-2xl font-bold text-amber-300">₱299 – ₱1,499</div>
+            </div>
+
+            <Button
+              type="primary"
+              onClick={() => {
+                setSelectedCategory('🔥 Book & Buy Privilege (Up to 66% OFF)');
+                setSearchQuery('');
+              }}
+              className="!bg-gradient-to-r !from-amber-400 !via-amber-500 !to-amber-600 hover:!from-amber-500 hover:!to-amber-700 !text-black !font-bold !border-none !rounded-xl !h-9 sm:!h-10 !px-4 shadow-md text-xs transition-transform active:scale-95"
+            >
+              {selectedCategory.includes('Book & Buy') ? '✓ Viewing Book & Buy' : '🔥 View 15 Book & Buy Deals →'}
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -153,7 +223,12 @@ const Step1SelectService = ({
 
                 {/* Popular or Promo Badge */}
                 <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
-                  {service.popular && (
+                  {service.bookAndBuy && (
+                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-amber-500 to-rose-600 text-white text-[10px] sm:text-[11px] font-black px-2 sm:px-2.5 py-0.5 rounded-full shadow-sm">
+                      👑 Book & Buy Slot
+                    </span>
+                  )}
+                  {service.popular && !service.bookAndBuy && (
                     <span className="inline-flex items-center gap-1 bg-amber-500/95 text-white text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full shadow-xs">
                       <StarFilled /> Top Treatment
                     </span>

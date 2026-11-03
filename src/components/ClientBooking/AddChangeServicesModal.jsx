@@ -11,7 +11,16 @@ import {
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 
-const CATEGORIES = ['All Services', 'Facial', 'Hair Care & Scalp', 'Slimming', 'Ingrown Removal', 'Whitening', 'Anti-Aging'];
+const CATEGORIES = [
+  'All Services',
+  '🔥 Book & Buy Privilege (Up to 66% OFF)',
+  'Hair Care & Scalp',
+  'Facial',
+  'Slimming',
+  'Ingrown Removal',
+  'Whitening',
+  'Anti-Aging'
+];
 
 const AddChangeServicesModal = ({
   open,
@@ -59,11 +68,17 @@ const AddChangeServicesModal = ({
   const activeServices = (services || []).filter(s => s && s.active !== false);
 
   const filteredServices = activeServices.filter(s => {
-    const matchesCat = selectedCategory === 'All Services' || s.category === selectedCategory;
+    const matchesCat =
+      selectedCategory === 'All Services' ||
+      (selectedCategory.includes('Book & Buy') && s.bookAndBuy) ||
+      s.category === selectedCategory;
     const nameStr = (s.name || '').toLowerCase();
     const catStr = (s.category || '').toLowerCase();
     const search = searchQuery.toLowerCase();
-    const matchesSearch = nameStr.includes(search) || catStr.includes(search);
+    const matchesSearch =
+      nameStr.includes(search) ||
+      catStr.includes(search) ||
+      (s.tags && s.tags.some(t => t.toLowerCase().includes(search)));
     return matchesCat && matchesSearch;
   });
 
