@@ -68,14 +68,52 @@ const VoucherTrackerTab = ({ initialFilters }) => {
       )
     },
     {
-      title: 'Client Name',
+      title: 'Voucher Recipient / Mode',
       key: 'client',
-      render: (_, record) => (
-        <div>
-          <div className="font-bold text-xs text-gray-800">{record.clientName}</div>
-          <div className="text-[11px] text-gray-400">{record.clientPhone}</div>
-        </div>
-      )
+      render: (_, record) => {
+        const isPublic = record.voucherType === 'public' || record.clientName?.includes('Open to All') || record.clientPhone === 'Public Promo';
+        const isClaimed = record.usedCount > 0 || record.status === 'Redeemed' || record.clientName?.includes('(Claimed)');
+
+        if (isPublic && !isClaimed) {
+          return (
+            <div>
+              <div className="flex items-center gap-1">
+                <Tag color="blue" className="!rounded-md text-[11px] font-semibold !m-0">
+                  ⚡ Paunahan Promo
+                </Tag>
+              </div>
+              <div className="text-[10px] text-gray-500 mt-0.5 font-medium">
+                Open to All • {record.maxUses || 1} {record.maxUses > 1 ? 'slots' : 'slot'}
+              </div>
+            </div>
+          );
+        }
+
+        if (isPublic && isClaimed) {
+          return (
+            <div>
+              <div className="font-bold text-xs text-emerald-800 flex items-center gap-1">
+                <span>🏆</span>
+                <span>{record.clientName.replace(' (Claimed)', '')}</span>
+              </div>
+              <div className="text-[11px] text-gray-400">{record.clientPhone}</div>
+              <Tag color="green" className="!rounded text-[10px] !mt-0.5 !mr-0">
+                Claimed Winner ({record.usedCount || 1}/{record.maxUses || 1})
+              </Tag>
+            </div>
+          );
+        }
+
+        return (
+          <div>
+            <div className="font-bold text-xs text-gray-800">{record.clientName}</div>
+            <div className="text-[11px] text-gray-400">{record.clientPhone}</div>
+            <Tag color="purple" className="!rounded text-[10px] !mt-0.5 !mr-0">
+              💎 Exclusive VIP
+            </Tag>
+          </div>
+        );
+      }
     },
     {
       title: 'Applicable Treatment',
@@ -131,13 +169,17 @@ const VoucherTrackerTab = ({ initialFilters }) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      width: 140,
+      width: 150,
       render: (status, record) => {
-        if (status === 'Redeemed') {
+        const maxUses = record.maxUses || 1;
+        const usedCount = record.usedCount || (status === 'Redeemed' ? 1 : 0);
+        const isExhausted = status === 'Redeemed' || usedCount >= maxUses;
+
+        if (isExhausted) {
           return (
             <div>
-              <Tag color="green" className="!rounded-md !text-xs font-medium">
-                Redeemed
+              <Tag color="default" className="!rounded-md !text-xs font-semibold bg-gray-100 text-gray-600 border-gray-300">
+                Ubos Na (Redeemed)
               </Tag>
               {record.redeemedDate && (
                 <div className="text-[10px] text-gray-400 mt-0.5">
@@ -148,9 +190,11 @@ const VoucherTrackerTab = ({ initialFilters }) => {
           );
         }
         return (
-          <Tag color="gold" className="!rounded-md !text-xs font-medium">
-            Unredeemed
-          </Tag>
+          <div>
+            <Tag color="gold" className="!rounded-md !text-xs font-medium">
+              Available ({maxUses - usedCount} {maxUses - usedCount > 1 ? 'slots' : 'slot'})
+            </Tag>
+          </div>
         );
       }
     },

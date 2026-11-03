@@ -553,8 +553,14 @@ export const AppProvider = ({ children }) => {
       return { valid: false, message: 'Invalid voucher code. Please check code spelling.' };
     }
 
-    if (found.status === 'Redeemed') {
-      return { valid: false, message: `Voucher ${found.code} was already redeemed on ${found.redeemedDate || 'a prior date'}.` };
+    const maxUses = found.maxUses || 1;
+    const usedCount = found.usedCount || (found.status === 'Redeemed' ? 1 : 0);
+
+    if (found.status === 'Redeemed' || usedCount >= maxUses) {
+      return {
+        valid: false,
+        message: `Voucher ${found.code} is already fully claimed / ubos na (0 promo slots left).`
+      };
     }
 
     const today = dayjs().format('YYYY-MM-DD');
@@ -737,19 +743,30 @@ export const AppProvider = ({ children }) => {
     };
     setNotifications(prev => [newNotification, ...prev]);
 
-    // If voucher was used, mark voucher as redeemed
+    // If voucher was used, mark voucher as redeemed and track claimant
     if (bookingData.voucherUsed) {
       setVouchers(prev =>
-        prev.map(v =>
-          v.code.toUpperCase() === bookingData.voucherUsed.toUpperCase()
-            ? {
-                ...v,
-                status: 'Redeemed',
-                redeemedDate: dayjs().format('YYYY-MM-DD hh:mm A'),
-                usedInAppointment: newId
-              }
-            : v
-        )
+        prev.map(v => {
+          if (v.code.toUpperCase() === bookingData.voucherUsed.toUpperCase()) {
+            const maxUses = v.maxUses || 1;
+            const currentUses = (v.usedCount || 0) + 1;
+            const isExhausted = currentUses >= maxUses;
+            return {
+              ...v,
+              usedCount: currentUses,
+              status: isExhausted ? 'Redeemed' : 'Unredeemed',
+              redeemedDate: dayjs().format('YYYY-MM-DD hh:mm A'),
+              usedInAppointment: newId,
+              clientName: (!v.voucherType || v.voucherType === 'public')
+                ? `${bookingData.clientName} (Claimed)`
+                : v.clientName,
+              clientPhone: (!v.voucherType || v.voucherType === 'public')
+                ? bookingData.phone
+                : v.clientPhone
+            };
+          }
+          return v;
+        })
       );
     }
 
@@ -902,16 +919,21 @@ export const AppProvider = ({ children }) => {
     );
   };
 
-  // Issue brand new voucher
+  // Issue brand new voucher (Supports both Public Paunahan & Exclusive VIP)
   const issueVoucher = (voucherData) => {
     const code = voucherData.code
       ? voucherData.code.trim().toUpperCase()
       : `AURA-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`;
 
+    const isPublic = voucherData.voucherType !== 'personal';
+
     const newVoucher = {
       code,
-      clientName: voucherData.clientName || 'Valued Guest',
-      clientPhone: voucherData.clientPhone || 'N/A',
+      voucherType: voucherData.voucherType || 'public',
+      maxUses: Number(voucherData.maxUses) || 1,
+      usedCount: 0,
+      clientName: isPublic ? 'Open to All (Paunahan)' : (voucherData.clientName ? voucherData.clientName.trim() : 'VIP Client'),
+      clientPhone: isPublic ? 'Public Promo' : (voucherData.clientPhone ? voucherData.clientPhone.trim() : 'N/A'),
       serviceCategory: voucherData.serviceCategory || 'All Services',
       discountAmount: Number(voucherData.discountAmount) || 500,
       minSpend: Number(voucherData.minSpend) || 1500,
@@ -922,6 +944,7 @@ export const AppProvider = ({ children }) => {
     };
 
     setVouchers(prev => [newVoucher, ...prev]);
+    setTimeout(() => syncToServer(), 50);
     return newVoucher;
   };
 
@@ -930,16 +953,30 @@ export const AppProvider = ({ children }) => {
     setVouchers(prev =>
       prev.map(v => {
         if (v.code === code) {
+          const isPublic = (updatedData.voucherType || v.voucherType) !== 'personal';
+          const maxUses = updatedData.maxUses !== undefined ? Number(updatedData.maxUses) : (v.maxUses || 1);
+          const usedCount = v.usedCount || 0;
           return {
             ...v,
             ...updatedData,
+            maxUses,
+            clientName: isPublic && (!updatedData.clientName || updatedData.clientName.trim() === '')
+              ? (v.usedCount > 0 ? v.clientName : 'Open to All (Paunahan)')
+              : (updatedData.clientName || v.clientName),
+            clientPhone: isPublic && (!updatedData.clientPhone || updatedData.clientPhone.trim() === '')
+              ? (v.usedCount > 0 ? v.clientPhone : 'Public Promo')
+              : (updatedData.clientPhone || v.clientPhone),
             discountAmount: updatedData.discountAmount !== undefined ? Number(updatedData.discountAmount) : v.discountAmount,
-            minSpend: updatedData.minSpend !== undefined ? Number(updatedData.minSpend) : v.minSpend
+            minSpend: updatedData.minSpend !== undefined ? Number(updatedData.minSpend) : v.minSpend,
+            status: updatedData.status !== undefined
+              ? updatedData.status
+              : (usedCount >= maxUses ? 'Redeemed' : v.status)
           };
         }
         return v;
       })
     );
+    setTimeout(() => syncToServer(), 50);
   };
 
   // Delete voucher

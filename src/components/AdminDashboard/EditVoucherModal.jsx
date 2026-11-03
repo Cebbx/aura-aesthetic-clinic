@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, InputNumber, Select, DatePicker, Button, message } from 'antd';
+import { Modal, Form, Input, InputNumber, Select, DatePicker, Button, Radio, message } from 'antd';
 import {
   TagOutlined,
   UserOutlined,
   PhoneOutlined,
   CalendarOutlined,
   EditOutlined,
-  CheckCircleOutlined
+  CheckCircleOutlined,
+  ThunderboltOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useApp } from '../../context/AppContext';
@@ -16,15 +17,21 @@ const { Option } = Select;
 const EditVoucherModal = ({ open, onClose, voucher }) => {
   const [form] = Form.useForm();
   const { updateVoucher, services } = useApp();
+  const voucherType = Form.useWatch('voucherType', form) || 'public';
 
   const categories = Array.from(new Set((services || []).map(s => s.category).filter(Boolean)));
 
   useEffect(() => {
     if (voucher && open) {
+      const isPersonal = voucher.voucherType === 'personal' ||
+        (voucher.clientName && !voucher.clientName.includes('Open to All') && !voucher.clientName.includes('(Claimed)') && voucher.clientPhone && voucher.clientPhone !== 'Public Promo' && voucher.clientPhone !== 'N/A');
+
       form.setFieldsValue({
         code: voucher.code,
+        voucherType: voucher.voucherType || (isPersonal ? 'personal' : 'public'),
+        maxUses: voucher.maxUses || 1,
         clientName: voucher.clientName,
-        clientPhone: voucher.clientPhone === 'N/A' ? '' : voucher.clientPhone,
+        clientPhone: voucher.clientPhone === 'N/A' || voucher.clientPhone === 'Public Promo' ? '' : voucher.clientPhone,
         serviceCategory: voucher.serviceCategory || 'All Services',
         discountAmount: Number(voucher.discountAmount) || 500,
         minSpend: Number(voucher.minSpend) || 1500,
@@ -37,9 +44,13 @@ const EditVoucherModal = ({ open, onClose, voucher }) => {
   if (!voucher) return null;
 
   const handleFinish = (values) => {
+    const isPublic = values.voucherType !== 'personal';
+
     updateVoucher(voucher.code, {
-      clientName: values.clientName ? values.clientName.trim() : 'Valued Client',
-      clientPhone: values.clientPhone ? values.clientPhone.trim() : 'N/A',
+      voucherType: values.voucherType,
+      maxUses: isPublic ? (Number(values.maxUses) || 1) : 1,
+      clientName: isPublic ? (voucher.usedCount > 0 ? voucher.clientName : 'Open to All (Paunahan)') : (values.clientName ? values.clientName.trim() : 'VIP Client'),
+      clientPhone: isPublic ? (voucher.usedCount > 0 ? voucher.clientPhone : 'Public Promo') : (values.clientPhone ? values.clientPhone.trim() : 'N/A'),
       serviceCategory: values.serviceCategory || 'All Services',
       discountAmount: Number(values.discountAmount),
       minSpend: Number(values.minSpend) || 1000,
@@ -63,7 +74,7 @@ const EditVoucherModal = ({ open, onClose, voucher }) => {
         </div>
       }
       centered
-      width={480}
+      width={500}
     >
       <Form
         form={form}
@@ -71,6 +82,20 @@ const EditVoucherModal = ({ open, onClose, voucher }) => {
         onFinish={handleFinish}
         className="mt-4"
       >
+        <Form.Item
+          name="voucherType"
+          label={<span className="text-xs font-semibold">Voucher Campaign Type</span>}
+        >
+          <Radio.Group className="w-full grid grid-cols-2 gap-2" buttonStyle="solid">
+            <Radio.Button value="public" className="!rounded-xl text-center text-xs !py-1 !h-auto">
+              ⚡ Paunahan (Public Promo)
+            </Radio.Button>
+            <Radio.Button value="personal" className="!rounded-xl text-center text-xs !py-1 !h-auto">
+              💎 Exclusive VIP Pass
+            </Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+
         <Form.Item
           name="code"
           label={<span className="text-xs font-semibold">Voucher Code</span>}
@@ -82,28 +107,62 @@ const EditVoucherModal = ({ open, onClose, voucher }) => {
           />
         </Form.Item>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Form.Item
-            name="clientName"
-            label={<span className="text-xs font-semibold">Recipient Client Name</span>}
-          >
-            <Input prefix={<UserOutlined />} placeholder="e.g. VIP Promo or Client Name" className="!rounded-xl !py-2 text-xs" />
-          </Form.Item>
+        {/* Public Paunahan Info Box OR Personal Client Input */}
+        {voucherType === 'public' ? (
+          <div className="bg-amber-50/80 border border-amber-200/90 rounded-2xl p-3.5 mb-4 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-amber-950">
+                <ThunderboltOutlined className="text-amber-600" />
+                <span>Open Promo (First-Come, First-Served)</span>
+              </div>
+              <span className="text-[10px] bg-amber-200/60 text-amber-900 font-semibold px-2 py-0.5 rounded-full">
+                {voucher.usedCount ? `${voucher.usedCount} Claimed` : 'No Name Needed'}
+              </span>
+            </div>
+            <p className="text-[11px] text-amber-900/80 leading-relaxed m-0">
+              {voucher.usedCount > 0
+                ? `Kasalukuyang may ${voucher.usedCount} customer nang nag-claim sa voucher na ito (${voucher.clientName}).`
+                : 'Bukas ito sa lahat ng client at paunahan silang mag-book. Ang unang mag-book ang magiging opisyal na winner!'}
+            </p>
+            <Form.Item
+              name="maxUses"
+              label={<span className="text-xs font-semibold text-amber-950">Total Available Slots (Ilan ang pwedeng makakuha bago maubos?)</span>}
+              className="!mb-0"
+            >
+              <InputNumber
+                min={Math.max(1, voucher.usedCount || 1)}
+                max={50}
+                className="w-full !rounded-xl text-xs"
+                placeholder="1 (Single Winner)"
+              />
+            </Form.Item>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            <Form.Item
+              name="clientName"
+              label={<span className="text-xs font-semibold">Exclusive VIP Name *</span>}
+              rules={[{ required: true, message: 'Enter VIP client name' }]}
+            >
+              <Input prefix={<UserOutlined />} placeholder="e.g. Ms. Camille De Guzman" className="!rounded-xl !py-2 text-xs" />
+            </Form.Item>
 
-          <Form.Item
-            name="clientPhone"
-            label={<span className="text-xs font-semibold">Client Mobile</span>}
-            normalize={(value) => (value ? value.replace(/\D/g, '').slice(0, 12) : '')}
-          >
-            <Input
-              prefix={<PhoneOutlined />}
-              placeholder="09171234567"
-              maxLength={12}
-              inputMode="numeric"
-              className="!rounded-xl !py-2 font-mono text-xs"
-            />
-          </Form.Item>
-        </div>
+            <Form.Item
+              name="clientPhone"
+              label={<span className="text-xs font-semibold">VIP Mobile *</span>}
+              rules={[{ required: true, message: 'Enter client mobile' }]}
+              normalize={(value) => (value ? value.replace(/\D/g, '').slice(0, 12) : '')}
+            >
+              <Input
+                prefix={<PhoneOutlined />}
+                placeholder="09171234567"
+                maxLength={12}
+                inputMode="numeric"
+                className="!rounded-xl !py-2 font-mono text-xs"
+              />
+            </Form.Item>
+          </div>
+        )}
 
         <Form.Item
           name="serviceCategory"

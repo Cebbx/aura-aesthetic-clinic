@@ -224,11 +224,19 @@ const Step3ClientInfo = ({
 
   const sampleVouchers = (vouchers || [])
     .filter(v => {
-      if (v.status === 'Redeemed') return false;
+      // 1. If status is Redeemed or all available slots are used up -> UBOS NA -> DO NOT SHOW
+      const maxUses = v.maxUses || 1;
+      const usedCount = v.usedCount || (v.status === 'Redeemed' ? 1 : 0);
+      if (v.status === 'Redeemed' || usedCount >= maxUses) return false;
+
+      // 2. If expired -> DO NOT SHOW
       const today = dayjs().format('YYYY-MM-DD');
       if (v.expiryDate && v.expiryDate < today) return false;
 
-      // Only show vouchers valid for current treatments or all services
+      // 3. If personalized VIP pass for a specific person -> DO NOT SHOW in public pills
+      if (v.voucherType === 'personal') return false;
+
+      // 4. Only show vouchers valid for current treatments or all services
       if (!v.serviceCategory || v.serviceCategory === 'All Services') return true;
       if (v.serviceCategory.startsWith('Treatment: ')) {
         const reqName = v.serviceCategory.replace('Treatment: ', '').trim().toLowerCase();
