@@ -367,6 +367,10 @@ const AppointmentsTab = ({ initialFilters }) => {
         open={Boolean(editModalApt)}
         onClose={() => setEditModalApt(null)}
         appointment={editModalApt}
+        onNotifyClient={(updatedApt) => {
+          setSmsModalMode('update');
+          setSmsModalApt(updatedApt);
+        }}
       />
 
       <ReceiptModal

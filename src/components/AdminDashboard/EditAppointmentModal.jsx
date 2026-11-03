@@ -9,8 +9,10 @@ import {
   PlusOutlined,
   DeleteOutlined,
   CheckCircleOutlined,
+  CheckCircleFilled,
   DollarOutlined,
-  EditOutlined
+  EditOutlined,
+  BellOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useApp } from '../../context/AppContext';
@@ -18,7 +20,7 @@ import { useApp } from '../../context/AppContext';
 const { Option } = Select;
 const { TextArea } = Input;
 
-const EditAppointmentModal = ({ open, onClose, appointment }) => {
+const EditAppointmentModal = ({ open, onClose, appointment, onNotifyClient }) => {
   const [form] = Form.useForm();
   const { services, timeSlots, updateAppointment } = useApp();
 
@@ -120,6 +122,49 @@ const EditAppointmentModal = ({ open, onClose, appointment }) => {
     updateAppointment(appointment.id, updatedData);
     message.success(`Appointment ${appointment.id} successfully updated! Real-time synced.`);
     onClose();
+
+    // Prompt admin to notify client if changes were made
+    if (onNotifyClient) {
+      const fullUpdated = { ...appointment, ...updatedData };
+      setTimeout(() => {
+        Modal.confirm({
+          title: (
+            <span className="font-serif-luxury text-base text-aura-dark font-bold">
+              Appointment Updated Successfully!
+            </span>
+          ),
+          icon: <CheckCircleFilled className="text-emerald-500 text-xl" />,
+          content: (
+            <div className="space-y-2.5 text-xs text-gray-600 pt-2">
+              <p>
+                The changes for <strong>{updatedData.clientName}</strong> have been saved and real-time synced across devices.
+              </p>
+              <div className="bg-amber-50/90 p-3 rounded-xl border border-amber-200 text-amber-950 space-y-1">
+                <span className="font-bold flex items-center gap-1.5 text-amber-900">
+                  <BellOutlined className="text-amber-600" />
+                  <span>Notify Client of Changes?</span>
+                </span>
+                <p className="text-[11px] text-amber-800 leading-relaxed">
+                  Para siguradong alam ng customer ang binagong schedule, serbisyo, o presyo, nais mo bang magpadala ng update notice via SMS o Gmail?
+                </p>
+              </div>
+            </div>
+          ),
+          okText: 'Send SMS / Email Update',
+          cancelText: 'Done (No Notification)',
+          okButtonProps: {
+            className: '!bg-aura-700 hover:!bg-aura-800 !border-none !text-white !font-semibold !rounded-xl !h-9 text-xs'
+          },
+          cancelButtonProps: {
+            className: '!rounded-xl !h-9 text-xs'
+          },
+          centered: true,
+          onOk: () => {
+            onNotifyClient(fullUpdated);
+          }
+        });
+      }, 250);
+    }
   };
 
   if (!appointment) return null;

@@ -8,7 +8,8 @@ import {
   MailOutlined,
   CheckCircleFilled,
   BellOutlined,
-  CheckCircleOutlined
+  CheckCircleOutlined,
+  EditOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 
@@ -83,6 +84,47 @@ Concierge Hotline: ${clinicPhone}. See you! ✨`;
 
         setCustomEmailBody(email);
         setCustomSms(sms);
+      } else if (notificationType === 'update') {
+        // BOOKING MODIFICATION / UPDATE TEMPLATE
+        const email = `Dear ${appointment.clientName || 'Valued Client'},
+
+Warm greetings from ${clinicName}!
+
+We would like to inform you that your booking details (Ref: ${appointment.id || ''}) have been updated by our clinic front desk.
+
+Updated Booking Summary:
+--------------------------------------------------
+Reference ID: ${appointment.id || ''}
+Procedure(s): ${appointment.serviceName || ''}
+Category: ${appointment.serviceCategory || 'Aesthetic Treatment'}
+Scheduled Date: ${appointment.date || ''}
+Scheduled Time: ${appointment.time || ''}
+Clinic Location: ${clinicAddress}
+Total Amount Due: ₱${finalAmt.toLocaleString()} (Pay at clinic)
+--------------------------------------------------
+
+${appointment.notes ? `Staff Note: "${appointment.notes}"\n\n` : ''}If you have any questions or wish to make further adjustments, feel free to reply directly to this email or call our concierge hotline at ${clinicPhone}.
+
+Thank you for choosing ${clinicName}!
+
+Warm regards,
+Medical Concierge Team
+${clinicName}
+Bonifacio Global City, Taguig`;
+
+        const sms = `${clinicName.toUpperCase()} UPDATE
+Hi ${appointment.clientName || 'Valued Client'}!
+Your booking (${appointment.id || ''}) has been updated:
+✨ Procedures: ${appointment.serviceName || 'treatment'}
+📅 Date: ${appointment.date || ''}
+⏰ Time: ${appointment.time || ''}
+💰 New Total Due: ₱${finalAmt.toLocaleString()}
+📍 ${clinicAddress}
+
+Questions or adjustments? Call ${clinicPhone}. See you! ✨`;
+
+        setCustomEmailBody(email);
+        setCustomSms(sms);
       } else {
         // APPROVAL NOTICE TEMPLATE
         const email = `Dear ${appointment.clientName || 'Valued Client'},
@@ -135,6 +177,8 @@ Reception: ${clinicPhone}. See you! ✨`;
 
   const emailSubject = notificationType === 'reminder'
     ? `Upcoming Appointment Reminder: ${appointment.serviceName} • ${appointment.date} (${appointment.time})`
+    : notificationType === 'update'
+    ? `Booking Update Notice: ${appointment.serviceName} • ${clinicName} (${appointment.id})`
     : `Appointment Approved: ${appointment.serviceName} • ${clinicName} (${appointment.id})`;
 
   const handleCopy = (text, typeName) => {
@@ -307,10 +351,18 @@ Reception: ${clinicPhone}. See you! ✨`;
         <div className="flex items-center gap-2 font-serif-luxury text-base sm:text-lg text-aura-dark">
           {notificationType === 'reminder' ? (
             <BellOutlined className="text-amber-600" />
+          ) : notificationType === 'update' ? (
+            <EditOutlined className="text-blue-600" />
           ) : (
             <SendOutlined className="text-aura-700" />
           )}
-          <span>{notificationType === 'reminder' ? 'Send Appointment Reminder' : 'Notify Client of Approval'}</span>
+          <span>
+            {notificationType === 'reminder'
+              ? 'Send Appointment Reminder'
+              : notificationType === 'update'
+              ? 'Notify Client of Booking Update'
+              : 'Notify Client of Approval'}
+          </span>
         </div>
       }
       footer={null}
@@ -330,7 +382,7 @@ Reception: ${clinicPhone}. See you! ✨`;
                 label: (
                   <div className="flex items-center justify-center gap-1.5 py-1 text-xs font-semibold">
                     <CheckCircleOutlined className="text-emerald-600" />
-                    <span>Booking Approval</span>
+                    <span>Approval</span>
                   </div>
                 ),
                 value: 'approval'
@@ -338,8 +390,17 @@ Reception: ${clinicPhone}. See you! ✨`;
               {
                 label: (
                   <div className="flex items-center justify-center gap-1.5 py-1 text-xs font-semibold">
+                    <EditOutlined className="text-blue-600" />
+                    <span>Booking Update</span>
+                  </div>
+                ),
+                value: 'update'
+              },
+              {
+                label: (
+                  <div className="flex items-center justify-center gap-1.5 py-1 text-xs font-semibold">
                     <BellOutlined className="text-amber-600" />
-                    <span>Upcoming Reminder</span>
+                    <span>Reminder</span>
                   </div>
                 ),
                 value: 'reminder'
@@ -352,6 +413,8 @@ Reception: ${clinicPhone}. See you! ✨`;
         <div className={`p-3 rounded-xl border flex items-center justify-between text-xs ${
           notificationType === 'reminder'
             ? 'bg-amber-50/80 border-amber-300 text-amber-950'
+            : notificationType === 'update'
+            ? 'bg-blue-50/80 border-blue-200/90 text-blue-950'
             : 'bg-emerald-50 border-emerald-200/90 text-emerald-950'
         }`}>
           <div>
@@ -359,6 +422,8 @@ Reception: ${clinicPhone}. See you! ✨`;
               <span>{appointment.clientName}</span>
               {notificationType === 'reminder' ? (
                 <Tag color="warning" className="!text-[9px] font-semibold">Upcoming Slot</Tag>
+              ) : notificationType === 'update' ? (
+                <Tag color="blue" className="!text-[9px] font-semibold">Modified Booking</Tag>
               ) : (
                 <Tag color="success" className="!text-[9px]">Approved</Tag>
               )}
