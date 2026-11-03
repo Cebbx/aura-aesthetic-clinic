@@ -287,22 +287,22 @@ const StaffSecurityTab = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner: Master Controller Summary */}
-      <div className="p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-aura-900 via-aura-800 to-aura-950 text-white shadow-lg space-y-4">
+      <div className="p-4 sm:p-6 rounded-3xl bg-aura-800 bg-gradient-to-r from-aura-900 via-aura-800 to-aura-700 text-white shadow-lg space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-amber-400 text-amber-950 flex items-center justify-center text-2xl font-bold shadow-md shrink-0">
               👑
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h2 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white tracking-tight">
                   Clinical Staff & Security Hub
                 </h2>
-                <Tag color="gold" className="!rounded-full font-bold text-[10px]">
+                <Tag color="gold" className="!rounded-full font-bold text-[10px] !m-0">
                   Owner Master Control
                 </Tag>
               </div>
-              <p className="text-xs text-aura-200 mt-0.5">
+              <p className="text-xs text-aura-100/90 mt-0.5">
                 Manage clinic staff logins, approve real-time OTP requests, and generate duty access passes.
               </p>
             </div>
@@ -312,9 +312,9 @@ const StaffSecurityTab = () => {
             type="primary"
             icon={<UserAddOutlined />}
             onClick={() => setAddModalOpen(true)}
-            className="!bg-amber-400 hover:!bg-amber-500 !text-amber-950 !border-none !rounded-xl font-bold !h-10 shadow-md sm:self-center shrink-0"
+            className="!bg-amber-400 hover:!bg-amber-500 !text-amber-950 !border-none !rounded-xl font-bold !h-10 px-5 shadow-md self-start sm:self-center shrink-0"
           >
-            + Add Specialist / Staff
+            Add Specialist / Staff
           </Button>
         </div>
 

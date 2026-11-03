@@ -671,7 +671,7 @@ const ClientDatabaseTab = () => {
                     }}
                     className="!bg-aura-800 hover:!bg-aura-900 !rounded-xl font-bold text-xs !h-8"
                   >
-                    + Log Session Note
+                    Log Session Note
                   </Button>
                 </div>
 
