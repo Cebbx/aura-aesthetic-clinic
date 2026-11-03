@@ -15,11 +15,17 @@ const Step2SelectSchedule = ({
   onSelectDate,
   selectedTime,
   onSelectTime,
+  selectedServices = [],
   selectedService,
   onBack,
   onNext
 }) => {
   const { timeSlots, appointments } = useApp();
+
+  const currentList = Array.isArray(selectedServices) && selectedServices.length > 0
+    ? selectedServices
+    : (selectedService ? [selectedService] : []);
+  const totalCombinedPrice = currentList.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
 
   // Dynamic collision guard: check which slots are already booked on selectedDate
   const selectedDateStr = selectedDate ? selectedDate.format('YYYY-MM-DD') : '';
@@ -52,19 +58,19 @@ const Step2SelectSchedule = ({
       <div className="bg-gradient-to-r from-aura-50 via-white to-aura-100/50 p-3.5 sm:p-4 rounded-2xl border border-aura-200 flex items-center justify-between gap-3 shadow-xs">
         <div className="truncate">
           <span className="text-[10px] sm:text-[11px] font-semibold tracking-wider uppercase text-aura-600 block">
-            Selected Treatment
+            {currentList.length > 1 ? `Selected Treatments (${currentList.length})` : 'Selected Treatment'}
           </span>
           <h4 className="font-serif-luxury text-sm sm:text-base font-bold text-aura-dark truncate">
-            {selectedService?.name || 'Aesthetic Treatment'}
+            {currentList.map(s => s.name).join(' & ') || 'Aesthetic Treatment'}
           </h4>
           <p className="text-[11px] text-gray-500">
-            {selectedService?.duration || '45 mins'} • Clinic Visit
+            {currentList.length > 1 ? `${currentList.length} procedures combined` : (selectedService?.duration || '45 mins')} • Clinic Visit
           </p>
         </div>
         <div className="text-right shrink-0">
-          <span className="text-[10px] text-gray-400 block">Price:</span>
+          <span className="text-[10px] text-gray-400 block">{currentList.length > 1 ? 'Total Price:' : 'Price:'}</span>
           <div className="font-serif-luxury text-base sm:text-lg font-bold text-aura-700">
-            ₱{selectedService?.price?.toLocaleString()}
+            ₱{totalCombinedPrice.toLocaleString()}
           </div>
         </div>
       </div>

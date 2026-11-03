@@ -11,11 +11,13 @@ import {
   FilterOutlined,
   UserOutlined,
   MessageOutlined,
-  BellOutlined
+  BellOutlined,
+  EditOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useApp } from '../../context/AppContext';
 import AddAppointmentModal from './AddAppointmentModal';
+import EditAppointmentModal from './EditAppointmentModal';
 import ReceiptModal from '../ClientBooking/ReceiptModal';
 import CancelAppointmentModal from './CancelAppointmentModal';
 import SmsNotificationModal from './SmsNotificationModal';
@@ -32,6 +34,7 @@ const AppointmentsTab = ({ initialFilters }) => {
   const [cancelModalApt, setCancelModalApt] = useState(null);
   const [smsModalApt, setSmsModalApt] = useState(null);
   const [smsModalMode, setSmsModalMode] = useState('approval');
+  const [editModalApt, setEditModalApt] = useState(null);
 
   const todayStr = dayjs().format('YYYY-MM-DD');
   const tomorrowStr = dayjs().add(1, 'day').format('YYYY-MM-DD');
@@ -257,6 +260,17 @@ const AppointmentsTab = ({ initialFilters }) => {
             />
           </Tooltip>
 
+          <Tooltip title="Edit Booking (Add or Remove Services, Reschedule)">
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => setEditModalApt(record)}
+              className="!rounded-lg text-xs !border-aura-400 !text-aura-800 hover:!bg-aura-50"
+            >
+              Edit
+            </Button>
+          </Tooltip>
+
           <Tooltip title="View or Print Slip">
             <Button
               size="small"
@@ -347,6 +361,12 @@ const AppointmentsTab = ({ initialFilters }) => {
       <AddAppointmentModal
         open={showAddModal}
         onClose={() => setShowAddModal(false)}
+      />
+
+      <EditAppointmentModal
+        open={Boolean(editModalApt)}
+        onClose={() => setEditModalApt(null)}
+        appointment={editModalApt}
       />
 
       <ReceiptModal

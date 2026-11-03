@@ -14,7 +14,9 @@ import {
   InfoCircleOutlined,
   GoogleOutlined,
   DisconnectOutlined,
-  StopOutlined
+  StopOutlined,
+  DeleteOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 import GoogleAuthModal from './GoogleAuthModal';
@@ -22,7 +24,9 @@ import GoogleAuthModal from './GoogleAuthModal';
 const { TextArea } = Input;
 
 const Step3ClientInfo = ({
+  selectedServices = [],
   selectedService,
+  onRemoveService,
   selectedDate,
   selectedTime,
   onBack,
@@ -47,7 +51,11 @@ const Step3ClientInfo = ({
   const [googleModalVisible, setGoogleModalVisible] = useState(false);
   const [blockedModalData, setBlockedModalData] = useState(null);
 
-  const servicePrice = selectedService?.price || 0;
+  const currentList = Array.isArray(selectedServices) && selectedServices.length > 0
+    ? selectedServices
+    : (selectedService ? [selectedService] : []);
+
+  const servicePrice = currentList.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
   const discount = appliedVoucher?.discount || 0;
   const finalPrice = Math.max(0, servicePrice - discount);
 
@@ -133,9 +141,10 @@ const Step3ClientInfo = ({
         phone: values.phone.trim(),
         email: values.email ? values.email.trim() : (googleUser?.email || ''),
         notes: values.notes ? values.notes.trim() : '',
-        serviceId: selectedService.id,
-        serviceName: selectedService.name,
-        serviceCategory: selectedService.category,
+        services: currentList,
+        serviceId: currentList[0]?.id || 'srv-custom',
+        serviceName: currentList.map(s => s.name).join(' & '),
+        serviceCategory: currentList[0]?.category || 'General',
         date: selectedDate.format('YYYY-MM-DD'),
         time: selectedTime,
         totalPrice: servicePrice,
@@ -470,24 +479,58 @@ const Step3ClientInfo = ({
             Appointment Summary
           </h4>
 
-          {/* Treatment Details */}
-          <div className="flex gap-3 items-center">
-            <img
-              src={selectedService?.image}
-              alt={selectedService?.name}
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover border border-aura-200 shrink-0"
-            />
-            <div className="truncate">
-              <span className="text-[10px] uppercase font-semibold text-aura-600 tracking-wider block">
-                {selectedService?.category}
-              </span>
-              <h5 className="font-serif-luxury font-bold text-xs sm:text-sm text-aura-dark truncate">
-                {selectedService?.name}
-              </h5>
-              <p className="text-[11px] text-gray-500">
-                Duration: {selectedService?.duration}
-              </p>
+          {/* Treatment Details List */}
+          <div className="space-y-2.5">
+            <div className="flex items-center justify-between text-xs font-semibold text-aura-800">
+              <span>Selected Treatments ({currentList.length})</span>
+              <button
+                type="button"
+                onClick={onBack}
+                className="text-aura-600 hover:text-aura-800 text-[11px] hover:underline cursor-pointer"
+              >
+                + Add / Change
+              </button>
             </div>
+
+            {currentList.map((srv, idx) => (
+              <div
+                key={`${srv.id}-${idx}`}
+                className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white border border-aura-200 text-xs shadow-2xs"
+              >
+                <div className="flex items-center gap-2.5 overflow-hidden">
+                  {srv.image ? (
+                    <img
+                      src={srv.image}
+                      alt={srv.name}
+                      className="w-10 h-10 rounded-lg object-cover border border-aura-100 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-lg bg-aura-100 text-aura-700 flex items-center justify-center font-bold text-xs shrink-0">
+                      {idx + 1}
+                    </div>
+                  )}
+                  <div className="truncate">
+                    <span className="font-bold text-gray-800 text-xs block truncate">{srv.name}</span>
+                    <span className="text-[10px] text-gray-500">{srv.category} • {srv.duration || 'Session'}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="font-semibold text-aura-800 text-xs">₱{Number(srv.price).toLocaleString()}</span>
+                  {currentList.length > 1 && (
+                    <Tooltip title="Remove this service (keep 1 service)">
+                      <button
+                        type="button"
+                        onClick={() => onRemoveService && onRemoveService(srv.id)}
+                        className="text-gray-400 hover:text-rose-500 p-1 transition-colors"
+                      >
+                        <DeleteOutlined className="text-xs" />
+                      </button>
+                    </Tooltip>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Date & Time pill */}

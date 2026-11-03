@@ -139,19 +139,33 @@ const ReceiptModal = ({ open, onClose, appointment }) => {
         {/* Treatment Details */}
         <div className="border border-aura-200 rounded-xl overflow-hidden">
           <div className="bg-aura-100/60 px-3.5 py-2 text-[11px] font-bold text-aura-800 flex justify-between">
-            <span>SERVICE / PROCEDURE</span>
+            <span>SERVICE & PROCEDURE</span>
             <span>SUBTOTAL</span>
           </div>
-          <div className="p-3.5 space-y-2 text-xs">
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="font-bold text-gray-800">{appointment.serviceName}</div>
-                <div className="text-[11px] text-gray-500">Includes consultation & sterile medical kit</div>
+          <div className="p-3.5 space-y-2.5 text-xs">
+            {Array.isArray(appointment.services) && appointment.services.length > 0 ? (
+              appointment.services.map((srv, idx) => (
+                <div key={idx} className="flex justify-between items-start pb-2 border-b border-aura-100/70 last:border-b-0 last:pb-0">
+                  <div>
+                    <div className="font-bold text-gray-800">{srv.name}</div>
+                    <div className="text-[11px] text-gray-500">{srv.category} • {srv.duration || 'Session'} • Sterile Kit</div>
+                  </div>
+                  <div className="font-semibold text-gray-800">
+                    ₱{Number(srv.price).toLocaleString()}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="font-bold text-gray-800">{appointment.serviceName}</div>
+                  <div className="text-[11px] text-gray-500">Includes consultation & sterile medical kit</div>
+                </div>
+                <div className="font-semibold text-gray-800">
+                  ₱{(appointment.totalPrice || appointment.finalAmount)?.toLocaleString()}
+                </div>
               </div>
-              <div className="font-semibold text-gray-800">
-                ₱{(appointment.totalPrice || appointment.finalAmount)?.toLocaleString()}
-              </div>
-            </div>
+            )}
 
             {appointment.voucherUsed && (
               <div className="flex justify-between items-center text-emerald-600 font-medium text-xs pt-1 border-t border-dashed border-aura-200">

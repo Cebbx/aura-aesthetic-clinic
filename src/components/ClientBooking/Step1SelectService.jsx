@@ -17,12 +17,32 @@ import TreatmentReviewsModal from './TreatmentReviewsModal';
 
 const CATEGORIES = ['All Services', 'Facial', 'Hair Care & Scalp', 'Slimming', 'Ingrown Removal', 'Whitening', 'Anti-Aging'];
 
-const Step1SelectService = ({ selectedService, onSelectService, onNext }) => {
+const Step1SelectService = ({
+  selectedServices = [],
+  selectedService,
+  onToggleService,
+  onSelectService,
+  onNext
+}) => {
   const { services, getServiceReviewStats } = useApp();
   const [selectedCategory, setSelectedCategory] = useState('All Services');
   const [searchQuery, setSearchQuery] = useState('');
   const [photoModalService, setPhotoModalService] = useState(null);
   const [reviewsModalService, setReviewsModalService] = useState(null);
+
+  const currentSelectedList = Array.isArray(selectedServices) && selectedServices.length > 0
+    ? selectedServices
+    : (selectedService ? [selectedService] : []);
+
+  const totalCombinedPrice = currentSelectedList.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
+
+  const handleServiceClick = (service) => {
+    if (onToggleService) {
+      onToggleService(service);
+    } else if (onSelectService) {
+      onSelectService(service);
+    }
+  };
 
   const filteredServices = services.filter(service => {
     // Only show active services to clients
@@ -71,12 +91,12 @@ const Step1SelectService = ({ selectedService, onSelectService, onNext }) => {
       {/* Services Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {filteredServices.map(service => {
-          const isSelected = selectedService?.id === service.id;
+          const isSelected = currentSelectedList.some(s => s.id === service.id);
 
           return (
             <div
               key={service.id}
-              onClick={() => onSelectService(service)}
+              onClick={() => handleServiceClick(service)}
               className={`group relative rounded-2xl bg-white border transition-all duration-300 cursor-pointer overflow-hidden flex flex-col justify-between ${
                 isSelected
                   ? 'border-aura-600 ring-2 ring-aura-600/30 shadow-lg shadow-aura-200 scale-[1.01]'
@@ -236,30 +256,39 @@ const Step1SelectService = ({ selectedService, onSelectService, onNext }) => {
       )}
 
       {/* Floating Bottom Bar for Mobile & Desktop */}
-      {selectedService && (
-        <div className="fixed sm:sticky bottom-3 left-3 right-3 sm:bottom-4 z-40 bg-aura-dark/95 backdrop-blur-md text-white p-3.5 sm:p-4 rounded-2xl shadow-2xl flex items-center justify-between border border-white/10 animate-in slide-in-from-bottom-3 duration-300">
+      {currentSelectedList.length > 0 && (
+        <div className="fixed sm:sticky bottom-3 left-3 right-3 sm:bottom-4 z-40 bg-aura-dark/95 backdrop-blur-md text-white p-3.5 sm:p-4 rounded-2xl shadow-2xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border border-white/10 animate-in slide-in-from-bottom-3 duration-300">
           <div className="flex items-center gap-2.5 sm:gap-3 overflow-hidden">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-aura-500/30 border border-aura-400/40 flex items-center justify-center text-aura-200 shrink-0">
-              <StarOutlined className="text-base sm:text-lg" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-aura-500/30 border border-aura-400/40 flex items-center justify-center text-aura-200 shrink-0 font-bold text-sm">
+              {currentSelectedList.length}
             </div>
             <div className="truncate">
               <p className="text-[10px] text-aura-300 uppercase tracking-wider font-semibold">
-                Selected
+                {currentSelectedList.length === 1 ? '1 Treatment Selected' : `${currentSelectedList.length} Treatments Selected (Combined)`}
               </p>
               <h5 className="font-medium text-white text-xs sm:text-sm truncate">
-                {selectedService.name}
+                {currentSelectedList.map(s => s.name).join(' & ')}
               </h5>
             </div>
           </div>
 
-          <Button
-            type="primary"
-            size="large"
-            onClick={onNext}
-            className="!bg-gradient-to-r !from-aura-500 !to-aura-400 hover:!from-aura-600 hover:!to-aura-500 !border-none !text-white !font-bold !rounded-xl !px-4 sm:!px-6 !h-10 sm:!h-11 shadow-md shadow-aura-500/20 text-xs sm:text-sm shrink-0 ml-2"
-          >
-            Schedule →
-          </Button>
+          <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+            <div className="text-left sm:text-right">
+              <span className="text-[10px] text-aura-300 block">Total Due</span>
+              <span className="font-serif-luxury text-base sm:text-lg font-bold text-white">
+                ₱{totalCombinedPrice.toLocaleString()}
+              </span>
+            </div>
+
+            <Button
+              type="primary"
+              size="large"
+              onClick={onNext}
+              className="!bg-gradient-to-r !from-aura-500 !to-aura-400 hover:!from-aura-600 hover:!to-aura-500 !border-none !text-white !font-bold !rounded-xl !px-4 sm:!px-6 !h-10 sm:!h-11 shadow-md shadow-aura-500/20 text-xs sm:text-sm shrink-0"
+            >
+              Proceed to Schedule →
+            </Button>
+          </div>
         </div>
       )}
 

@@ -22,17 +22,37 @@ const ClientBookingView = () => {
   const { openAboutModal } = useApp();
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Booking draft state
-  const [selectedService, setSelectedService] = useState(null);
+  // Booking draft state - Supports single or multiple treatments
+  const [selectedServices, setSelectedServices] = useState([]);
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [selectedTime, setSelectedTime] = useState(null);
   const [completedBooking, setCompletedBooking] = useState(null);
+
+  // Fallback single selected service for backwards compatibility
+  const selectedService = selectedServices[0] || null;
+
+  // Toggle service selection in array
+  const handleToggleService = (service) => {
+    setSelectedServices(prev => {
+      const exists = prev.some(s => s.id === service.id);
+      if (exists) {
+        return prev.filter(s => s.id !== service.id);
+      } else {
+        return [...prev, service];
+      }
+    });
+  };
+
+  // Remove single service
+  const handleRemoveService = (serviceId) => {
+    setSelectedServices(prev => prev.filter(s => s.id !== serviceId));
+  };
 
   // Listen for direct treatment selection from About & Services modal
   useEffect(() => {
     const handleSelectServiceEvent = (e) => {
       if (e.detail) {
-        setSelectedService(e.detail);
+        setSelectedServices([e.detail]);
         setCurrentStep(1);
         window.scrollTo({ top: 200, behavior: 'smooth' });
       }
@@ -44,7 +64,7 @@ const ClientBookingView = () => {
   // Reset to book again
   const handleReset = () => {
     setCurrentStep(0);
-    setSelectedService(null);
+    setSelectedServices([]);
     setSelectedDate(dayjs());
     setSelectedTime(null);
     setCompletedBooking(null);
@@ -156,11 +176,13 @@ const ClientBookingView = () => {
               </div>
             </div>
 
-            {/* Step 1: Select Service */}
+            {/* Step 1: Select Service (Multi-Service Supported) */}
             {currentStep === 0 && (
               <Step1SelectService
+                selectedServices={selectedServices}
                 selectedService={selectedService}
-                onSelectService={(service) => setSelectedService(service)}
+                onToggleService={handleToggleService}
+                onSelectService={(service) => setSelectedServices([service])}
                 onNext={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                   setCurrentStep(1);
@@ -175,6 +197,7 @@ const ClientBookingView = () => {
                 onSelectDate={(date) => setSelectedDate(date)}
                 selectedTime={selectedTime}
                 onSelectTime={(time) => setSelectedTime(time)}
+                selectedServices={selectedServices}
                 selectedService={selectedService}
                 onBack={() => {
                   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -190,7 +213,9 @@ const ClientBookingView = () => {
             {/* Step 3: Client Info & Voucher */}
             {currentStep === 2 && (
               <Step3ClientInfo
+                selectedServices={selectedServices}
                 selectedService={selectedService}
+                onRemoveService={handleRemoveService}
                 selectedDate={selectedDate}
                 selectedTime={selectedTime}
                 onBack={() => {

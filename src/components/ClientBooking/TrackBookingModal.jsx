@@ -14,12 +14,14 @@ import {
   EnvironmentOutlined,
   ExclamationCircleOutlined,
   BellOutlined,
-  StarFilled
+  StarFilled,
+  EditOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useApp } from '../../context/AppContext';
 import ReceiptModal from './ReceiptModal';
 import RateProcedureModal from './RateProcedureModal';
+import EditAppointmentModal from '../AdminDashboard/EditAppointmentModal';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -39,6 +41,7 @@ const TrackBookingModal = ({ open, onClose }) => {
   const [hasSearched, setHasSearched] = useState(false);
   const [receiptApt, setReceiptApt] = useState(null);
   const [rateModalApt, setRateModalApt] = useState(null);
+  const [editModalApt, setEditModalApt] = useState(null);
   
   // Client cancellation state
   const [cancelTargetApt, setCancelTargetApt] = useState(null);
@@ -346,21 +349,32 @@ const TrackBookingModal = ({ open, onClose }) => {
 
                       {/* Action buttons: View Slip & Cancel Request */}
                       <div className="pt-2 border-t border-aura-100 flex items-center justify-between gap-2 flex-wrap">
-                        <div>
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           {(apt.status === 'Pending' || apt.status === 'Confirmed') && (
-                            <Button
-                              size="small"
-                              danger
-                              icon={<CloseCircleOutlined />}
-                              onClick={() => {
-                                setCancelTargetApt(apt);
-                                setCancelReason(CLIENT_CANCEL_REASONS[0]);
-                                setCancelRemarks('');
-                              }}
-                              className="!rounded-xl text-xs hover:!bg-rose-50 font-medium"
-                            >
-                              Cancel Appointment
-                            </Button>
+                            <>
+                              <Button
+                                size="small"
+                                icon={<EditOutlined />}
+                                onClick={() => setEditModalApt(apt)}
+                                className="!rounded-xl text-xs !border-aura-400 !text-aura-800 hover:!bg-aura-50 font-medium"
+                              >
+                                Edit Services & Schedule
+                              </Button>
+
+                              <Button
+                                size="small"
+                                danger
+                                icon={<CloseCircleOutlined />}
+                                onClick={() => {
+                                  setCancelTargetApt(apt);
+                                  setCancelReason(CLIENT_CANCEL_REASONS[0]);
+                                  setCancelRemarks('');
+                                }}
+                                className="!rounded-xl text-xs hover:!bg-rose-50 font-medium"
+                              >
+                                Cancel
+                              </Button>
+                            </>
                           )}
                         </div>
 
@@ -496,6 +510,13 @@ const TrackBookingModal = ({ open, onClose }) => {
           </div>
         </div>
       </Modal>
+
+      {/* Edit Appointment & Services Modal */}
+      <EditAppointmentModal
+        open={Boolean(editModalApt)}
+        onClose={() => setEditModalApt(null)}
+        appointment={editModalApt}
+      />
 
       {/* Patient Rate Procedure Modal */}
       <RateProcedureModal

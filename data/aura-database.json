@@ -1,14 +1,50 @@
 {
-  "lastUpdated": 1793671375188,
+  "lastUpdated": 1793678060798,
   "appointments": [
     {
-      "clientName": "Maria Santos (Phone Booking Test)",
+      "id": "AURA-202611-6",
+      "monthlySequence": 6,
+      "createdAt": "2026-11-03 11:43",
+      "status": "Pending",
+      "discountApplied": 0,
+      "finalAmount": 2499,
+      "clientName": "Edward Cabbat",
+      "phone": "09656777868",
+      "email": "123@gamil.com",
+      "notes": "",
+      "serviceId": "srv-3",
+      "serviceName": "RF 360° Body Contouring & Sculpting",
+      "serviceCategory": "Slimming",
+      "date": "2026-11-04",
+      "time": "05:45 PM",
+      "totalPrice": 2499,
+      "voucherUsed": null,
+      "bookedVia": "Google 1-Click"
+    },
+    {
+      "clientName": "Camille Bautista (Multi-Service Test)",
       "contact": "09171234567",
       "serviceId": "srv-1",
       "serviceName": "Aura Signature Glass Skin Facial",
-      "date": "2026-11-10",
-      "time": "02:00 PM",
-      "category": "Facial Treatments"
+      "date": "2026-11-12",
+      "time": "01:15 PM",
+      "category": "Facial Treatments",
+      "phone": "09198765432",
+      "email": "camille.b@gmail.com",
+      "services": [
+        {
+          "id": "srv-1",
+          "name": "Aura Signature Glass Skin Facial",
+          "price": 1499,
+          "category": "Facial Treatments",
+          "duration": "50 mins"
+        }
+      ],
+      "totalPrice": 1499,
+      "discountApplied": 200,
+      "finalAmount": 1299,
+      "status": "Pending",
+      "notes": "Client requested to change to 1 service only."
     },
     {
       "id": "AURA-202611-4",

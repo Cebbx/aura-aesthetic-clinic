@@ -779,6 +779,50 @@ export const AppProvider = ({ children }) => {
     if (updatedList) syncToServer({ appointments: updatedList });
   };
 
+  // Update appointment full details (services, client info, schedule, price recalculation)
+  const updateAppointment = (id, updatedFields) => {
+    let updatedList;
+    let targetUpdated;
+    setAppointments(prev => {
+      updatedList = prev.map(apt => {
+        if (apt.id === id) {
+          const merged = { ...apt, ...updatedFields };
+          // If services array is updated, recalculate totalPrice, serviceName, and finalAmount
+          if (updatedFields.services && Array.isArray(updatedFields.services)) {
+            const totalPrice = updatedFields.services.reduce((sum, s) => sum + (Number(s.price) || 0), 0);
+            const discount = Number(merged.discountApplied) || 0;
+            merged.totalPrice = totalPrice;
+            merged.finalAmount = Math.max(0, totalPrice - discount);
+            merged.serviceName = updatedFields.services.map(s => s.name).join(' & ');
+            merged.serviceId = updatedFields.services[0]?.id || apt.serviceId;
+            merged.serviceCategory = updatedFields.services[0]?.category || apt.serviceCategory;
+          }
+          targetUpdated = merged;
+          return merged;
+        }
+        return apt;
+      });
+      return updatedList;
+    });
+
+    if (updatedList) syncToServer({ appointments: updatedList });
+
+    // Add notification if client or staff updated
+    if (targetUpdated) {
+      const notif = {
+        id: `NOTIF-${Date.now()}`,
+        title: `Appointment ${id} Updated`,
+        desc: `${targetUpdated.clientName} • ${targetUpdated.serviceName} (${targetUpdated.date} ${targetUpdated.time})`,
+        appointmentId: id,
+        time: 'Just now',
+        read: false
+      };
+      setNotifications(prev => [notif, ...prev]);
+    }
+
+    return { success: true };
+  };
+
   // Client cancellation with automated notification to clinic owner
   const cancelAppointmentByClient = (id, reason, remarks = '') => {
     const fullReason = remarks.trim() ? `${reason}: ${remarks.trim()}` : reason;
@@ -951,6 +995,7 @@ export const AppProvider = ({ children }) => {
         validateVoucher,
         addAppointment,
         updateAppointmentStatus,
+        updateAppointment,
         cancelAppointmentByClient,
         deleteAppointment,
         markVoucherAsRedeemed,
