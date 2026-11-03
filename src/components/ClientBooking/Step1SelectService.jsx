@@ -125,11 +125,11 @@ const Step1SelectService = ({
             </div>
 
             <h3 className="font-serif-luxury text-base sm:text-xl font-bold text-white tracking-tight leading-snug">
-              Bumili ng Slot Ngayon sa Murang Halaga, I-avail sa Peak Season nang Walang Patong!
+              Lock In Exclusive Lean Season Rates Today — Avail Anytime During Holiday Peak Rush with Zero Surcharge!
             </h3>
 
             <p className="text-xs sm:text-[13px] text-rose-100/90 leading-relaxed">
-              Sa peak season (December rush), ang services ay karaniwang <strong>₱3,000 – ₱5,000</strong>. Pero with <strong>Book & Buy Privilege</strong>, bilhin ang slot mo simula <strong>₱299 – ₱1,499 lang</strong> at i-avail sa convenient date mo sa darating na <strong>December 25, January 2027, or February</strong> nang ZERO surge fee!
+              During peak season (December rush), treatment rates typically range from <strong>₱3,000 – ₱5,000</strong>. With our <strong>Book & Buy Privilege</strong>, secure your appointment slot today starting from just <strong>₱299 – ₱1,499 (up to 66% OFF)</strong> and redeem anytime at your convenience — including <strong>Christmas holidays, January 2027, or February</strong> — with zero surge pricing!
             </p>
 
             <div className="flex flex-wrap gap-2 pt-1 text-[11px] text-amber-300/95 font-medium">

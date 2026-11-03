@@ -49,7 +49,7 @@ const EditVoucherModal = ({ open, onClose, voucher }) => {
     updateVoucher(voucher.code, {
       voucherType: values.voucherType,
       maxUses: isPublic ? (Number(values.maxUses) || 1) : 1,
-      clientName: isPublic ? (voucher.usedCount > 0 ? voucher.clientName : 'Open to All (Paunahan)') : (values.clientName ? values.clientName.trim() : 'VIP Client'),
+      clientName: isPublic ? (voucher.usedCount > 0 ? voucher.clientName : 'Open to Public (First-Come)') : (values.clientName ? values.clientName.trim() : 'VIP Client'),
       clientPhone: isPublic ? (voucher.usedCount > 0 ? voucher.clientPhone : 'Public Promo') : (values.clientPhone ? values.clientPhone.trim() : 'N/A'),
       serviceCategory: values.serviceCategory || 'All Services',
       discountAmount: Number(values.discountAmount),

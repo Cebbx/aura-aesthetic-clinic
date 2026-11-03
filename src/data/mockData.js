@@ -585,7 +585,7 @@ export const INITIAL_VOUCHERS = [
     voucherType: 'public',
     maxUses: 5,
     usedCount: 0,
-    clientName: 'Open to All (Paunahan)',
+    clientName: 'Open to Public (First-Come)',
     clientPhone: 'Public Promo',
     serviceCategory: 'Hair Care & Scalp',
     discountAmount: 500,
@@ -600,7 +600,7 @@ export const INITIAL_VOUCHERS = [
     voucherType: 'public',
     maxUses: 5,
     usedCount: 0,
-    clientName: 'Open to All (Paunahan)',
+    clientName: 'Open to Public (First-Come)',
     clientPhone: 'Public Promo',
     serviceCategory: 'Facial',
     discountAmount: 500,
@@ -615,7 +615,7 @@ export const INITIAL_VOUCHERS = [
     voucherType: 'public',
     maxUses: 5,
     usedCount: 0,
-    clientName: 'Open to All (Paunahan)',
+    clientName: 'Open to Public (First-Come)',
     clientPhone: 'Public Promo',
     serviceCategory: 'Slimming',
     discountAmount: 600,
@@ -630,7 +630,7 @@ export const INITIAL_VOUCHERS = [
     voucherType: 'public',
     maxUses: 5,
     usedCount: 0,
-    clientName: 'Open to All (Paunahan)',
+    clientName: 'Open to Public (First-Come)',
     clientPhone: 'Public Promo',
     serviceCategory: 'Whitening',
     discountAmount: 400,
@@ -645,7 +645,7 @@ export const INITIAL_VOUCHERS = [
     voucherType: 'public',
     maxUses: 5,
     usedCount: 0,
-    clientName: 'Open to All (Paunahan)',
+    clientName: 'Open to Public (First-Come)',
     clientPhone: 'Public Promo',
     serviceCategory: 'Ingrown Removal',
     discountAmount: 300,
@@ -660,7 +660,7 @@ export const INITIAL_VOUCHERS = [
     voucherType: 'public',
     maxUses: 5,
     usedCount: 0,
-    clientName: 'Open to All (Paunahan)',
+    clientName: 'Open to Public (First-Come)',
     clientPhone: 'Public Promo',
     serviceCategory: 'All Services',
     discountAmount: 200,
@@ -820,7 +820,7 @@ export const INITIAL_REVIEWS = {
       clientName: 'Alyssa D.',
       rating: 5,
       date: '2026-10-30',
-      comment: 'Super ganda ng gel manicure! Almost 3 weeks na pero makintab at buo pa rin ang polish. Babalik ako for sure!',
+      comment: 'Gorgeous gel manicure! It has been almost 3 weeks and the shine is still flawless and chip-free. Will definitely return!',
       verified: true
     },
     {
@@ -828,7 +828,7 @@ export const INITIAL_REVIEWS = {
       clientName: 'Bea Gonzales',
       rating: 5,
       date: '2026-10-24',
-      comment: 'Very relaxing ambiance sa clinic, napaka-gentle sa cuticle and hands.',
+      comment: 'Very relaxing clinic ambiance and extremely gentle on cuticles and hands.',
       verified: true
     },
     {
@@ -836,7 +836,7 @@ export const INITIAL_REVIEWS = {
       clientName: 'Karen Mae T.',
       rating: 5,
       date: '2026-10-18',
-      comment: 'Magaan ang kamay ni ate specialist and sterile talaga ang tools. 10 out of 10 experience!',
+      comment: 'The specialist has such gentle hands and the tools are completely sterile. 10/10 experience!',
       verified: true
     }
   ],
@@ -846,7 +846,7 @@ export const INITIAL_REVIEWS = {
       clientName: 'Kaye Morales',
       rating: 5,
       date: '2026-10-26',
-      comment: 'Lounge chairs are so comfortable, parang royalty treatment sa pink velvet chair! Tanggal lahat ng pagod sa paa.',
+      comment: 'Lounge chairs are so comfortable—felt like royalty in the pink velvet suite! All the foot tension melted away.',
       verified: true
     },
     {
@@ -854,7 +854,7 @@ export const INITIAL_REVIEWS = {
       clientName: 'Rowena S.',
       rating: 5,
       date: '2026-10-19',
-      comment: 'Sobrang linis ng clinic and napakabait ng staff. Highly recommended ang foot spa lounge!',
+      comment: 'Impeccably clean clinic and wonderful staff. Highly recommended foot spa lounge!',
       verified: true
     }
   ],
@@ -864,7 +864,7 @@ export const INITIAL_REVIEWS = {
       clientName: 'Maria Santos',
       rating: 5,
       date: '2026-10-28',
-      comment: 'Sobrang galing ng specialist! Walang sakit yung ingrown removal at sterile talaga ang mga tools. Maraming salamat!',
+      comment: 'Specialist was amazing! Completely painless ingrown removal and medical-grade sterile tools. Thank you so much!',
       verified: true
     },
     {
@@ -872,7 +872,7 @@ export const INITIAL_REVIEWS = {
       clientName: 'Camille R.',
       rating: 5,
       date: '2026-10-15',
-      comment: 'Super satisfied! Gumaan agad paa ko at napakabait ng staff.',
+      comment: 'Super satisfied! Immediate foot relief and very accommodating clinic team.',
       verified: true
     }
   ],

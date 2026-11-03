@@ -29,7 +29,7 @@ const CreateVoucherModal = ({ open, onClose }) => {
       code: values.code ? values.code.trim().toUpperCase() : undefined,
       voucherType: values.voucherType || 'public',
       maxUses: isPublic ? (Number(values.maxUses) || 1) : 1,
-      clientName: isPublic ? 'Open to All (Paunahan)' : (values.clientName ? values.clientName.trim() : 'VIP Client'),
+      clientName: isPublic ? 'Open to Public (First-Come)' : (values.clientName ? values.clientName.trim() : 'VIP Client'),
       clientPhone: isPublic ? 'Public Promo' : (values.clientPhone ? values.clientPhone.trim() : 'N/A'),
       serviceCategory: values.serviceCategory || 'All Services',
       discountAmount: Number(values.discountAmount),

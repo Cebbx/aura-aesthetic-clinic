@@ -118,7 +118,7 @@ const RateProcedureModal = ({
             rows={3}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Kumusta ang treatment, kalinisan ng gamit, at serbisyo ng specialist? (e.g. Napakabait ni ate specialist at magaan ang kamay...)"
+            placeholder="How was your procedure, clinic sanitation, and specialist care? (e.g., Very gentle aesthetician, relaxing suite, and sterile tools...)"
             className="!rounded-xl text-xs"
             maxLength={300}
             showCount
