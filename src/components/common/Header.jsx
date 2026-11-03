@@ -207,8 +207,9 @@ const Header = () => {
               </div>
               <div>
                 <div className="flex items-center gap-1 sm:gap-2">
-                  <span className="font-serif-luxury text-sm sm:text-2xl font-bold tracking-tight text-aura-dark">
-                    {clinicProfile?.clinicName || 'Aura Aesthetic Clinic'}
+                  <span className="font-serif-luxury text-xs sm:text-2xl font-bold tracking-tight text-aura-dark whitespace-nowrap">
+                    <span className="sm:hidden">Aura</span>
+                    <span className="hidden sm:inline">{clinicProfile?.clinicName || 'Aura Aesthetic Clinic'}</span>
                   </span>
                 </div>
                 <p className="text-[10px] sm:text-xs text-aura-700/80 tracking-wide hidden md:block">
@@ -259,28 +260,44 @@ const Header = () => {
             </div>
 
             {/* Action Tools: Track for Clients; Notifications & Admin Controls for Authenticated Clinic Staff */}
-            <div className="flex items-center gap-1 sm:gap-2 shrink-0 pr-1">
-              {/* About Clinic Button */}
-              <Tooltip title="View Clinic Story, Doctors & Services Menu">
-                <Button
-                  icon={<InfoCircleOutlined className="text-aura-700 text-xs sm:text-sm" />}
-                  onClick={openAboutModal}
-                  className="!border-aura-200 hover:!border-aura-400 !bg-aura-50/50 hover:!bg-white !px-2 sm:!px-3 !h-7 sm:!h-9 !text-aura-800 text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 shrink-0"
-                >
-                  <span>About</span>
-                </Button>
-              </Tooltip>
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0 pr-0.5 sm:pr-1">
+              {/* About Clinic Button - HIDDEN IN ADMIN VIEW (Removed as requested!) */}
+              {currentView !== 'admin' && (
+                <Tooltip title="View Clinic Story, Doctors & Services Menu">
+                  <Button
+                    icon={<InfoCircleOutlined className="text-aura-700 text-xs sm:text-sm" />}
+                    onClick={openAboutModal}
+                    className="!border-aura-200 hover:!border-aura-400 !bg-aura-50/50 hover:!bg-white !px-2 sm:!px-3 !h-7 sm:!h-9 !text-aura-800 text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 shrink-0"
+                  >
+                    <span>About</span>
+                  </Button>
+                </Tooltip>
+              )}
 
               {/* Track My Booking Button */}
-              <Tooltip title="Track your appointment status with your Reference ID or Phone number">
-                <Button
-                  icon={<SearchOutlined className="text-aura-700 text-xs sm:text-sm" />}
-                  onClick={() => setTrackModalVisible(true)}
-                  className="!border-aura-200 hover:!border-aura-400 !bg-aura-50/50 hover:!bg-white !px-2 sm:!px-3 !h-7 sm:!h-9 !text-aura-800 text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 shrink-0"
-                >
-                  <span>Track</span>
-                </Button>
-              </Tooltip>
+              {currentView !== 'admin' ? (
+                <Tooltip title="Track your appointment status with your Reference ID or Phone number">
+                  <Button
+                    icon={<SearchOutlined className="text-aura-700 text-xs sm:text-sm" />}
+                    onClick={() => setTrackModalVisible(true)}
+                    className="!border-aura-200 hover:!border-aura-400 !bg-aura-50/50 hover:!bg-white !px-2 sm:!px-3 !h-7 sm:!h-9 !text-aura-800 text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-1 shrink-0"
+                  >
+                    <span>Track</span>
+                  </Button>
+                </Tooltip>
+              ) : (
+                <div className="hidden sm:block">
+                  <Tooltip title="Track appointment Reference ID">
+                    <Button
+                      icon={<SearchOutlined className="text-aura-700 text-xs sm:text-sm" />}
+                      onClick={() => setTrackModalVisible(true)}
+                      className="!border-aura-200 hover:!border-aura-400 !bg-aura-50/50 hover:!bg-white !px-2.5 !h-7 sm:!h-9 !text-aura-800 text-[11px] font-semibold flex items-center justify-center gap-1"
+                    >
+                      <span>Track</span>
+                    </Button>
+                  </Tooltip>
+                </div>
+              )}
 
               {/* Clinic Staff Only: Notification Bell & Admin Controls */}
               {isAdminAuthenticated && currentView === 'admin' && (
