@@ -553,13 +553,13 @@ export const AppProvider = ({ children }) => {
       return { valid: false, message: 'Invalid voucher code. Please check code spelling.' };
     }
 
-    const maxUses = found.maxUses || 1;
-    const usedCount = found.usedCount || (found.status === 'Redeemed' ? 1 : 0);
+    const maxUses = Number(found.maxUses) || 1;
+    const usedCount = Number(found.usedCount) || (found.status === 'Redeemed' ? maxUses : 0);
 
     if (found.status === 'Redeemed' || usedCount >= maxUses) {
       return {
         valid: false,
-        message: `Voucher ${found.code} is already fully claimed / ubos na (0 promo slots left).`
+        message: `This promo voucher (${found.code}) has already been fully claimed and is no longer available.`
       };
     }
 
@@ -906,17 +906,21 @@ export const AppProvider = ({ children }) => {
 
   // Mark voucher as redeemed
   const markVoucherAsRedeemed = (code) => {
-    setVouchers(prev =>
-      prev.map(v =>
+    let updatedList;
+    setVouchers(prev => {
+      updatedList = prev.map(v =>
         v.code.toUpperCase() === code.toUpperCase()
           ? {
               ...v,
               status: 'Redeemed',
+              usedCount: v.maxUses || 1,
               redeemedDate: dayjs().format('YYYY-MM-DD hh:mm A')
             }
           : v
-      )
-    );
+      );
+      return updatedList;
+    });
+    if (updatedList) syncToServer({ vouchers: updatedList });
   };
 
   // Issue brand new voucher (Supports both Public Paunahan & Exclusive VIP)
@@ -943,45 +947,67 @@ export const AppProvider = ({ children }) => {
       redeemedDate: null
     };
 
-    setVouchers(prev => [newVoucher, ...prev]);
-    setTimeout(() => syncToServer(), 50);
+    let updatedList;
+    setVouchers(prev => {
+      updatedList = [newVoucher, ...prev];
+      return updatedList;
+    });
+    if (updatedList) syncToServer({ vouchers: updatedList });
     return newVoucher;
   };
 
   // Update existing voucher
   const updateVoucher = (code, updatedData) => {
-    setVouchers(prev =>
-      prev.map(v => {
+    let updatedList;
+    setVouchers(prev => {
+      updatedList = prev.map(v => {
         if (v.code === code) {
           const isPublic = (updatedData.voucherType || v.voucherType) !== 'personal';
           const maxUses = updatedData.maxUses !== undefined ? Number(updatedData.maxUses) : (v.maxUses || 1);
-          const usedCount = v.usedCount || 0;
+          
+          let usedCount = updatedData.usedCount !== undefined ? Number(updatedData.usedCount) : (v.usedCount || 0);
+
+          // If admin reactivates or sets status to Unredeemed, reset usedCount so it can be used!
+          if (updatedData.status === 'Unredeemed') {
+            usedCount = 0;
+          } else if (updatedData.status === 'Redeemed') {
+            usedCount = maxUses;
+          }
+
+          const finalStatus = updatedData.status || (usedCount >= maxUses ? 'Redeemed' : 'Unredeemed');
+
           return {
             ...v,
             ...updatedData,
             maxUses,
+            usedCount,
+            status: finalStatus,
             clientName: isPublic && (!updatedData.clientName || updatedData.clientName.trim() === '')
-              ? (v.usedCount > 0 ? v.clientName : 'Open to All (Paunahan)')
+              ? (usedCount > 0 ? v.clientName : 'Open to All (Paunahan)')
               : (updatedData.clientName || v.clientName),
             clientPhone: isPublic && (!updatedData.clientPhone || updatedData.clientPhone.trim() === '')
-              ? (v.usedCount > 0 ? v.clientPhone : 'Public Promo')
+              ? (usedCount > 0 ? v.clientPhone : 'Public Promo')
               : (updatedData.clientPhone || v.clientPhone),
             discountAmount: updatedData.discountAmount !== undefined ? Number(updatedData.discountAmount) : v.discountAmount,
             minSpend: updatedData.minSpend !== undefined ? Number(updatedData.minSpend) : v.minSpend,
-            status: updatedData.status !== undefined
-              ? updatedData.status
-              : (usedCount >= maxUses ? 'Redeemed' : v.status)
+            redeemedDate: finalStatus === 'Unredeemed' ? null : (v.redeemedDate || dayjs().format('YYYY-MM-DD hh:mm A'))
           };
         }
         return v;
-      })
-    );
-    setTimeout(() => syncToServer(), 50);
+      });
+      return updatedList;
+    });
+    if (updatedList) syncToServer({ vouchers: updatedList });
   };
 
   // Delete voucher
   const deleteVoucher = (code) => {
-    setVouchers(prev => prev.filter(v => v.code !== code));
+    let updatedList;
+    setVouchers(prev => {
+      updatedList = prev.filter(v => v.code !== code);
+      return updatedList;
+    });
+    if (updatedList) syncToServer({ vouchers: updatedList });
   };
 
   // Reset demo data to initial mock

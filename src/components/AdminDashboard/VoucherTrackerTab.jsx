@@ -10,7 +10,8 @@ import {
   ClockCircleOutlined,
   DollarOutlined,
   EditOutlined,
-  DeleteOutlined
+  DeleteOutlined,
+  ReloadOutlined
 } from '@ant-design/icons';
 import { useApp } from '../../context/AppContext';
 import CreateVoucherModal from './CreateVoucherModal';
@@ -20,7 +21,7 @@ const { Option } = Select;
 const { Text } = Typography;
 
 const VoucherTrackerTab = ({ initialFilters }) => {
-  const { vouchers, markVoucherAsRedeemed, deleteVoucher } = useApp();
+  const { vouchers, markVoucherAsRedeemed, updateVoucher, deleteVoucher } = useApp();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState(initialFilters?.statusFilter || 'ALL');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -204,7 +205,7 @@ const VoucherTrackerTab = ({ initialFilters }) => {
       width: 230,
       render: (_, record) => (
         <Space size={6} wrap>
-          {record.status !== 'Redeemed' && (
+          {record.status !== 'Redeemed' ? (
             <Popconfirm
               title="Mark Voucher as Redeemed"
               description={`Verify that client ${record.clientName} is redeeming voucher ${record.code} now in the clinic?`}
@@ -220,6 +221,25 @@ const VoucherTrackerTab = ({ initialFilters }) => {
                 className="!bg-emerald-600 hover:!bg-emerald-700 !border-none !rounded-lg text-xs font-semibold shadow-xs"
               >
                 Redeem
+              </Button>
+            </Popconfirm>
+          ) : (
+            <Popconfirm
+              title="Reactivate Voucher"
+              description={`Reopen voucher ${record.code} so clients can claim it again?`}
+              onConfirm={() => {
+                updateVoucher(record.code, { status: 'Unredeemed', usedCount: 0, redeemedDate: null });
+                message.success(`Voucher ${record.code} reactivated and now available!`);
+              }}
+              okText="Yes, Reactivate"
+              cancelText="Cancel"
+            >
+              <Button
+                size="small"
+                icon={<ReloadOutlined />}
+                className="!border-emerald-600 !text-emerald-700 hover:!bg-emerald-50 !rounded-lg text-xs font-semibold"
+              >
+                Reactivate
               </Button>
             </Popconfirm>
           )}

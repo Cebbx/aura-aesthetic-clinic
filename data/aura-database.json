@@ -581,75 +581,93 @@
   "vouchers": [
     {
       "code": "AURA-HAIR-888",
-      "clientName": "Kristine Bernadette Tan",
-      "clientPhone": "0917-882-9912",
+      "clientName": "Open to All (Paunahan)",
+      "clientPhone": "Public Promo",
       "serviceCategory": "Hair Care & Scalp",
       "discountAmount": 500,
       "minSpend": 1500,
       "purchaseDate": "2026-10-25",
       "expiryDate": "2026-12-31",
       "status": "Unredeemed",
-      "redeemedDate": null
+      "redeemedDate": null,
+      "voucherType": "public",
+      "maxUses": 5,
+      "usedCount": 0
     },
     {
       "code": "AURA-GLOW-882",
-      "clientName": "Camille De Guzman",
-      "clientPhone": "0917-882-9912",
+      "clientName": "Open to All (Paunahan)",
+      "clientPhone": "Public Promo",
       "serviceCategory": "Facial",
       "discountAmount": 500,
       "minSpend": 1500,
       "purchaseDate": "2026-10-25",
       "expiryDate": "2026-12-31",
       "status": "Unredeemed",
-      "redeemedDate": null
+      "redeemedDate": null,
+      "voucherType": "public",
+      "maxUses": 5,
+      "usedCount": 0
     },
     {
       "code": "SLIM-LUXE-401",
-      "clientName": "Atty. Sofia Ramos",
-      "clientPhone": "0922-441-9876",
+      "clientName": "Open to All (Paunahan)",
+      "clientPhone": "Public Promo",
       "serviceCategory": "Slimming",
       "discountAmount": 600,
       "minSpend": 2000,
       "purchaseDate": "2026-10-28",
       "expiryDate": "2026-11-30",
       "status": "Unredeemed",
-      "redeemedDate": null
+      "redeemedDate": null,
+      "voucherType": "public",
+      "maxUses": 5,
+      "usedCount": 0
     },
     {
       "code": "WHITE-VIP-109",
-      "clientName": "Patricia Morales",
-      "clientPhone": "0918-333-1284",
+      "clientName": "Open to All (Paunahan)",
+      "clientPhone": "Public Promo",
       "serviceCategory": "Whitening",
       "discountAmount": 400,
       "minSpend": 1300,
       "purchaseDate": "2026-10-15",
       "expiryDate": "2026-11-15",
-      "status": "Redeemed",
-      "redeemedDate": "2026-10-29 02:40 PM"
+      "status": "Unredeemed",
+      "redeemedDate": null,
+      "voucherType": "public",
+      "maxUses": 5,
+      "usedCount": 0
     },
     {
       "code": "INGROWN-RELIEF-77",
-      "clientName": "Kenneth James Tan",
-      "clientPhone": "0905-112-7890",
+      "clientName": "Open to All (Paunahan)",
+      "clientPhone": "Public Promo",
       "serviceCategory": "Ingrown Removal",
       "discountAmount": 300,
       "minSpend": 900,
       "purchaseDate": "2026-10-20",
       "expiryDate": "2026-12-15",
-      "status": "Redeemed",
-      "redeemedDate": "2026-10-27 11:15 AM"
+      "status": "Unredeemed",
+      "redeemedDate": null,
+      "voucherType": "public",
+      "maxUses": 5,
+      "usedCount": 0
     },
     {
       "code": "AURA-WELCOME-200",
-      "clientName": "Bianca Nicole Castro",
-      "clientPhone": "0995-778-3412",
+      "clientName": "Open to All (Paunahan)",
+      "clientPhone": "Public Promo",
       "serviceCategory": "All Services",
       "discountAmount": 200,
       "minSpend": 1000,
       "purchaseDate": "2026-11-01",
       "expiryDate": "2026-12-25",
       "status": "Unredeemed",
-      "redeemedDate": null
+      "redeemedDate": null,
+      "voucherType": "public",
+      "maxUses": 5,
+      "usedCount": 0
     }
   ],
   "clients": [
