@@ -121,12 +121,34 @@ const Step1SelectService = ({
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="space-y-1.5 max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-amber-600 text-black text-[11px] font-black px-3 py-0.5 rounded-full shadow-sm tracking-wide uppercase">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('🔥 Book & Buy Privilege (Up to 66% OFF)');
+                  setSearchQuery('');
+                  const el = document.getElementById('services-grid-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-black text-[11px] font-black px-3 py-0.5 rounded-full shadow-sm tracking-wide uppercase cursor-pointer transition-all active:scale-95"
+                title="Click to view all Book & Buy Privilege promotions"
+              >
                 👑 Privilege Promo
-              </span>
-              <span className="bg-white/15 text-amber-200 border border-amber-300/30 text-[10px] sm:text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('🔥 Book & Buy Privilege (Up to 66% OFF)');
+                  setSearchQuery('');
+                  const el = document.getElementById('services-grid-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="bg-white/15 hover:bg-white/30 text-amber-200 hover:text-white border border-amber-300/30 text-[10px] sm:text-[11px] font-semibold px-2.5 py-0.5 rounded-full cursor-pointer transition-all active:scale-95"
+                title="Click to view deals with up to 66% OFF"
+              >
                 🔥 Book & Buy: Up to 66% OFF
-              </span>
+              </button>
+
               <span className="text-[11px] text-amber-200/90 font-medium hidden sm:inline">
                 Lean Season Lock-In • Peak Season Avail
               </span>
@@ -140,11 +162,67 @@ const Step1SelectService = ({
               During peak season (December rush), treatment rates typically range from <strong>₱3,000 – ₱5,000</strong>. With our <strong>Book & Buy Privilege</strong>, secure your appointment slot today starting from just <strong>₱299 – ₱1,499 (up to 66% OFF)</strong> and redeem anytime at your convenience — including <strong>Christmas holidays, January 2027, or February</strong> — with zero surge pricing!
             </p>
 
-            <div className="flex flex-wrap gap-2 pt-1 text-[11px] text-amber-300/95 font-medium">
-              <span className="bg-white/10 px-2 py-0.5 rounded-md border border-white/10">✨ Rebond from ₱799</span>
-              <span className="bg-white/10 px-2 py-0.5 rounded-md border border-white/10">❄️ Cryo-Iron ₱699</span>
-              <span className="bg-white/10 px-2 py-0.5 rounded-md border border-white/10">💆‍♀️ Cysteine & Keratin ₱999</span>
-              <span className="bg-white/10 px-2 py-0.5 rounded-md border border-white/10">🌟 Facials & BB Glow from ₱499</span>
+            {/* Interactive Deals Quick-Filter Pills */}
+            <div className="flex flex-wrap gap-2 pt-1 text-[11px] font-medium">
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('🔥 Book & Buy Privilege (Up to 66% OFF)');
+                  setSearchQuery('Rebond');
+                  const el = document.getElementById('services-grid-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="bg-white/10 hover:bg-amber-400 text-amber-200 hover:text-black px-2.5 py-1 rounded-lg border border-white/20 hover:border-amber-400 font-semibold transition-all duration-200 cursor-pointer active:scale-95 flex items-center gap-1 shadow-xs"
+                title="Click to view all Hair Rebonding deals from ₱799"
+              >
+                <span>✨ Rebond from ₱799</span>
+                <span className="text-[9px] opacity-75">↗</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('🔥 Book & Buy Privilege (Up to 66% OFF)');
+                  setSearchQuery('Cryo');
+                  const el = document.getElementById('services-grid-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="bg-white/10 hover:bg-amber-400 text-amber-200 hover:text-black px-2.5 py-1 rounded-lg border border-white/20 hover:border-amber-400 font-semibold transition-all duration-200 cursor-pointer active:scale-95 flex items-center gap-1 shadow-xs"
+                title="Click to view Nano Steam & Cryo-Iron treatment at ₱699"
+              >
+                <span>❄️ Cryo-Iron ₱699</span>
+                <span className="text-[9px] opacity-75">↗</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('🔥 Book & Buy Privilege (Up to 66% OFF)');
+                  setSearchQuery('Keratin');
+                  const el = document.getElementById('services-grid-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="bg-white/10 hover:bg-amber-400 text-amber-200 hover:text-black px-2.5 py-1 rounded-lg border border-white/20 hover:border-amber-400 font-semibold transition-all duration-200 cursor-pointer active:scale-95 flex items-center gap-1 shadow-xs"
+                title="Click to view Cysteine & Keratin treatments from ₱499"
+              >
+                <span>💆‍♀️ Cysteine & Keratin ₱999</span>
+                <span className="text-[9px] opacity-75">↗</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCategory('🔥 Book & Buy Privilege (Up to 66% OFF)');
+                  setSearchQuery('Facial');
+                  const el = document.getElementById('services-grid-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="bg-white/10 hover:bg-amber-400 text-amber-200 hover:text-black px-2.5 py-1 rounded-lg border border-white/20 hover:border-amber-400 font-semibold transition-all duration-200 cursor-pointer active:scale-95 flex items-center gap-1 shadow-xs"
+                title="Click to view Facials, BB Glow & HydraFacial from ₱499"
+              >
+                <span>🌟 Facials & BB Glow from ₱499</span>
+                <span className="text-[9px] opacity-75">↗</span>
+              </button>
             </div>
           </div>
 
