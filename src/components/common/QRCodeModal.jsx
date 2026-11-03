@@ -11,7 +11,16 @@ import {
 const { Text, Paragraph } = Typography;
 
 const QRCodeModal = ({ open, onClose }) => {
-  const bookingUrl = window.location.origin + '?mode=client';
+  const officialDomain = 'https://aura-aesthetic-clinic.onrender.com';
+  const isLocal = typeof window !== 'undefined' && (
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname.startsWith('192.168.') ||
+    window.location.hostname.startsWith('10.')
+  );
+
+  // Default to live official Render domain so printed/scanned QR codes work everywhere
+  const bookingUrl = (isLocal ? officialDomain : window.location.origin) + '?mode=client';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(bookingUrl);
@@ -54,8 +63,8 @@ const QRCodeModal = ({ open, onClose }) => {
               size={210}
               color="#713942"
               bordered={false}
-              icon="https://cdn-icons-png.flaticon.com/512/2838/2838895.png"
-              iconSize={36}
+              icon="/pwa-icon-192.png"
+              iconSize={40}
             />
           </div>
           <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] font-semibold text-aura-700">
